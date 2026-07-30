@@ -10,5 +10,5 @@ public interface Card {
 	public Suit getSuit();
 	
 	// getter method for the BJ value of the card
-	public int getBlackjackValue();
+	public int getBlackjackValue(final int handScore);
 }
