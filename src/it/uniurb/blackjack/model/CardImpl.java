@@ -4,13 +4,15 @@ package it.uniurb.blackjack.model;
 public class CardImpl implements Card {
 
 	// declaration of class' fields
-	private final int nominalValue;   // nominal value of the card
-	private final Suit cardSuit;      // suit of the card (hearts, diamonds, clubs, spades)
-	private       int blackjackValue; // BJ value of the card, calculated following game rules
+	private final int    nominalValue;   // nominal value of the card
+	private final Suit   cardSuit;       // suit of the card (hearts, diamonds, clubs, spades)
+	private int          blackjackValue; // BJ value of the card, calculated following game rules
+	private String cardColor;      // color of the card (black or white)        
 	
 	public CardImpl(final int nominalValue, final Suit cardSuit) {
 		this.nominalValue = nominalValue;
 		this.cardSuit = cardSuit;
+		this.cardColor = getColor(); 
 	}
 	
 	public int getNominalValue() {
@@ -19,6 +21,17 @@ public class CardImpl implements Card {
 	
 	public Suit getSuit() {
 		return(this.cardSuit);
+	}
+	
+	public String getColor() {
+		
+		if (this.cardSuit == Suit.HEARTS ||
+			this.cardSuit == Suit.DIAMONDS) 
+			this.cardColor = "red";
+		else
+			this.cardColor = "black";
+		
+		return(this.cardColor);
 	}
 	
 	public int getBlackjackValue(final int handScore) {
