@@ -11,7 +11,6 @@ public class HandImpl implements Hand {
 	private HandState    handState;     // state of the hand (stand, blackjack, active, bust)
 	private boolean      isFromSplit;   // bool value that record if a hand is from a split
 	private PerfectPairs perfPairLevel; // bool value that record if a hand is a perfect pair
-	private boolean      isBust;        // bool value that record if a hand is bust
 	
 	// constructor of the class
 	public HandImpl(final Shoe shoe, final double bet, final boolean isFromSplit) {
@@ -40,7 +39,6 @@ public class HandImpl implements Hand {
 		
 		this.isFromSplit = isFromSplit;
 		this.perfPairLevel = perfectPairCalc();
-		this.isBust = false;
 	}
 
 	public int getScore() {
@@ -50,7 +48,11 @@ public class HandImpl implements Hand {
 	public double getBet() {
 		return(this.bet);
 	}
-
+	
+	public List<Card> getCards() {
+		return(this.cards);
+	}
+	
 	public HandState getHandState() {
 		return(this.handState);
 	}
@@ -86,16 +88,20 @@ public class HandImpl implements Hand {
 		return(this.perfPairLevel);
 	}
 	
-	public boolean isBust() {
+	public void isBust() {
 		// if the score of the hand is higher than 21 the hand is considered bust
-		if (this.score > 21) {
-			this.isBust = true;
+		if (this.score > 21)
 			this.handState = HandState.BUST;
-		}
-		else {
-			this.isBust = false;
-		}
+	}
+
+	public void takeCard(final Shoe shoe) {
+		// declaration and initialization of local variables
+		Card cardToAdd = shoe.giveCard(); // card to add to the hand
 		
-		return(this.isBust);	
+		this.cards.add(cardToAdd);
+		this.score += cardToAdd.getBlackjackValue(this.score);
+		
+		// check if the hand is bust or not
+		this.isBust();
 	}
 }

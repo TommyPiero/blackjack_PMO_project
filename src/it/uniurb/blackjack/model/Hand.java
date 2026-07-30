@@ -1,5 +1,7 @@
 package it.uniurb.blackjack.model;
 
+import java.util.List;
+
 public interface Hand {
 	// declaration of methods
 	
@@ -8,6 +10,9 @@ public interface Hand {
 	
 	// getter method for the bet linked to the hand
 	public double getBet();
+	
+	// getter method for the list of cards
+	public List<Card> getCards();
 	
 	// getter method for the state of the hand (stand, blackjack, active, bust)
 	public HandState getHandState();
@@ -19,5 +24,8 @@ public interface Hand {
 	public void stopCards();
 	
 	// getter method that returns if a hand is bust or not
-	public boolean isBust();
+	public void isBust();
+	
+	// method that add a card to the hand
+	public void takeCard(final Shoe shoe);
 }
