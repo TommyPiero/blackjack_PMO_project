@@ -8,4 +8,7 @@ public interface Participant {
 	
 	// getter method for the hand of the participant
 	public Hand getHand();
+	
+	// method for getting a card 
+	public void hit(final Shoe shoe);
 }
