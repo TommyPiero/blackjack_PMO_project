@@ -10,15 +10,17 @@ import it.uniurb.blackjack.model.participants.Player;
 // class that implements the logic of the game Blackjack
 public class Blackjack implements GameType {
 	// declaration of the fields of the class
-	private Dealer dealer; // the dealer of the table
-	private Player player; // the player of the game (single player)
-	private Shoe   shoe;   // generic shoe used for cards
+	private Dealer    dealer;    // the dealer of the table
+	private Player    player;    // the player of the game (single player)
+	private Shoe      shoe;      // generic shoe used for cards
+	private GameState gameState; // actual state of the game 
 	
 	// constructor of the class
 	public Blackjack(final String playerName, final int playerBalance, final int numDecks) {
 		this.dealer = new Dealer();
 		this.player = new Player(playerName, playerBalance);
 		this.shoe = new ShoeImpl(numDecks);
+		this.gameState = GameState.WAITING_BET;
 	}
 
 	public void startRound(final int bet) {
@@ -26,8 +28,31 @@ public class Blackjack implements GameType {
 		this.player.newHand(this.shoe, bet, false);
 		// dealer gets a hand
 		this.dealer.newHand(shoe);
+		// setting the state getting the turn to the player
+		this.gameState = GameState.WAITING_PLAY;
 	}
 
+	public void makeMove(MoveType move) {
+		if (this.gameState == GameState.WAITING_PLAY) {
+			switch (move) {
+				case MoveType.HIT:
+					this.player.hit(shoe);
+					break;
+				case MoveType.STAND:
+					this.player.stand();
+					this.gameState = GameState.DEALER_TURN;
+					break;
+				case MoveType.DOUBLE_DOWN:
+					this.player.doubleDown(shoe);
+					this.gameState = GameState.DEALER_TURN;
+					break;
+				case MoveType.SPLIT:
+					this.player.split(shoe);
+					break;
+			}
+		}
+	}
+	
 	public void verifyOutcome() {
 		// in this case the player lose the bet and he doesn't win money
 		if (!((this.player.getHand().getHandState() == HandState.BUST) ||
