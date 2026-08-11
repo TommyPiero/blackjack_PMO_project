@@ -1,4 +1,4 @@
-package it.uniurb.blackjack.model;
+package it.uniurb.blackjack.model.game;
 
 // interface for a generic game in casino
 public interface GameType {

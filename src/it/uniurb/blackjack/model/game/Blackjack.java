@@ -1,4 +1,11 @@
-package it.uniurb.blackjack.model;
+package it.uniurb.blackjack.model.game;
+
+import it.uniurb.blackjack.model.cards.HandState;
+import it.uniurb.blackjack.model.cards.Shoe;
+import it.uniurb.blackjack.model.cards.ShoeImpl;
+import it.uniurb.blackjack.model.participants.Dealer;
+import it.uniurb.blackjack.model.participants.Participant;
+import it.uniurb.blackjack.model.participants.Player;
 
 // class that implements the logic of the game Blackjack
 public class Blackjack implements GameType {

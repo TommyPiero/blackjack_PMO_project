@@ -1,4 +1,4 @@
-package it.uniurb.blackjack.model;
+package it.uniurb.blackjack.model.cards;
 
 // enum for the levels of perfect pairs
 public enum PerfectPairs {

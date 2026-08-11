@@ -1,4 +1,9 @@
-package it.uniurb.blackjack.model;
+package it.uniurb.blackjack.model.participants;
+
+import it.uniurb.blackjack.model.cards.Hand;
+import it.uniurb.blackjack.model.cards.HandImpl;
+import it.uniurb.blackjack.model.cards.HandState;
+import it.uniurb.blackjack.model.cards.Shoe;
 
 // class that create the model of the dealer of the game
 public class Dealer implements Participant {

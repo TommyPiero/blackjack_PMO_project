@@ -1,4 +1,4 @@
-package it.uniurb.blackjack.model;
+package it.uniurb.blackjack.model.cards;
 
 import java.util.LinkedList;
 import java.util.List;

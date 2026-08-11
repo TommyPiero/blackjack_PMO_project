@@ -1,4 +1,4 @@
-package it.uniurb.blackjack.model;
+package it.uniurb.blackjack.model.cards;
 
 // implementation of the interface Card
 public class CardImpl implements Card {

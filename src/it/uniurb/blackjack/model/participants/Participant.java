@@ -1,4 +1,7 @@
-package it.uniurb.blackjack.model;
+package it.uniurb.blackjack.model.participants;
+
+import it.uniurb.blackjack.model.cards.Hand;
+import it.uniurb.blackjack.model.cards.Shoe;
 
 public interface Participant {
 	// declaration of methods

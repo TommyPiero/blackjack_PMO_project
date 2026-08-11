@@ -1,4 +1,4 @@
-package it.uniurb.blackjack.model;
+package it.uniurb.blackjack.model.cards;
 
 public interface Shoe {
 	// declaration of methods

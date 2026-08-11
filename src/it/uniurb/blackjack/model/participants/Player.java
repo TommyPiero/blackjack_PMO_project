@@ -1,4 +1,10 @@
-package it.uniurb.blackjack.model;
+package it.uniurb.blackjack.model.participants;
+
+import it.uniurb.blackjack.model.cards.Card;
+import it.uniurb.blackjack.model.cards.Hand;
+import it.uniurb.blackjack.model.cards.HandImpl;
+import it.uniurb.blackjack.model.cards.HandState;
+import it.uniurb.blackjack.model.cards.Shoe;
 
 // class for the player of the game that implements participant
 public class Player implements Participant {
