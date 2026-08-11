@@ -9,7 +9,7 @@ public class Player implements Participant {
 	private double       balance;    // balance of the player for the bets
 	
 	// constructor of the class
-	public Player(final Shoe shoe, final String name, final double balance) {
+	public Player(final String name, final double balance) {
 		this.playerName = name;
 		this.balance = balance;
 		this.hand = null;
@@ -112,5 +112,10 @@ public class Player implements Participant {
 		else {
 			throw new IllegalStateException("Player has not enough money");
 		}
+	}
+	
+	// method that permit to give back money to the player if he wins a hand
+	public void winTheBet(final double bet) {
+		this.balance += bet;
 	}
 }
