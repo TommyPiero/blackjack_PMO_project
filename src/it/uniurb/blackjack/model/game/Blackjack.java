@@ -4,7 +4,6 @@ import it.uniurb.blackjack.model.cards.HandState;
 import it.uniurb.blackjack.model.cards.Shoe;
 import it.uniurb.blackjack.model.cards.ShoeImpl;
 import it.uniurb.blackjack.model.participants.Dealer;
-import it.uniurb.blackjack.model.participants.Participant;
 import it.uniurb.blackjack.model.participants.Player;
 
 // class that implements the logic of the game Blackjack
@@ -16,9 +15,9 @@ public class Blackjack implements GameType {
 	private GameState gameState; // actual state of the game 
 	
 	// constructor of the class
-	public Blackjack(final String playerName, final int playerBalance, final int numDecks) {
+	public Blackjack(final int numDecks) {
 		this.dealer = new Dealer();
-		this.player = new Player(playerName, playerBalance);
+		this.player = new Player();
 		this.shoe = new ShoeImpl(numDecks);
 		this.gameState = GameState.WAITING_BET;
 	}
@@ -101,7 +100,7 @@ public class Blackjack implements GameType {
 	}
 	
 	// getter method for the dealer
-	public Participant getDealer() {
+	public Dealer getDealer() {
 		return(this.dealer);
 	}
 	

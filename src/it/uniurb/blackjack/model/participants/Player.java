@@ -9,15 +9,13 @@ import it.uniurb.blackjack.model.cards.Shoe;
 // class for the player of the game that implements participant
 public class Player implements Participant {
 	// declaration of the fields of the class
-	private final String playerName; // name of the player
+	private String       playerName; // name of the player
 	private Hand         hand;	     // first hand of the player
 	private Hand         splitHand;  // hand from the split
 	private double       balance;    // balance of the player for the bets
 	
 	// constructor of the class
-	public Player(final String name, final double balance) {
-		this.playerName = name;
-		this.balance = balance;
+	public Player() {
 		this.hand = null;
 		this.splitHand = null;
 	}
@@ -33,6 +31,12 @@ public class Player implements Participant {
 	// getter method for the balance of the player
 	public double getBalance() {
 		return(this.balance);
+	}
+	
+	// method that initialize a new player
+	public void initPlayer(final String name, final double balance) {
+		this.playerName = name;
+		this.balance = balance;
 	}
 	
 	// method that generates a new Hand
