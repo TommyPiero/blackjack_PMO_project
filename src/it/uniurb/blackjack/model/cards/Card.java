@@ -10,7 +10,7 @@ public interface Card {
 	public Suit getSuit();
 	
 	// getter method for the color of the card (red or black)
-	public String getColor();
+	public CardColor getColor();
 	
 	// getter method for the BJ value of the card
 	public int getBlackjackValue(final int handScore);

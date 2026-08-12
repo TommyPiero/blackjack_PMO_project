@@ -4,15 +4,36 @@ package it.uniurb.blackjack.model.cards;
 public class CardImpl implements Card {
 
 	// declaration of class' fields
-	private final int    nominalValue;   // nominal value of the card
-	private final Suit   cardSuit;       // suit of the card (hearts, diamonds, clubs, spades)
-	private int          blackjackValue; // BJ value of the card, calculated following game rules
-	private String cardColor;      // color of the card (black or white)        
+	private final int       nominalValue;   // nominal value of the card
+	private final Suit      cardSuit;       // suit of the card (hearts, diamonds, clubs, spades)
+	private final int       blackjackValue; // BJ value of the card, calculated following game rules
+	private final CardColor cardColor;      // color of the card (red or black)        
 	
 	public CardImpl(final int nominalValue, final Suit cardSuit) {
 		this.nominalValue = nominalValue;
 		this.cardSuit = cardSuit;
-		this.cardColor = getColor(); 
+		
+		// management of the color of the card (hearts, diamonds -> red), (clubs, spades -> black)
+		if (this.cardSuit == Suit.HEARTS ||
+			this.cardSuit == Suit.DIAMONDS) 
+			this.cardColor = CardColor.RED;
+		else
+			this.cardColor = CardColor.BLACK;
+		
+		// management of the value of the card following the blackjack rules
+		// cards from 2 to 10 maintain their nominal value
+		if (this.nominalValue >= 2 &&
+			this.nominalValue <= 10)
+			this.blackjackValue = this.nominalValue;
+		// cards from 11 to 13 takes value 10
+		else if (this.nominalValue >= 11 &&
+				 this.nominalValue <= 13)
+			this.blackjackValue = 10;
+		// ace is initialized as eleven, the management of hard or soft ace will be carried out by the hand
+		else if (this.nominalValue == 1)
+			this.blackjackValue = 11;
+		else
+			throw new IllegalArgumentException("Not valid nominal value");
 	}
 	
 	public int getNominalValue() {
@@ -23,47 +44,11 @@ public class CardImpl implements Card {
 		return(this.cardSuit);
 	}
 	
-	public String getColor() {
-		
-		if (this.cardSuit == Suit.HEARTS ||
-			this.cardSuit == Suit.DIAMONDS) 
-			this.cardColor = "red";
-		else
-			this.cardColor = "black";
-		
+	public CardColor getColor() {
 		return(this.cardColor);
 	}
 	
 	public int getBlackjackValue(final int handScore) {
-	
-		if (this.nominalValue >= 2 &&
-			this.nominalValue <= 9)
-			this.blackjackValue = this.nominalValue;
-		else if (this.nominalValue >= 10 &&
-				 this.nominalValue <= 13)
-			this.blackjackValue = 10;
-		else if (this.nominalValue == 1)
-			this.blackjackValue = calcAce(handScore);
-		else
-			throw new IllegalArgumentException("Not valid nominal value");
-		
 		return(this.blackjackValue);
 	}
-	
-	// private method that calculates the ace value (soft or hard)
-	// it takes the handScore as a parameter
-	private static int calcAce(final int handScore) {
-		// declaration of local variables
-		int aceValue;
-		
-		// if the hand score is less or equal to 21 the ace takes BJ value 11
-		// if the hand score is more than 21 the ace takes BJ value 1
-		if (handScore <= 21)
-			aceValue = 11;
-		else
-			aceValue = 1;
-		
-		return aceValue;
-	}
-
 }
