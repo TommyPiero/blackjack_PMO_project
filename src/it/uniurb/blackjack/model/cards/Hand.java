@@ -11,6 +11,9 @@ public interface Hand {
 	// getter method for the bet linked to the hand
 	public double getBet();
 	
+	// getter method for the bet linked to the side bet
+	public double getSideBet();
+	
 	// getter method for the list of cards
 	public List<Card> getCards();
 	

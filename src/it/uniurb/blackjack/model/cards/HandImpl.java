@@ -8,12 +8,13 @@ public class HandImpl implements Hand {
 	private List<Card>   cards;         // cards of the hand
 	private int 	     score;         // score of the hand (considering BJ values)
 	private double       bet;           // bet linked to the hand
+	private double       perfPairBet;   // bet linked to the perfect pair bet, it can be 0
 	private HandState    handState;     // state of the hand (stand, blackjack, active, bust)
 	private boolean      isFromSplit;   // bool value that record if a hand is from a split
 	private PerfectPairs perfPairLevel; // bool value that record if a hand is a perfect pair
 	
 	// constructor of the class
-	public HandImpl(final Shoe shoe, final double bet, final boolean isFromSplit) {
+	public HandImpl(final Shoe shoe, final double bet, final boolean isFromSplit, final double perfPairBet) {
 		// initializing the list of cards and the score to 0
 		this.cards = new LinkedList<Card>();
 		this.score = 0;
@@ -30,6 +31,7 @@ public class HandImpl implements Hand {
 		}
 
 		this.bet = bet;
+		this.perfPairBet = perfPairBet;
 		// setting the state of the hand to active if the score is not equal to 21
 		// otherwise setting the state to blackjack (only a 21 with two cards is a BJ)
 		if (this.score != 21)
@@ -47,6 +49,11 @@ public class HandImpl implements Hand {
 
 	public double getBet() {
 		return(this.bet);
+	}
+	
+	// getter for the perfect pair bet
+	public double getSideBet() {
+		return(this.perfPairBet);
 	}
 	
 	public List<Card> getCards() {

@@ -28,7 +28,7 @@ public class Dealer implements Participant {
 	// method that generates a new hand from zero
 	public Hand newHand(final Shoe shoe) {
 		// initialization of the hand object
-		this.hand = new HandImpl(shoe, 0, false);
+		this.hand = new HandImpl(shoe, 0, false, 0);
 		// i take two cards
 		this.hand.takeCard(shoe);
 		this.hand.takeCard(shoe);

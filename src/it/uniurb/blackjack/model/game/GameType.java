@@ -5,8 +5,8 @@ public interface GameType {
 	// declaration of methods
 	
 	// method that starts a round
-	public void startRound(final int bet);
+	public void startRound(final double bet, final double perfPairBet);
 	
 	// method that verifies the outcome of a play
-	public void verifyOutcome();
+	public OutcomeType verifyOutcome();
 }

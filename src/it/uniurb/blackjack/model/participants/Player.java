@@ -36,9 +36,9 @@ public class Player implements Participant {
 	}
 	
 	// method that generates a new Hand
-	public Hand newHand(final Shoe shoe, final double bet, final boolean isFromSplit) {
+	public Hand newHand(final Shoe shoe, final double bet, final boolean isFromSplit, final double perfPairBet) {
 		if (this.balance >= bet) {
-			this.hand = new HandImpl(shoe, bet, isFromSplit);
+			this.hand = new HandImpl(shoe, bet, isFromSplit, perfPairBet);
 			this.balance -= bet;
 		}
 		else {
@@ -91,10 +91,10 @@ public class Player implements Participant {
 				// declaration and initialization of local variables
 				Card firstCard = this.hand.getCards().get(0);  // first card of the original hand
 				Card secondCard = this.hand.getCards().get(1); // second card of the original hand
-				Hand firstHand = new HandImpl(shoe, this.hand.getBet(), true); // new hand from the split (set on true )
+				Hand firstHand = new HandImpl(shoe, this.hand.getBet(), true, 0); // new hand from the split (set on true )
 
 				// initialization of the second hand from the split
-				this.splitHand = new HandImpl(shoe, this.hand.getBet(), true);
+				this.splitHand = new HandImpl(shoe, this.hand.getBet(), true, 0);
 			
 				// decreasing the player's balance
 				this.balance -= this.hand.getBet();
