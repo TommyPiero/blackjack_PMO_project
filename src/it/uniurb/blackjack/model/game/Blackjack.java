@@ -24,29 +24,29 @@ public class Blackjack implements GameType {
 
 	public void startRound(final double bet, final double perfPairBet) {
 		// player gets a hand, isFromSplit set to false because is a new round
-		this.player.newHand(this.shoe, bet, false, perfPairBet);
+		this.player.newRound(bet, perfPairBet);
 		// dealer gets a hand
-		this.dealer.newHand(shoe);
+		this.dealer.newRound();
 		// setting the state getting the turn to the player
 		this.gameState = GameState.WAITING_PLAY;
 	}
 
-	public void makeMove(MoveType move) {
+	public void makeMove(final MoveType move, final int numHand) {
 		if (this.gameState == GameState.WAITING_PLAY) {
 			switch (move) {
 				case MoveType.HIT:
-					this.player.hit(shoe);
+					this.player.hit(this.shoe.drawCard(), this.player.getHand(numHand));
 					break;
 				case MoveType.STAND:
-					this.player.stand();
+					this.player.stand(this.player.getHand(numHand));
 					this.gameState = GameState.DEALER_TURN;
 					break;
 				case MoveType.DOUBLE_DOWN:
-					this.player.doubleDown(shoe);
+					this.player.doubleDown(this.shoe.drawCard(), this.player.getHand(numHand));
 					this.gameState = GameState.DEALER_TURN;
 					break;
 				case MoveType.SPLIT:
-					this.player.split(shoe);
+					this.player.split(this.shoe.drawCard(), this.shoe.drawCard(), this.player.getHand(numHand));
 					break;
 			}
 		}
@@ -58,33 +58,35 @@ public class Blackjack implements GameType {
 	
 	private void playDealerHand() {
 		while (this.dealer.isInGame()) {
-			this.dealer.hit(shoe);
+			this.dealer.hit(this.shoe.drawCard(), this.dealer.getHand(0));
 		}
 	}
 	
-	public OutcomeType verifyOutcome() {
+	public OutcomeType verifyOutcome(final int n) {
 		// declaration of local variables
-		OutcomeType outcome = null; // output for the outcome of the round
+		OutcomeType outcome = null; 						 // output for the outcome of the round
+		int playerScore = this.player.getHand(n).getScore(); // score of the player
+		int dealerScore = this.dealer.getHand(0).getScore(); // score of the dealer
 		
 		// in this case the player lose the bet and he doesn't win money
-		if (!((this.player.getHand().getHandState() == HandState.BUST) ||
-			((this.player.getHand().getScore() < this.dealer.getHand().getScore()) &&
-			 (this.player.getHand().getHandState() == HandState.STAND)))) {
+		if (!((this.player.getHand(n).isBust()) ||
+			((playerScore < dealerScore) &&
+			 (this.player.getHand(n).getHandState().equals(HandState.STAND))))) {
 			// in this case the player wins with a Blackjack and receives back the bet and a half
-			if ((this.player.getHand().getHandState() == HandState.BLACKJACK) &&
-				(this.dealer.getHand().getHandState() != HandState.BLACKJACK)) {
-				this.player.winTheBet((2 * this.player.getHand().getBet()) + (this.player.getHand().getBet() / 2));
+			if ((this.player.getHand(n).isBlackjack()) &&
+				(this.dealer.getHand(0).getHandState() != HandState.BLACKJACK)) {
+				this.player.winTheBet((2 * this.player.getHand(n).getBet()) + (this.player.getHand(n).getBet() / 2));
 				outcome = OutcomeType.PLAY_BJ;
 			}
 			// this is the push case, the player get back his bet
-			else if (this.player.getHand().getScore() == this.dealer.getHand().getScore()) {
-				this.player.winTheBet(this.player.getHand().getBet());
+			else if (playerScore == dealerScore) {
+				this.player.winTheBet(this.player.getHand(n).getBet());
 				outcome = OutcomeType.PUSH;
 			}
 			// in this case the player wins normally and receives back double of the bet
-			else if ((this.player.getHand().getScore() > this.dealer.getHand().getScore()) &&
-					 (this.player.getHand().getHandState() == HandState.STAND)) {
-				this.player.winTheBet(2 * this.player.getHand().getBet());
+			else if ((playerScore > dealerScore) &&
+					 (this.player.getHand(n).getHandState().equals(HandState.STAND))) {
+				this.player.winTheBet(2 * this.player.getHand(n).getBet());
 				outcome = OutcomeType.PLAY_WIN;
 			}
 		} else {

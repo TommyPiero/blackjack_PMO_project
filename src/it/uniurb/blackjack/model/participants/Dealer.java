@@ -1,9 +1,9 @@
 package it.uniurb.blackjack.model.participants;
 
+import it.uniurb.blackjack.model.cards.Card;
 import it.uniurb.blackjack.model.cards.Hand;
 import it.uniurb.blackjack.model.cards.HandImpl;
 import it.uniurb.blackjack.model.cards.HandState;
-import it.uniurb.blackjack.model.cards.Shoe;
 
 // class that create the model of the dealer of the game
 public class Dealer implements Participant {
@@ -21,25 +21,20 @@ public class Dealer implements Participant {
 		return(this.name);
 	}
 
-	public Hand getHand() {
+	public Hand getHand(final int n) {
 		return(this.hand);
 	}
 
-	// method that generates a new hand from zero
-	public Hand newHand(final Shoe shoe) {
+	// method that prepares the dealer for a new round
+	public void newRound() {
 		// initialization of the hand object
-		this.hand = new HandImpl(shoe, 0, false, 0);
-		// i take two cards
-		this.hand.takeCard(shoe);
-		this.hand.takeCard(shoe);
-		
-		return(this.hand);
+		this.hand = new HandImpl(0, false, 0);
 	}
 
 	// method that implements the hit move for the dealer
-	public void hit(Shoe shoe) {
-		if (this.hand.getHandState() == HandState.ACTIVE)
-			this.hand.takeCard(shoe);
+	public void hit(final Card card, final Hand hand) {
+		if (hand.getHandState() == HandState.ACTIVE)
+			hand.takeCard(card);
 		else {
 			throw new IllegalStateException("The hand is not more active");
 		}

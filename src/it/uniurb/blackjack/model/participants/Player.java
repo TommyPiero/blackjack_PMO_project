@@ -1,31 +1,32 @@
 package it.uniurb.blackjack.model.participants;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import it.uniurb.blackjack.model.cards.Card;
 import it.uniurb.blackjack.model.cards.Hand;
 import it.uniurb.blackjack.model.cards.HandImpl;
 import it.uniurb.blackjack.model.cards.HandState;
-import it.uniurb.blackjack.model.cards.Shoe;
 
 // class for the player of the game that implements participant
 public class Player implements Participant {
 	// declaration of the fields of the class
 	private String       playerName; // name of the player
-	private Hand         hand;	     // first hand of the player
-	private Hand         splitHand;  // hand from the split
+	private List<Hand>   hands;		 // two possible ends for the player (one from the split)
 	private double       balance;    // balance of the player for the bets
 	
 	// constructor of the class
 	public Player() {
-		this.hand = null;
-		this.splitHand = null;
+		this.hands = new LinkedList<Hand>();
 	}
 
 	public String getName() {
 		return(this.playerName);
 	}
 
-	public Hand getHand() {
-		return(this.hand);
+	public Hand getHand(final int n) {
+		// it returns the chosen number of the hand for the correct managements from other classes
+		return(this.hands.get(n));
 	}
 	
 	// getter method for the balance of the player
@@ -39,42 +40,46 @@ public class Player implements Participant {
 		this.balance = balance;
 	}
 	
-	// method that generates a new Hand
-	public Hand newHand(final Shoe shoe, final double bet, final boolean isFromSplit, final double perfPairBet) {
-		if (this.balance >= bet) {
-			this.hand = new HandImpl(shoe, bet, isFromSplit, perfPairBet);
-			this.balance -= bet;
-		}
-		else {
-			throw new IllegalStateException("Player has not enough money");
-		}
-		return(this.hand);
+	// method that prepares the player for the new round
+	public void newRound(final double bet, final double sideBet) {
+		// declaration of local variables
+		Hand newHand; // hand to add to the list
+		
+		// clearing the list of hands from the last round
+		this.hands.clear();
+		
+		// initializing the new hand to add to the list
+		newHand = new HandImpl(bet, false, sideBet);
+		// adding the new hand to the list
+		this.hands.add(newHand);
+		// deduction of the sum of the bets from the balance
+		this.balance -= (bet + sideBet);
 	}
 	
 	// method that implements the hit move
-	public void hit(final Shoe shoe) {
-		if (this.hand.getHandState() == HandState.ACTIVE)
-			this.hand.takeCard(shoe);
+	public void hit(final Card card, final Hand hand) {
+		if (hand.getHandState() == HandState.ACTIVE)
+			hand.takeCard(card);
 		else {
 			throw new IllegalStateException("The hand is not more active");
 		}
 	}
 	
 	// method that implements the stand move
-	public void stand() {
-		this.hand.stopCards();
+	public void stand(final Hand hand) {
+		hand.stopCards();
 	}
 	
 	// method that implements the double down move
-	public void doubleDown(final Shoe shoe) {
+	public void doubleDown(final Card card, final Hand hand) {
 		// if there is enough money a card is taken
-		if (this.balance >= this.hand.getBet()) {
-			if (this.hand.getHandState() == HandState.ACTIVE) {
-				this.hand.takeCard(shoe);
-				this.balance -= this.hand.getBet();
+		if (this.balance >= hand.getBet()) {
+			if (hand.getHandState().equals(HandState.ACTIVE)) {
+				hand.takeCard(card);
+				balance -= hand.getBet();
 				// if the new score is less than 21 setting the new state to stand 
-				if (this.hand.getHandState() != HandState.BUST)
-					this.hand.stopCards();
+				if (!(hand.isBust()))
+					hand.stopCards(); // possible error to check
 			}
 			else {
 				throw new IllegalStateException("The hand is not more active");
@@ -86,34 +91,30 @@ public class Player implements Participant {
 	}
 	
 	// method that implements the split move
-	public void split(final Shoe shoe) {
+	public void split(final Card cardOne, final Card cardTwo, final Hand hand) {
 		// if there is enough money, the hand is not already from a split and there are only two cards the hand is split
-		if (this.balance >= this.hand.getBet() &&
-			!this.hand.isFromSplit() &&
-			this.hand.getCards().size() == 2) {
-			if (this.hand.getHandState() == HandState.ACTIVE) {
+		if (this.balance >= hand.getBet() &&
+			!hand.isFromSplit() &&
+			hand.getCards().size() == 2) {
+			if (hand.getHandState() == HandState.ACTIVE) {
 				// declaration and initialization of local variables
-				Card firstCard = this.hand.getCards().get(0);  // first card of the original hand
-				Card secondCard = this.hand.getCards().get(1); // second card of the original hand
-				Hand firstHand = new HandImpl(shoe, this.hand.getBet(), true, 0); // new hand from the split (set on true )
+				Card secondCard = hand.getCards().get(1);              // second card of the original hand
+				Hand splitHand = new HandImpl(hand.getBet(), true, 0); // new hand from the split (set on true)
 
-				// initialization of the second hand from the split
-				this.splitHand = new HandImpl(shoe, this.hand.getBet(), true, 0);
+				// removing the second card from the first hand
+				hand.getCards().remove(1);
+				// adding the second card to the split hand
+				splitHand.takeCard(secondCard);
 			
 				// decreasing the player's balance
-				this.balance -= this.hand.getBet();
+				this.balance -= hand.getBet();
 			
-				// putting the first card of the original hand in the first split hand
-				// and putting the second card of the original hand in the second split hand
-				firstHand.getCards().add(firstCard);
-				this.splitHand.getCards().add(secondCard);
-			
-				// new first split hand takes the place of the original hand
-				this.hand = firstHand;
-			
-				// both the new split hands take a card from the shoe
-				this.splitHand.takeCard(shoe);
-				this.hand.takeCard(shoe);
+				// putting the cardOne in the original hand
+				// and putting the cardTwo in the second split hand
+				hand.takeCard(cardOne);
+				splitHand.takeCard(cardTwo);
+				// adding the new split hand to the list of hands
+				this.hands.add(splitHand);
 			}
 			else {
 				throw new IllegalStateException("The hand is not more active");

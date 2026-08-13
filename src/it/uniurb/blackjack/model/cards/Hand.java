@@ -33,5 +33,5 @@ public interface Hand {
 	public boolean isBlackjack();
 	
 	// method that add a card to the hand
-	public void takeCard(final Shoe shoe);
+	public void takeCard(final Card card);
 }

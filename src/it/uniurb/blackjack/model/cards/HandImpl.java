@@ -6,7 +6,6 @@ import java.util.List;
 public class HandImpl implements Hand {
 	// declaration of the fields of the class
 	private List<Card>   cards;         // cards of the hand
-	private int 	     score;         // score of the hand (considering BJ values)
 	private double       bet;           // bet linked to the hand
 	private double       perfPairBet;   // bet linked to the perfect pair bet, it can be 0
 	private HandState    handState;     // state of the hand (stand, blackjack, active, bust)
@@ -14,32 +13,13 @@ public class HandImpl implements Hand {
 	private PerfectPairs perfPairLevel; // bool value that record if a hand is a perfect pair
 	
 	// constructor of the class
-	public HandImpl(final Shoe shoe, final double bet, final boolean isFromSplit, final double perfPairBet) {
+	public HandImpl(final double bet, final boolean isFromSplit, final double perfPairBet) {
 		// initializing the list of cards and the score to 0
 		this.cards = new LinkedList<Card>();
-		
-		// taking the first two cards and changing the score
-		Card takenCard;
-		
-		for (int i = 0;
-			 (i < 2);
-			 i++) {
-			takenCard = shoe.drawCard();
-			this.cards.add(takenCard);
-		}
-		
-		// calculating the score of the first two cards
-		this.score = this.getScore();
-		
 		this.bet = bet;
 		this.perfPairBet = perfPairBet;
-		// setting the state of the hand to active if the score is not equal to 21
-		// otherwise setting the state to blackjack (only a 21 with two cards is a BJ)
-		if (this.score != 21)
-			this.handState = HandState.ACTIVE;
-		else
-			this.handState = HandState.BLACKJACK;
-		
+		// setting the state of the hand to active 
+		this.handState = HandState.ACTIVE;
 		this.isFromSplit = isFromSplit;
 		this.perfPairLevel = this.perfectPairCalc();
 	}
@@ -71,6 +51,11 @@ public class HandImpl implements Hand {
 		if (actualScore > 21)
 			this.handState = HandState.BUST;
 		
+		// if the hand has only two cards and the score is equal to 21, the hand is a blackjack
+		if (actualScore == 21 &&
+			this.cards.size() == 2)
+			this.handState = HandState.BLACKJACK;
+		
 		return(actualScore);
 	}
 	
@@ -101,8 +86,9 @@ public class HandImpl implements Hand {
 	// method that calculates and returns the type of the perfect pair (perfect, coloured, mixed, no perfect pair)
 	private PerfectPairs perfectPairCalc() {
 
-		// if the cards has the same nominal value is a perfect pair
-		if (this.cards.get(0).getNominalValue() == this.cards.get(0).getNominalValue()) {
+		// if the cards has the same nominal value and it doesn't come from a split is a perfect pair
+		if (this.cards.get(0).getNominalValue() == this.cards.get(0).getNominalValue() &&
+			!this.isFromSplit) {
 			// if the cards has the same suit is a perfect pair (25:1)
 			if (this.cards.get(0).getSuit() == this.cards.get(1).getSuit())
 				this.perfPairLevel = PerfectPairs.PERF_PAIR;
@@ -123,21 +109,16 @@ public class HandImpl implements Hand {
 	
 	public boolean isBust() {
 		// if the score of the hand is higher than 21 the hand is considered bust
-		return(this.handState.equals(HandState.BUST));
+		return(this.getScore() > 21);
 	}
 
 	public boolean isBlackjack() {
-		return(this.handState.equals(HandState.BLACKJACK));
+		return(this.getScore() == 21 &&
+			   this.cards.size() == 2);
 	}
 	
-	public void takeCard(final Shoe shoe) {
-		// declaration and initialization of local variables
-		Card cardToAdd = shoe.drawCard(); // card to add to the hand
-		
-		this.cards.add(cardToAdd);
-		this.score += cardToAdd.getBlackjackValue();
-		
-		// changing the score of the hand
-		this.score = this.getScore();
+	public void takeCard(final Card card) {
+		// adding the card to the hand
+		this.cards.add(card);
 	}
 }

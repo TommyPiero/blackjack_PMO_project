@@ -3,7 +3,6 @@ package it.uniurb.blackjack.view;
 import java.util.Scanner;
 
 import it.uniurb.blackjack.model.game.Blackjack;
-import it.uniurb.blackjack.model.game.OutcomeType;
 import it.uniurb.blackjack.model.participants.Participant;
 import it.uniurb.blackjack.model.participants.Player;
 
@@ -116,36 +115,17 @@ public class BlackjackTextView implements BlackjackView{
 	}
 	
 	public void showStartTable(final Player player, final Participant dealer) {
-		System.out.println("----------TABLE----------");
-		System.out.println("username: " + player.getName() + ", balance: " + player.getBalance());
-		System.out.println("The main bet is: " + player.getHand().getBet() + ", the side bet is: " + player.getHand().getSideBet());
-		// showing dealer starting card and covering one
-		System.out.println(dealer.getName() + ": " + dealer.getHand().getCards().get(0) + " + covered -> " + dealer.getHand().getCards().get(0));
-		// showing player starting cards
-		System.out.println(player.getName() + ": " + player.getHand().getCards().get(0) + " + " + player.getHand().getCards().get(1) + " -> " + player.getHand().getScore());
 	}
 
 	public void showSplit(Blackjack blackjack) {
-		System.out.println("----------TABLE----------");
-		System.out.println("username: " + blackjack.getPlayer().getName() + ", balance: " + blackjack.getPlayer().getBalance());
-		System.out.println("The main bet is: " + blackjack.getPlayer().getHand().getBet() + ", the side bet is: " + blackjack.getPlayer().getHand().getSideBet());
-		// showing dealer starting card and covering one
-		System.out.println(blackjack.getDealer().getName() + ": " + blackjack.getDealer().getHand().getCards().get(0) + " + covered -> " + blackjack.getDealer().getHand().getCards().get(0));
-		
-		System.out.println("First hand: " + blackjack.getPlayer().getHand().getCards().get(0));
-		System.out.println("Second hand: " + blackjack.getPlayer().getHand().getCards().get(1));
 	}
 	
 	// method that incrementally shows the new table with updates of player cards
 	public void showNextPlayCard(final Player player, final Participant dealer) {
-		this.showStartTable(player, dealer);
-		System.out.print(" + " + player.getHand().getCards().getLast() + " -> " + player.getHand().getScore());
 	}
 	
 	// method that incrementally shows the new table with updates of dealer cards
 	public void showNextDealCard(final Player player, final Participant dealer) {
-		this.showStartTable(player, dealer);
-		System.out.print(" + " + dealer.getHand().getCards().getLast() + " -> " + dealer.getHand().getScore());
 	}
 	
 	public String askMoves() {
@@ -170,24 +150,5 @@ public class BlackjackTextView implements BlackjackView{
 	}
 
 	public void showOutcome(final Blackjack blackjack) {
-		System.out.println("Outcome:");
-		System.out.println("Dealer points -> " + blackjack.getDealer().getHand().getScore());
-		System.out.println("Player points -> " + blackjack.getPlayer().getHand().getScore());
-		
-		// switch cases for the four types of outcome of a round
-		switch (blackjack.verifyOutcome()) {
-			case OutcomeType.PLAY_LOSE:
-				System.out.println("Dealer wins, player lost " + blackjack.getPlayer().getHand().getBet() + " chips");
-				break;
-			case OutcomeType.PLAY_WIN:
-				System.out.println("Dealer losy, player won " + (2 * blackjack.getPlayer().getHand().getBet()) + " chips");
-				break;
-			case OutcomeType.PUSH:
-				System.out.println("There is a draw, player receives back " + blackjack.getPlayer().getHand().getBet() + " chips");
-				break;
-			case OutcomeType.PLAY_BJ:
-				System.out.println("Dealer lost, player won with a Blackjack and received " + ((2 * blackjack.getPlayer().getHand().getBet()) + (blackjack.getPlayer().getHand().getBet() / 2)) + " chips");
-				break;
 		}
-	}
 }

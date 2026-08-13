@@ -8,5 +8,5 @@ public interface GameType {
 	public void startRound(final double bet, final double perfPairBet);
 	
 	// method that verifies the outcome of a play
-	public OutcomeType verifyOutcome();
+	public OutcomeType verifyOutcome(final int n);
 }
