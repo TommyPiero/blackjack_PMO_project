@@ -11,6 +11,12 @@ public class ShoeImpl implements Shoe {
 	
 	// constructor of the class
 	public ShoeImpl(final int numDecks) {
+		// throwing an exception if the number of decks doesn't respect the correct bounds (2-8)
+		if (numDecks < 2 ||
+			numDecks > 8)
+			throw new IllegalArgumentException("Not valid number of decks");
+		
+		
 		this.cards = new LinkedList<Card>();
 		
 		// creation of the shoe based on the number of the configuration
