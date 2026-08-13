@@ -13,5 +13,8 @@ public interface Card {
 	public CardColor getColor();
 	
 	// getter method for the BJ value of the card
-	public int getBlackjackValue(final int handScore);
+	public int getBlackjackValue();
+	
+	// getter that returns true if the card is an ace
+	public boolean isAnAce();
 }

@@ -48,7 +48,12 @@ public class CardImpl implements Card {
 		return(this.cardColor);
 	}
 	
-	public int getBlackjackValue(final int handScore) {
+	public int getBlackjackValue() {
 		return(this.blackjackValue);
+	}
+
+	@Override
+	public boolean isAnAce() {
+		return(this.nominalValue == 1);
 	}
 }

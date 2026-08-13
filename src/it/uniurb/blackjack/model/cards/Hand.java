@@ -27,7 +27,10 @@ public interface Hand {
 	public void stopCards();
 	
 	// getter method that returns if a hand is bust or not
-	public void isBust();
+	public boolean isBust();
+	
+	// getter method that returns if a hand is Blackjack or not
+	public boolean isBlackjack();
 	
 	// method that add a card to the hand
 	public void takeCard(final Shoe shoe);
