@@ -7,35 +7,53 @@ import java.util.List;
 // class that implements the interface Shoe
 public class ShoeImpl implements Shoe {
 	// declaration of fields of the class
-	private List<Deck> decks; // list of decks (from 2 to 8) that represent a shoe
+	private List<Card> cards; // list of cards, a set of decks (from 2 to 8) that represent a shoe
 	
 	// constructor of the class
 	public ShoeImpl(final int numDecks) {
-		this.decks = new LinkedList<Deck>();
+		this.cards = new LinkedList<Card>();
 		
 		// creation of the shoe based on the number of the configuration
 		for (int i = 0;
 			 (i < numDecks);
-			 i++)
-			this.decks.add(new DeckImpl());
-		
+			 i++) {
+			// all different 52 cards added to the deck for the correct number of times
+			for (Suit suit: Suit.values()) {
+				for (int j = 1;
+					 (j <= 13);
+					 j++) {
+					this.cards.add(new CardImpl(j, suit));
+				}
+			}
+		}
 		// shuffling the shoe
 		this.shuffleShoe();
 	}
 
-	public Deck getDeck(int n) {
-		return(this.decks.get(n));
-	}
-	
 	// private method that shuffle the shoe
 	private void shuffleShoe() {
 		// shuffling the decks between them
-		Collections.shuffle(decks);
+		Collections.shuffle(cards);
 	}
 
-	public Card giveCard() {
-		// taking the first card of the first deck of the shoe
-		return(this.decks.get(0).getCard());
+	public Card drawCard() {
+		// declaration of local variables
+		Card cardToGive;
+		
+		// if the shoe is empty it throws an error
+		if (this.cards.isEmpty())
+			throw new IllegalStateException("The shoe is empty");
+		// taking the first card of the deck
+		cardToGive = this.cards.get(0);
+				
+		// removing the card from the deck
+		this.cards.remove(0);
+				
+		return(cardToGive);
+	}
+
+	public int getRemainCards() {
+		return(this.cards.size());
 	}
 
 }

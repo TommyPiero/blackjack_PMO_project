@@ -25,7 +25,7 @@ public class HandImpl implements Hand {
 		for (int i = 0;
 			 (i < 2);
 			 i++) {
-			takenCard = shoe.giveCard();
+			takenCard = shoe.drawCard();
 			this.cards.add(takenCard);
 			this.score += takenCard.getBlackjackValue(this.score);
 		}
@@ -103,7 +103,7 @@ public class HandImpl implements Hand {
 
 	public void takeCard(final Shoe shoe) {
 		// declaration and initialization of local variables
-		Card cardToAdd = shoe.giveCard(); // card to add to the hand
+		Card cardToAdd = shoe.drawCard(); // card to add to the hand
 		
 		this.cards.add(cardToAdd);
 		this.score += cardToAdd.getBlackjackValue(this.score);
