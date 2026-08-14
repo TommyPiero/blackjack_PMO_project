@@ -124,8 +124,13 @@ public class Player implements Participant {
 		this.hands.add(splitHand);
 	}
 	
-	// method that permit to give back money to the player if he wins a hand
-	public void winTheBet(final double bet) {
-		this.balance += bet;
+	// method that permit to give back money to the player if he wins a hand using a multiplier
+	public void winTheBet(final double multiplier, final int numHand) {
+		this.balance += (this.getHand(numHand).getBet() * multiplier);
+	}
+	
+	// method that permit to give back money to the player if he wins a side bet using a multiplier
+	public void winTheSideBet(final int multiplier) {
+		this.balance += (this.getHand(0).getSideBet() * multiplier);
 	}
 }
