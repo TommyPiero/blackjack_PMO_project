@@ -31,7 +31,6 @@ public class ShoeImplTest {
 	// 2. Testing limit cases and error in the initialization of the shoe
 	@Test
 	public void testEdgesInitShoe() {
-		// initializing two shoes with an invalid number of decks, one higher and one lower
 		
 		// in both cases the constructor should throw an IllegalArgumentException
 		assertThrows(IllegalArgumentException.class, () -> {

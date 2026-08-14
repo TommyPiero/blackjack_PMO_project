@@ -26,11 +26,17 @@ public interface Hand {
 	// setter method for changing the state of the hand
 	public void stopCards();
 	
+	// getter method that calculates the level of a perfect pair
+	public PerfectPairs perfectPairCalc();
+	
 	// getter method that returns if a hand is bust or not
 	public boolean isBust();
 	
 	// getter method that returns if a hand is Blackjack or not
 	public boolean isBlackjack();
+	
+	// getter method that returns if a hand is stand or not
+	public boolean isStand();
 	
 	// method that add a card to the hand
 	public void takeCard(final Card card);

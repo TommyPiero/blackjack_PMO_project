@@ -14,6 +14,20 @@ public class HandImpl implements Hand {
 	
 	// constructor of the class
 	public HandImpl(final double bet, final boolean isFromSplit, final double perfPairBet) {
+		// checking possible errors in the initialization of the class
+		// throwing an exception if the bet is less or equal to zero
+		if (bet <= 0)
+			throw new IllegalArgumentException("The bet's value isn't enough, it must be higher than zero");
+		
+		// throwing an exception if the sideBet is less to zero
+		if (perfPairBet < 0)
+			throw new IllegalArgumentException("The side bet's value isn't enough, it must be higher or equal to zero");
+		
+		// throwing an exception if the hand is from a split and the sideBet is higher than 0
+		if (isFromSplit &&
+			perfPairBet > 0)
+			throw new IllegalArgumentException("The hand from a split can't have side bets");
+		
 		// initializing the list of cards and the score to 0
 		this.cards = new LinkedList<Card>();
 		this.bet = bet;
@@ -21,7 +35,7 @@ public class HandImpl implements Hand {
 		// setting the state of the hand to active 
 		this.handState = HandState.ACTIVE;
 		this.isFromSplit = isFromSplit;
-		this.perfPairLevel = this.perfectPairCalc();
+		this.perfPairLevel = null;
 	}
 
 	// method used for the calculation of the score and the management of hard and soft aces
@@ -52,9 +66,11 @@ public class HandImpl implements Hand {
 			this.handState = HandState.BUST;
 		
 		// if the hand has only two cards and the score is equal to 21, the hand is a blackjack
-		if (actualScore == 21 &&
-			this.cards.size() == 2)
-			this.handState = HandState.BLACKJACK;
+		if (actualScore == 21) {
+			this.handState = HandState.STAND;
+			if (this.cards.size() == 2)
+				this.handState = HandState.BLACKJACK;
+		}
 		
 		return(actualScore);
 	}
@@ -84,16 +100,23 @@ public class HandImpl implements Hand {
 	}
 
 	// method that calculates and returns the type of the perfect pair (perfect, coloured, mixed, no perfect pair)
-	private PerfectPairs perfectPairCalc() {
+	public PerfectPairs perfectPairCalc() {
 
+		// throwing an exception if the hand has more than two cards
+		if (this.cards.size() > 2)
+			throw new IllegalStateException("A perfect pair can't be calculated with more than two cards");
+		
+		// throwing an exception if the hand comes from a split
+		if (this.isFromSplit)
+			throw new IllegalStateException("A perfect pair can't be calculated on a hand that comes from a split");
+		
 		// if the cards has the same nominal value and it doesn't come from a split is a perfect pair
-		if (this.cards.get(0).getNominalValue() == this.cards.get(0).getNominalValue() &&
-			!this.isFromSplit) {
+		if (this.cards.get(0).getNominalValue() == this.cards.get(1).getNominalValue()) {
 			// if the cards has the same suit is a perfect pair (25:1)
 			if (this.cards.get(0).getSuit() == this.cards.get(1).getSuit())
 				this.perfPairLevel = PerfectPairs.PERF_PAIR;
 			// if the cards has the same suit is a coloured pair (12:1)
-			else if (this.cards.get(0).getColor().equals(this.cards.get(0).getColor()))
+			else if (this.cards.get(0).getColor().equals(this.cards.get(1).getColor()))
 				this.perfPairLevel = PerfectPairs.COLOU_PAIR;
 			// if the cards has only the same nominal value is a mixed perfect pair (6:1)
 			else
@@ -115,6 +138,11 @@ public class HandImpl implements Hand {
 	public boolean isBlackjack() {
 		return(this.getScore() == 21 &&
 			   this.cards.size() == 2);
+	}
+	
+	public boolean isStand() {
+		return((this.getScore() == 21) &&
+			   (this.cards.size() > 2));
 	}
 	
 	public void takeCard(final Card card) {
