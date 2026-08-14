@@ -8,7 +8,7 @@ import it.uniurb.blackjack.model.cards.CardImpl;
 import it.uniurb.blackjack.model.cards.Suit;
 import it.uniurb.blackjack.model.participants.Dealer;
 
-//implementation of a class for testing the correct behavior of CardImpl class 
+//implementation of a class for testing the correct behavior of Dealer class 
 public class DealerTest {
 	
 	// 1. Testing if a dealer is still in game or not
@@ -47,8 +47,8 @@ public class DealerTest {
 		// expecting the second dealer to be not more in game (score: 17, soft ace, but false configuration)
 		assertEquals(false, dealer2.isInGame(dealer2.hitOnSoft()));
 		// expecting the third dealer to be in game (score: 17, soft ace, true configuration)
-		assertEquals(false, dealer1.isInGame(dealer1.hitOnSoft()));
+		assertEquals(true, dealer3.isInGame(dealer3.hitOnSoft()));
 		// expecting the fourth dealer to be not more in game (score: 17, true configuration, doesn't have a soft ace)
-		assertEquals(false, dealer1.isInGame(dealer1.hitOnSoft()));
+		assertEquals(false, dealer4.isInGame(dealer4.hitOnSoft()));
 	}
 }
