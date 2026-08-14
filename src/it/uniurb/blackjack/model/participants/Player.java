@@ -42,6 +42,14 @@ public class Player implements Participant {
 	
 	// method that prepares the player for the new round
 	public void newRound(final double bet, final double sideBet) {
+		// throwing an exception if the bet is less or equal to zero
+		if (bet <= 0)
+			throw new IllegalArgumentException("The bet's value isn't enough, it must be higher than zero");
+				
+		// throwing an exception if the sideBet is less to zero
+		if (sideBet < 0)
+			throw new IllegalArgumentException("The side bet's value isn't enough, it must be higher or equal to zero");
+		
 		// declaration of local variables
 		Hand newHand; // hand to add to the list
 		

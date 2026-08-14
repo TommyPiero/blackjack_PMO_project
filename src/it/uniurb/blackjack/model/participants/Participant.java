@@ -1,6 +1,5 @@
 package it.uniurb.blackjack.model.participants;
 
-import it.uniurb.blackjack.model.cards.Card;
 import it.uniurb.blackjack.model.cards.Hand;
 
 public interface Participant {
@@ -11,7 +10,4 @@ public interface Participant {
 	
 	// getter method for the hand of the participant
 	public Hand getHand(final int n);
-	
-	// method for getting a card 
-	public void hit(final Card card, final Hand hand);
 }

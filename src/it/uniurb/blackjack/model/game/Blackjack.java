@@ -9,14 +9,15 @@ import it.uniurb.blackjack.model.participants.Player;
 // class that implements the logic of the game Blackjack
 public class Blackjack implements GameType {
 	// declaration of the fields of the class
-	private Dealer    dealer;    // the dealer of the table
-	private Player    player;    // the player of the game (single player)
-	private Shoe      shoe;      // generic shoe used for cards
-	private GameState gameState; // actual state of the game 
+	private Dealer         dealer;         // the dealer of the table
+	private Player         player;         // the player of the game (single player)
+	private Shoe           shoe;           // generic shoe used for cards
+	private GameState      gameState;      // actual state of the game 
+	private Configuration  configurations; // configurations of the game
 	
 	// constructor of the class
-	public Blackjack(final int numDecks) {
-		this.dealer = new Dealer();
+	public Blackjack(final int numDecks, final boolean hitOnSoft) {
+		this.dealer = new Dealer(hitOnSoft);
 		this.player = new Player();
 		this.shoe = new ShoeImpl(numDecks);
 		this.gameState = GameState.WAITING_BET;
@@ -57,8 +58,8 @@ public class Blackjack implements GameType {
 	}
 	
 	private void playDealerHand() {
-		while (this.dealer.isInGame()) {
-			this.dealer.hit(this.shoe.drawCard(), this.dealer.getHand(0));
+		while (this.dealer.isInGame(configurations.isDealerHitSoft())) {
+			this.dealer.hit(this.shoe.drawCard());
 		}
 	}
 	

@@ -20,6 +20,9 @@ public interface Hand {
 	// getter method for the state of the hand (stand, blackjack, active, bust)
 	public HandState getHandState();
 	
+	// getter method for the number of soft aces
+	public boolean hasSoftAce();
+	
 	// getter method for the derivation of the hand (from split or not)
 	public boolean isFromSplit();
 	

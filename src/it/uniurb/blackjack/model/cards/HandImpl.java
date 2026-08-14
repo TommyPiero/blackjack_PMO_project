@@ -8,21 +8,14 @@ public class HandImpl implements Hand {
 	private List<Card>   cards;         // cards of the hand
 	private double       bet;           // bet linked to the hand
 	private double       perfPairBet;   // bet linked to the perfect pair bet, it can be 0
+	private boolean      hasSoftAce;    // number of soft aces in the hand (aces that has value of 11)
 	private HandState    handState;     // state of the hand (stand, blackjack, active, bust)
 	private boolean      isFromSplit;   // bool value that record if a hand is from a split
 	private PerfectPairs perfPairLevel; // bool value that record if a hand is a perfect pair
 	
 	// constructor of the class
 	public HandImpl(final double bet, final boolean isFromSplit, final double perfPairBet) {
-		// checking possible errors in the initialization of the class
-		// throwing an exception if the bet is less or equal to zero
-		if (bet <= 0)
-			throw new IllegalArgumentException("The bet's value isn't enough, it must be higher than zero");
-		
-		// throwing an exception if the sideBet is less to zero
-		if (perfPairBet < 0)
-			throw new IllegalArgumentException("The side bet's value isn't enough, it must be higher or equal to zero");
-		
+		// checking possible errors in the initialization of the class		
 		// throwing an exception if the hand is from a split and the sideBet is higher than 0
 		if (isFromSplit &&
 			perfPairBet > 0)
@@ -32,6 +25,7 @@ public class HandImpl implements Hand {
 		this.cards = new LinkedList<Card>();
 		this.bet = bet;
 		this.perfPairBet = perfPairBet;
+		this.hasSoftAce = false;
 		// setting the state of the hand to active 
 		this.handState = HandState.ACTIVE;
 		this.isFromSplit = isFromSplit;
@@ -72,6 +66,10 @@ public class HandImpl implements Hand {
 				this.handState = HandState.BLACKJACK;
 		}
 		
+		// setting the soft ace to true if there is at least one ace in this section
+		if (numAce > 0)
+			this.hasSoftAce = true;
+		
 		return(actualScore);
 	}
 	
@@ -89,6 +87,10 @@ public class HandImpl implements Hand {
 	
 	public HandState getHandState() {
 		return(this.handState);
+	}
+	
+	public boolean hasSoftAce() {
+		return(this.hasSoftAce);
 	}
 	
 	public boolean isFromSplit() {

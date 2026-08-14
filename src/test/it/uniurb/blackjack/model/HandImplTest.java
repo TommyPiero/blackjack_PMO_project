@@ -205,32 +205,47 @@ public class HandImplTest {
 		assertEquals(PerfectPairs.NO_PAIR, hand4.perfectPairCalc());
 	}
 	
-	// 7. Testing possible exceptions and edge cases in the constructor of the class
+	// 7. Testing the count of the soft aces
+	@Test
+	public void testCountSoftAces() {
+		// initializing different hands
+		Hand hand1 = new HandImpl(10.0, false, 0.0);
+		Hand hand2 = new HandImpl(200.0, false, 8.0);
+		Hand hand3 = new HandImpl(20.0, false, 4.0);
+		
+		// giving cards to the hands
+		hand1.takeCard(new CardImpl(1, Suit.CLUBS));
+		hand1.takeCard(new CardImpl(6, Suit.HEARTS));
+		hand2.takeCard(new CardImpl(1, Suit.SPADES));
+		hand2.takeCard(new CardImpl(9, Suit.DIAMONDS));
+		hand2.takeCard(new CardImpl(6, Suit.DIAMONDS));
+		hand3.takeCard(new CardImpl(1, Suit.HEARTS));
+		hand3.takeCard(new CardImpl(1, Suit.SPADES));
+		
+		// calculating the score and the aces
+		hand1.getScore();
+		hand2.getScore();
+		hand3.getScore();
+		
+		// checking if a hand has a soft hand or not
+		// expecting a soft ace in the first hand
+		assertEquals(true, hand1.hasSoftAce());
+		// not expecting a soft ace in the second hand
+		assertEquals(false, hand2.hasSoftAce());
+		// expecting a soft ace in the third hand
+		assertEquals(true, hand3.hasSoftAce());
+	}
+	
+	// 8. Testing possible exceptions and edge cases in the constructor of the class
 	@Test
 	public void testEdgesInitHand() {
-		// in all the cases the constructor of the class has to throw an IllegalArgumentException
-		
-		// initializing hands with an invalid parameter for bet
-		assertThrows(IllegalArgumentException.class, () -> {
-			new HandImpl(0.0, false, 5.0);
-		});
-		
-		assertThrows(IllegalArgumentException.class, () -> {
-			new HandImpl(-33.0, true, 0.0);
-		});
-		
-		// initializing a hand with an invalid parameter for side bet
-		assertThrows(IllegalArgumentException.class, () -> {
-			new HandImpl(5.0, false, -1.0);
-		});
-		
 		// initializing a hand that comes from a split and has a parameter for the side bet higher than 0
 		assertThrows(IllegalArgumentException.class, () -> {
 			new HandImpl(10.50, true, 2.0);
 		});
 	}
 	
-	// 8. Testing possible exception in the calculation of the perfect pairs
+	// 9. Testing possible exception in the calculation of the perfect pairs
 	@Test
 	public void testEdgesPerfPairs() {
 		// in all the cases the constructor of the class has to throw an IllegalStateException
