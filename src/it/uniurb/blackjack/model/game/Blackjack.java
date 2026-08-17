@@ -59,13 +59,9 @@ public class Blackjack implements GameType {
 				break;
 			case MoveType.STAND:
 				this.player.stand(this.player.getHand(numHand));
-				// after a stand move the turn passes to the dealer
-				this.gameState = GameState.DEALER_TURN;
 				break;
 			case MoveType.DOUBLE_DOWN:
 				this.player.doubleDown(this.shoe.drawCard(), this.player.getHand(numHand));
-				// after a double down move the turn passes to the dealer
-				this.gameState = GameState.DEALER_TURN;
 				break;
 			case MoveType.SPLIT:
 				// throwing an exception if the hand that require a split comes from a split
@@ -74,6 +70,11 @@ public class Blackjack implements GameType {
 				this.player.split(this.shoe.drawCard(), this.shoe.drawCard(), this.player.getHand(numHand));
 				break;
 		}
+	}
+	
+	// method that change the turn from player to dealer
+	public void changeDealerTurn() {
+		this.gameState = GameState.DEALER_TURN;
 	}
 	
 	public void playDealerHand() {
@@ -149,5 +150,10 @@ public class Blackjack implements GameType {
 	// getter method for the shoe
 	public Shoe getShoe() {
 		return(this.shoe);
+	}
+	
+	// getter method that return if a round is finished or not
+	public boolean isFinished() {
+		return(this.gameState.equals(GameState.FINISHED));
 	}
 }

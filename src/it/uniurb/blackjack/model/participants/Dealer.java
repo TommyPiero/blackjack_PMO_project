@@ -72,4 +72,9 @@ public class Dealer implements Participant {
 		return(isInGame);
 		
 	}
+
+	public int getNumHands() {
+		// dealer can only have one hand
+		return(1);
+	}
 }

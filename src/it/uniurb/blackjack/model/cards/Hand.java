@@ -41,6 +41,9 @@ public interface Hand {
 	// getter method that returns if a hand is stand or not
 	public boolean isStand();
 	
+	// method that shows if a hand is still in game
+	public boolean isInGame(); 
+	
 	// method that add a card to the hand
 	public void takeCard(final Card card);
 }

@@ -33,6 +33,11 @@ public class Player implements Participant {
 		return(this.balance);
 	}
 	
+	// getter for the number of hands
+	public int getNumHands() {
+		return(this.hands.size());
+	}
+	
 	// method that initialize a new player
 	public void initPlayer(final String name, final double balance) {
 		this.playerName = name;

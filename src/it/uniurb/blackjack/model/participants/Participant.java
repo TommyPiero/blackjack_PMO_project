@@ -10,4 +10,7 @@ public interface Participant {
 	
 	// getter method for the hand of the participant
 	public Hand getHand(final int n);
+	
+	// getter methods for the number of hands
+	public int getNumHands();
 }

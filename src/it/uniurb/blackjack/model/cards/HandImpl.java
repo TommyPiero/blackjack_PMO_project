@@ -147,6 +147,10 @@ public class HandImpl implements Hand {
 			   (this.cards.size() > 2));
 	}
 	
+	public boolean isInGame() {
+		return(this.handState.equals(HandState.ACTIVE));
+	}
+	
 	public void takeCard(final Card card) {
 		// adding the card to the hand
 		this.cards.add(card);

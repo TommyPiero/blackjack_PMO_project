@@ -52,8 +52,12 @@ public class CardImpl implements Card {
 		return(this.blackjackValue);
 	}
 
-	@Override
 	public boolean isAnAce() {
 		return(this.nominalValue == 1);
+	}
+	
+	// overriding toString method for the print in the command line version
+	public String toString() {
+		return(this.nominalValue + " of " + this.cardSuit.toString());
 	}
 }
