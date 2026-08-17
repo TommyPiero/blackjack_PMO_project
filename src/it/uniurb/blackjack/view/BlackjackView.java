@@ -1,6 +1,6 @@
 package it.uniurb.blackjack.view;
 
-import it.uniurb.blackjack.model.game.Blackjack;
+import it.uniurb.blackjack.model.game.OutcomeType;
 import it.uniurb.blackjack.model.participants.Participant;
 import it.uniurb.blackjack.model.participants.Player;
 
@@ -17,15 +17,24 @@ public interface BlackjackView {
 	// method that shows and asks chips (5, 10, 25, 50) for the bet
 	public double askChips();
 	
-	// method that shows the table (cards of player and dealer)
-	public void showStartTable(final Player player, final Participant dealer);
+	// method that asks a side bet to the player
+	public double askSideBet();
 	
-	// method that shows the table after a split
-	public void showSplit(final Blackjack blackjack);
+	// method that shows the table (cards of player and dealer)
+	public void showStartTable(final Participant player, final Participant dealer);
+
+	// method that incrementally shows the new table with updates of cards
+	public void showNextTable(final Participant player, final Participant dealer);
 	
 	// method that shows and asks the possible moves
 	public String askMoves();
 	
+	// method that shows the outcome of sideBets
+	public void showSideBet(final Player player);
+	
 	// method that shows the outcome of the round
-	public void showOutcome(final Blackjack blackjack);
+	public void showOutcome(final OutcomeType outcome);
+	
+	// method that asks the player if he wants to play another round
+	public boolean askForNewRound();
 }
