@@ -6,7 +6,4 @@ public interface BlackjackController {
 	
 	// method for starting a game
 	public void startGame();
-	
-	// method that ends a game
-	public void endGame();
 }
