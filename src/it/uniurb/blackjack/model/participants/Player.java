@@ -70,6 +70,9 @@ public class Player implements Participant {
 	public void hit(final Card card, final Hand hand) {
 		// taking a new card for the dealer
 		hand.takeCard(card);
+		
+		// checking if the hand is bust and setting it
+		if (hand.isBust());
 	}
 	
 	// method that implements the stand move
@@ -81,7 +84,7 @@ public class Player implements Participant {
 	// method that implements the double down move
 	public void doubleDown(final Card card, final Hand hand) {
 		// if there is enough money a card is taken
-		if (this.balance >= hand.getBet()) {
+		if (this.balance < hand.getBet()) {
 			throw new IllegalStateException("Player has not enough money");
 		}
 		// taking a new card and decreasing the balance of the value of the bet
@@ -95,33 +98,35 @@ public class Player implements Participant {
 	// method that implements the split move
 	public void split(final Card cardOne, final Card cardTwo, final Hand hand) {
 		// throwing an exception if there is not enough money
-		if (this.balance >= hand.getBet())
+		if (this.balance < hand.getBet())
 			throw new IllegalStateException("Player has not enough money");
 		// throwing an exception if the hand comes from a split
 		if (hand.isFromSplit())
 			throw new IllegalStateException("Can't split an hand that comes from a split");
 		// throwing an exception if the hand has more than two cards
-		if (hand.getCards().size() == 2)
+		if (hand.getCards().size() != 2)
 			throw new IllegalStateException("Can't split an hand with more than two cards");
 
 		// declaration and initialization of local variables
-		Card secondCard = hand.getCards().get(1);              // second card of the original hand
-		Hand splitHand = new HandImpl(hand.getBet(), true, 0); // new hand from the split (set on true)
-
-		// removing the second card from the first hand
-		hand.getCards().remove(1);
-		// adding the second card to the split hand
-		splitHand.takeCard(secondCard);
-			
+		Card firstCard = hand.getCards().get(0);			    // first card of the original hand
+		Card secondCard = hand.getCards().get(1);               // second card of the original hand
+		Hand splitHand1 = new HandImpl(hand.getBet(), true, 0); // new first hand from the split (set on true)
+		Hand splitHand2 = new HandImpl(hand.getBet(), true, 0); // new second hand from the split (set on true)
+		
+		// adding the first card to the first split hand and the second card to the second split hand
+		splitHand1.takeCard(firstCard);
+		splitHand2.takeCard(secondCard);
 		// decreasing the player's balance
 		this.balance -= hand.getBet();
 			
 		// putting the cardOne in the original hand
 		// and putting the cardTwo in the second split hand
-		hand.takeCard(cardOne);
-		splitHand.takeCard(cardTwo);
-		// adding the new split hand to the list of hands
-		this.hands.add(splitHand);
+		splitHand1.takeCard(cardOne);
+		splitHand2.takeCard(cardTwo);
+		// clearing the list and adding the new two split hand to the list of hands
+		this.hands.clear();
+		this.hands.add(splitHand1);
+		this.hands.add(splitHand2);
 	}
 	
 	// method that permit to give back money to the player if he wins a hand using a multiplier
