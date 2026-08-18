@@ -23,7 +23,7 @@ public class BlackjackTextView implements BlackjackView {
 
 		// asking for the name, names with more than 30 chars are not accepted
 		do {
-			System.out.println("Insert your user name(max 30 chars): ");
+			System.out.println("\nInsert your user name(max 30 chars): ");
 			name = scanner.nextLine().trim();
 		} while (name.length() > 30);
 
@@ -37,7 +37,7 @@ public class BlackjackTextView implements BlackjackView {
 		boolean isCorrect = false; // bool for the check of a correct balance value
 
 		do {
-			System.out.println("Insert your balance(max 1000): ");
+			System.out.println("\nInsert your balance(max 1000): ");
 			input = scanner.nextLine().trim();
 
 			// changing the , with . for avoiding bugs
@@ -66,7 +66,7 @@ public class BlackjackTextView implements BlackjackView {
 		boolean isCorrect = false; // boolean for a correct input from the user
 		
 		do {
-			System.out.println("How many decks you want to use (between 2 and 8)?");
+			System.out.println("\nHow many decks you want to use (between 2 and 8)?");
 			input = scanner.nextLine().trim();
 			
 			try {
@@ -92,7 +92,7 @@ public class BlackjackTextView implements BlackjackView {
 		boolean isCorrect = false;  // boolean for a correct input from the user
 		
 		do {
-			System.out.println("Do you want a soft hit dealer? (He hits also with soft 17)");
+			System.out.println("\nDo you want a soft hit dealer(y/n)? (He hits also with soft 17)");
 			input = scanner.nextLine().trim();
 			
 			try {
@@ -112,14 +112,14 @@ public class BlackjackTextView implements BlackjackView {
 		return(softDealer);
 	}
 	
-	public double askChips() {
+	public double askChips(final Player player) {
 		// declaration of local variables
 		String  input;             // starting input in a string format
 		Double  chips = 0.0;       // number of chips bet
 		boolean isCorrect = false; // boolean for a correct input from the user
 
 		do {
-			System.out.println("How many chips you want to bet?");
+			System.out.println("\nHow many chips you want to bet? The remaining balance is: " + player.getBalance());
 			input = scanner.nextLine().trim();
 
 			// changing the , with . for avoiding bugs
@@ -148,7 +148,7 @@ public class BlackjackTextView implements BlackjackView {
 		boolean isCorrect = false; // boolean control for the number of chips
 
 		do {
-			System.out.println("How many chips you want to bet on the side bet(perfect pairs)?");
+			System.out.println("\nHow many chips you want to bet on the side bet(perfect pairs)?");
 			input = scanner.nextLine().trim();
 
 			// changing the , with . for avoiding bugs
@@ -176,7 +176,7 @@ public class BlackjackTextView implements BlackjackView {
 		boolean isCorrect = false; // boolean control for the number of chips
 		
 		do {
-			System.out.println("Do you want to insure(y/n)? It will cost half of the bet");
+			System.out.println("\nDo you want to insure(y/n)? It will cost half of the bet");
 			input = scanner.nextLine().trim();
 			
 			try {
@@ -201,6 +201,8 @@ public class BlackjackTextView implements BlackjackView {
 		System.out.println("         GAME TABLE        ");
 		System.out.println("===========================");
 		System.out.println("\nPlayer balance: " + player.getBalance() + "\n");
+		System.out.println("\nRound bet: " + player.getHand(0).getBet());
+		System.out.println("\nRound side bet: " + player.getHand(0).getSideBet() + "\n");
 		// printing dealer cards
 		System.out.println("Dealer cards:");
 		System.out.println("COVERED CARD");
@@ -318,7 +320,7 @@ public class BlackjackTextView implements BlackjackView {
 		}
 	}
 	
-	public void showOutcome(final OutcomeType outcome, final double wonBet, final Player player) {
+	public void showOutcome(final double wonBet, final OutcomeType outcome, final Player player) {
 		System.out.println("\n==========================");
 		System.out.println("          RESULTS          ");
 		System.out.println("===========================");
@@ -339,14 +341,14 @@ public class BlackjackTextView implements BlackjackView {
 		}
 	}
 
-	public boolean askForNewRound() {
+	public boolean askForNewRound(final Player player) {
 		// declaration of local variables
 		String  input;             // starting input in string format
 		boolean isCorrect = false; // bool for the check of a correct value
 		boolean wannaPlay = false; // flag for the player decision
 		
 		do {
-			System.out.println("Do you want to play another round(y/n)?");
+			System.out.println("Do you want to play another round(y/n)? The remaininig balance is: " + player.getBalance());
 			input = scanner.nextLine().trim();
 			
 			// checking if it's a correct input
@@ -362,5 +364,9 @@ public class BlackjackTextView implements BlackjackView {
 			wannaPlay = true;
 		
 		return(wannaPlay);
+	}
+
+	public void showErrorMessage(final String string) {
+		System.out.println(string);
 	}
 }	

@@ -87,6 +87,7 @@ public class Blackjack implements GameType {
 		while (this.dealer.isInGame(configurations.isDealerHitSoft())) {
 			this.dealer.hit(this.shoe.drawCard());
 		}
+		
 		this.gameState = GameState.FINISHED;
 	}
 	

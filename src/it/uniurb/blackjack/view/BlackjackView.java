@@ -15,7 +15,7 @@ public interface BlackjackView {
 	public double askBalance();
 	
 	// method that shows and asks chips (5, 10, 25, 50) for the bet
-	public double askChips();
+	public double askChips(final Player player);
 	
 	// method that asks a side bet to the player
 	public double askSideBet();
@@ -45,9 +45,11 @@ public interface BlackjackView {
 	public void showSideBet(final Player player, final double wonMoney);
 	
 	// method that shows the outcome of the round
-	public void showOutcome(final OutcomeType outcome, final double wonBet, final Player player);
+	public void showOutcome(final double wonBet, final OutcomeType outcome, final Player player);
 	
 	// method that asks the player if he wants to play another round
-	public boolean askForNewRound();
-	
+	public boolean askForNewRound(final Player player);
+
+	// method used for showing error messages to the user
+	public void showErrorMessage(final String string);
 }

@@ -30,48 +30,82 @@ public class BlackjackTextController implements BlackjackController {
 		
 		do {
 			// starting a new round for dealer and player
-			this.blackjack.startRound(this.view.askChips(), this.view.askSideBet());
+			// getting the values of bet and side bet from the view catching possible errors
+			
+			// declaration of local variables
+			double  mainBet = 0.0;          // chips for the normal bet
+			double  sideBet = -1.0;         // chips for the side bet
+			boolean isBetValid = false; // boolean value, checks if input is valid or not
+			
+			// getting main bet value
+			while (!isBetValid) {
+				try {
+					// asking for the main bet and the side bet
+					mainBet = this.view.askChips(this.blackjack.getPlayer());
+					sideBet = this.view.askSideBet();
+					// setting a new round with the checked bets
+					this.blackjack.startRound(mainBet, sideBet);
+					isBetValid = true;
+				} catch (IllegalArgumentException e) {
+					this.view.showErrorMessage("Error: " + e.getMessage());
+				}
+			}
+			
 			// printing the first version of the table
 			this.view.showStartTable(this.blackjack.getPlayer(), this.blackjack.getDealer());
 			// calculating and printing the outcome of the side bet
 			this.view.showSideBet(this.blackjack.getPlayer(), this.blackjack.verifySideBet());
 			// asking for the insurance if the dealer as an ace as uncovered card
 			if (this.blackjack.getDealer().getUncoveredCard().isAnAce()) {
-				if (this.view.askInsurance()) {
-					this.blackjack.getPlayer().insure();
-					this.blackjack.verifyInsurance();
-				}
+				try {
+					if (this.view.askInsurance()) {
+						this.blackjack.getPlayer().insure();
+						this.blackjack.verifyInsurance();
+					}
+				} catch (IllegalStateException e) {
+						this.view.showErrorMessage("Error: " + e.getMessage() + "\n you wont be able to insure!");
+					}
 			}
+
 			for (int i = 0;
 				 (i < this.blackjack.getPlayer().getNumHands());
 				 i++) {
 				while (this.blackjack.getPlayer().getHand(i).isInGame()) {
-					String   input; // next move in string format
-					MoveType move = null;  // next player move
-					input = this.view.askMoves();
-					// selecting the correct move based on the string
-					switch (input) {
-						case "+":
-							move = MoveType.HIT;
-							break;
-						case "-":
-							move = MoveType.STAND;
-							break;
-						case "x":
-							move = MoveType.DOUBLE_DOWN;
-							break;
-						case "/":
-							move = MoveType.SPLIT;
-							break;
-						default:
-							break;
+					String   input;               // next move in string format
+					MoveType move = null;         // next player move
+					boolean  isMoveValid = false; // bool that says if a move is valid or not
+					
+					while (!isMoveValid) {
+						try {
+							input = this.view.askMoves();
+							// selecting the correct move based on the string
+							switch (input) {
+								case "+":
+									move = MoveType.HIT;
+									break;
+								case "-":
+									move = MoveType.STAND;
+									break;
+								case "x":
+									move = MoveType.DOUBLE_DOWN;
+									break;
+								case "/":
+									move = MoveType.SPLIT;
+									break;
+								default:
+									break;
+							}
+							// making the move
+							this.blackjack.makeMove(move, i);
+							isMoveValid = true;
+						} catch (IllegalStateException e) {
+							this.view.showErrorMessage("Error: " + e.getMessage());
+						}
 					}
-					// making the move
-					this.blackjack.makeMove(move, i);
 					// showing the updated table
-					this.view.showNextTable(this.blackjack.getPlayer(), this.blackjack.getDealer());
+					this.view.showNextTable(this.blackjack.getPlayer(), this.blackjack.getDealer());					
 				}
-			} 
+			}
 			// changing the turn
 			this.blackjack.changeDealerTurn();
 			
@@ -84,10 +118,10 @@ public class BlackjackTextController implements BlackjackController {
 			for (int i = 0;
 				 (i < this.blackjack.getPlayer().getNumHands());
 				 i++)
-				 this.view.showOutcome(this.blackjack.getOutcome(), this.blackjack.verifyFinalOutcome(i), this.blackjack.getPlayer());
+				 this.view.showOutcome(this.blackjack.verifyFinalOutcome(i), this.blackjack.getOutcome(), this.blackjack.getPlayer());
 			
 			// asking the player for a new game
-			playAgain = this.view.askForNewRound();
+			playAgain = this.view.askForNewRound(this.blackjack.getPlayer());
 		} while (playAgain &&
 				 this.blackjack.getPlayer().getBalance() > 0);
 	}
