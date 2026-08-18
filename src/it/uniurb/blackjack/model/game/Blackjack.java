@@ -148,6 +148,20 @@ public class Blackjack implements GameType {
 		return(wonMoney);
 	}
 	
+	// method that verifies the insurance of the player
+	public double verifyInsurance() {
+		// declaration of local variables
+		double winInsurance = 0; // money won from the insurance
+		
+		if (this.player.isInsured()) {
+			if (this.dealer.getHand(0).isBlackjack()) {
+				winInsurance = this.player.winInsurance();
+			}
+		}
+		
+		return(winInsurance);
+	}
+	
 	// getter method for the player
 	public Player getPlayer() {
 		return(this.player);

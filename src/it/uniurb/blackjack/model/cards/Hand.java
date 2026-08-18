@@ -46,4 +46,7 @@ public interface Hand {
 	
 	// method that add a card to the hand
 	public void takeCard(final Card card);
+	
+	// method that doubles the bet
+	public void doubleBet();
 }

@@ -26,6 +26,9 @@ public interface BlackjackView {
 	// method that asks the dealer type
 	public boolean askDealerType(); 
 	
+	// method that asks for insurance if the round permits it
+	public boolean askInsurance();
+	
 	// method that shows the table (cards of player and dealer)
 	public void showStartTable(final Player player, final Dealer dealer);
 
@@ -46,4 +49,5 @@ public interface BlackjackView {
 	
 	// method that asks the player if he wants to play another round
 	public boolean askForNewRound();
+	
 }

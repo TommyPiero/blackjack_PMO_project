@@ -155,4 +155,8 @@ public class HandImpl implements Hand {
 		// adding the card to the hand
 		this.cards.add(card);
 	}
+
+	public void doubleBet() {
+		this.bet *= 2;
+	}
 }

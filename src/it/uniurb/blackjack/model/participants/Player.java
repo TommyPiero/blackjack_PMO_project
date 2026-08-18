@@ -13,10 +13,12 @@ public class Player implements Participant {
 	private String       playerName; // name of the player
 	private List<Hand>   hands;		 // two possible ends for the player (one from the split)
 	private double       balance;    // balance of the player for the bets
+	private boolean      isInsured;  // boolean value for the insurance
 	
 	// constructor of the class
 	public Player() {
 		this.hands = new LinkedList<Hand>();
+		this.isInsured = false;
 	}
 
 	public String getName() {
@@ -38,10 +40,26 @@ public class Player implements Participant {
 		return(this.hands.size());
 	}
 	
+	// getter method for the insurance (the player is insured or not)
+	public boolean isInsured() {
+		return(this.isInsured);
+	}
+	
 	// method that initialize a new player
 	public void initPlayer(final String name, final double balance) {
 		this.playerName = name;
 		this.balance = balance;
+	}
+	
+	// setter method that permit the player to insure
+	public void insure() {
+		// checking if there's enough money
+		if (this.balance < this.hands.get(0).getBet() / 2)
+			throw new IllegalStateException("Not enough money for the insurance!");
+		
+		// paying half of the bet
+		this.balance -= (this.hands.get(0).getBet() / 2);
+		this.isInsured = true;
 	}
 	
 	// method that prepares the player for the new round
@@ -95,6 +113,8 @@ public class Player implements Participant {
 		// taking a new card and decreasing the balance of the value of the bet
 		hand.takeCard(card);
 		balance -= hand.getBet();
+		// doubling the original bet
+		hand.doubleBet();
 		// if the new score is less than 21 setting the new state to stand 
 		if (!(hand.isBust()))
 			hand.stopCards();
@@ -152,5 +172,15 @@ public class Player implements Participant {
 		this.balance += moneySideBet;
 		
 		return(moneySideBet);
+	}
+	
+	// method that permit to give back money to the player if he's insured and the dealer has a hand with a BJ
+	public double winInsurance() {
+		// declaration of local variables
+		double moneyInsurance = (this.getHand(0).getBet() * 2); // money won from the insurance
+	
+		this.balance += moneyInsurance;
+		
+		return(moneyInsurance);
 	}
 }

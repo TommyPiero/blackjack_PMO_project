@@ -168,7 +168,34 @@ public class BlackjackTextView implements BlackjackView {
 
 		return (chipsOnSideBet);
 	}
-
+	
+	public boolean askInsurance() {
+		// declaration of local variables
+		String  input;             // starting input from the user
+		boolean isInsured = false; // boolean output that control if the player wants to insure
+		boolean isCorrect = false; // boolean control for the number of chips
+		
+		do {
+			System.out.println("Do you want to insure(y/n)? It will cost half of the bet");
+			input = scanner.nextLine().trim();
+			
+			try {
+				if (input.equals("y") ||
+					input.equals("n"))
+					isCorrect = true;
+				else
+					System.out.println("The answer is not valid retry");
+			} catch (NumberFormatException e) {
+				System.out.println("Error: not valid value inserted");
+			}
+		} while (!isCorrect);
+		
+		if (input.equals("y"))
+			isInsured = true;
+		
+		return(isInsured);
+	}
+	
 	public void showStartTable(final Player player, final Dealer dealer) {
 		System.out.println("\n==========================");
 		System.out.println("         GAME TABLE        ");

@@ -35,6 +35,13 @@ public class BlackjackTextController implements BlackjackController {
 			this.view.showStartTable(this.blackjack.getPlayer(), this.blackjack.getDealer());
 			// calculating and printing the outcome of the side bet
 			this.view.showSideBet(this.blackjack.getPlayer(), this.blackjack.verifySideBet());
+			// asking for the insurance if the dealer as an ace as uncovered card
+			if (this.blackjack.getDealer().getUncoveredCard().isAnAce()) {
+				if (this.view.askInsurance()) {
+					this.blackjack.getPlayer().insure();
+					this.blackjack.verifyInsurance();
+				}
+			}
 			for (int i = 0;
 				 (i < this.blackjack.getPlayer().getNumHands());
 				 i++) {
