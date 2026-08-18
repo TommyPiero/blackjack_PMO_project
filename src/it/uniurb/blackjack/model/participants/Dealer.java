@@ -77,4 +77,14 @@ public class Dealer implements Participant {
 		// dealer can only have one hand
 		return(1);
 	}
+	
+	// getter method for the uncovered card of the dealer (the second one)
+	public Card getUncoveredCard() {
+		return(this.hand.getCards().get(1));
+	}
+	
+	// getter method for the covered card of the dealer (the first one)
+	public Card getCoveredCard() {
+		return(this.hand.getCards().get(0));
+	}
 }

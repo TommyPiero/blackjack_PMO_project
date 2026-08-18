@@ -15,16 +15,22 @@ public class Blackjack implements GameType {
 	private Shoe           shoe;           // generic shoe used for cards
 	private GameState      gameState;      // actual state of the game 
 	private Configuration  configurations; // configurations of the game
+	private OutcomeType    roundOutcome;   // outcome of a round
 	
 	// constructor of the class
-	public Blackjack(final int numDecks, final boolean hitOnSoft) {
-		this.dealer = new Dealer(hitOnSoft);
-		this.player = new Player();
-		this.shoe = new ShoeImpl(numDecks);
+	public Blackjack() {
 		this.gameState = GameState.WAITING_BET;
-		this.configurations = new ConfigurationImpl(numDecks, hitOnSoft);
+		this.roundOutcome = OutcomeType.PLAY_LOSE;
 	}
 
+	// setter method that configure the game
+	public void configureGame(final int numDecks, final boolean hitOnSoft) {
+		this.configurations = new ConfigurationImpl(numDecks, hitOnSoft);
+		this.dealer = new Dealer(hitOnSoft);
+		this.shoe = new ShoeImpl(numDecks);
+		this.player = new Player();
+	}
+	
 	public void startGame(final String playerName, final double balance) {
 		// initializing the player
 		this.player.initPlayer(playerName, balance);
@@ -85,56 +91,61 @@ public class Blackjack implements GameType {
 	}
 	
 	// method that verifies the outcome of the side bet
-	public void verifySideBet() {
+	public double verifySideBet() {
+		// declaration of local variables
+		double moneySideBet = 0; // money won from the side bet
+		
 		// if the hand is a perfect pair it pays 25:1 
 		switch(this.player.getHand(0).perfectPairCalc()) {
 		case PerfectPairs.PERF_PAIR: 
-			this.player.winTheSideBet(25);
+			moneySideBet = this.player.winTheSideBet(25);
 			break;
 		case PerfectPairs.COLOU_PAIR: 
-			this.player.winTheSideBet(12);
+			moneySideBet = this.player.winTheSideBet(12);
 			break;
 		case PerfectPairs.MIX_PAIR: 
-			this.player.winTheSideBet(6);
+			moneySideBet = this.player.winTheSideBet(6);
 			break;
 		case PerfectPairs.NO_PAIR: 
 			break;
 		default:
 			break;
 		}
+		
+		return(moneySideBet);
 	}
 	
-	public OutcomeType verifyFinalOutcome(final int n) {
+	public double verifyFinalOutcome(final int n) {
 		// declaration of local variables
-		OutcomeType outcome = OutcomeType.PLAY_LOSE; 		 // output for the outcome of the round
+		double wonMoney = 0.0;							     // money won from a round
 		int playerScore = this.player.getHand(n).getScore(); // score of the player
 		int dealerScore = this.dealer.getHand(0).getScore(); // score of the dealer
 		
 		// in this case the player lose the bet and he doesn't win money
 		if (this.player.getHand(n).isBust()) 
-			outcome = OutcomeType.PLAY_LOSE;
+			this.roundOutcome = OutcomeType.PLAY_LOSE;
 		// in this case the player wins with a Blackjack and receives back the bet and a half
 		else if ((this.player.getHand(n).isBlackjack()) &&
 				 !(this.dealer.getHand(0).isBlackjack())) {
-			this.player.winTheBet(2.5, n);
-			outcome = OutcomeType.PLAY_BJ;
+			wonMoney = this.player.winTheBet(2.5, n);
+			this.roundOutcome = OutcomeType.PLAY_BJ;
 		}
 		// this is the push case, the player get back his bet
 		else if (playerScore == dealerScore) {
-			this.player.winTheBet(1, n);
-			outcome = OutcomeType.PUSH;
+			wonMoney = this.player.winTheBet(1, n);
+			this.roundOutcome = OutcomeType.PUSH;
 		}
 		// in this case the player wins normally and receives back double of the bet
 		else if ((playerScore > dealerScore) ||
 				 (this.dealer.getHand(0).isBust())) {
-			this.player.winTheBet(2, n);
-			outcome = OutcomeType.PLAY_WIN;
+			wonMoney = this.player.winTheBet(2, n);
+			this.roundOutcome = OutcomeType.PLAY_WIN;
 		}
 		else {
-			outcome = OutcomeType.PLAY_LOSE;
+			this.roundOutcome = OutcomeType.PLAY_LOSE;
 		}
 		
-		return(outcome);
+		return(wonMoney);
 	}
 	
 	// getter method for the player
@@ -155,5 +166,10 @@ public class Blackjack implements GameType {
 	// getter method that return if a round is finished or not
 	public boolean isFinished() {
 		return(this.gameState.equals(GameState.FINISHED));
+	}
+	
+	// getter method that return the outcome of the round
+	public OutcomeType getOutcome() {
+		return(this.roundOutcome);
 	}
 }
