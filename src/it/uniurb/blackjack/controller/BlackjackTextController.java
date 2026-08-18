@@ -21,6 +21,9 @@ public class BlackjackTextController implements BlackjackController {
 		String playerName = this.view.askName(); // name of the player
 		double balance = this.view.askBalance(); // starting balance of the player
 		boolean playAgain = true;                // flag for the player if he wants to play another round
+		
+		// setting a new game
+		this.blackjack.configureGame(this.view.askNumDecks(), this.view.askDealerType());
 		// setting the player with this values
 		this.blackjack.getPlayer().initPlayer(playerName, balance);
 	
@@ -30,10 +33,8 @@ public class BlackjackTextController implements BlackjackController {
 			this.blackjack.startRound(this.view.askChips(), this.view.askSideBet());
 			// printing the first version of the table
 			this.view.showStartTable(this.blackjack.getPlayer(), this.blackjack.getDealer());
-			// calculating the results of the side bet
-			this.blackjack.verifySideBet();
-			// printing the outcome of the side bet
-			this.view.showSideBet(this.blackjack.getPlayer());
+			// calculating and printing the outcome of the side bet
+			this.view.showSideBet(this.blackjack.getPlayer(), this.blackjack.verifySideBet());
 			for (int i = 0;
 				 (i < this.blackjack.getPlayer().getNumHands());
 				 i++) {
@@ -53,7 +54,7 @@ public class BlackjackTextController implements BlackjackController {
 							move = MoveType.DOUBLE_DOWN;
 							break;
 						case "/":
-							move = MoveType.STAND;
+							move = MoveType.SPLIT;
 							break;
 						default:
 							break;
@@ -69,14 +70,14 @@ public class BlackjackTextController implements BlackjackController {
 			
 			// playing and showing the dealer turn
 			this.blackjack.playDealerHand();
-			this.view.showNextTable(this.blackjack.getPlayer(), this.blackjack.getDealer());
+			this.view.showFinalTable(this.blackjack.getPlayer(), this.blackjack.getDealer());
 			
 			
 			// evaluating the results and printing
 			for (int i = 0;
 				 (i < this.blackjack.getPlayer().getNumHands());
 				 i++)
-				 this.view.showOutcome(this.blackjack.verifyFinalOutcome(i));
+				 this.view.showOutcome(this.blackjack.getOutcome(), this.blackjack.verifyFinalOutcome(i), this.blackjack.getPlayer());
 			
 			// asking the player for a new game
 			playAgain = this.view.askForNewRound();

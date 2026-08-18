@@ -13,7 +13,7 @@ public class AppBlackjack {
 
 	public static void main(String[] args) {
 		// allocating the model
-		Blackjack model = new Blackjack(3, true);
+		Blackjack model = new Blackjack();
 		
 		// allocating the view
 		BlackjackView view = new BlackjackTextView();

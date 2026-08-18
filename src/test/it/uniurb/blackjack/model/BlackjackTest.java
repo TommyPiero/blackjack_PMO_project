@@ -21,10 +21,15 @@ public class BlackjackTest {
 	@Test
 	public void testFourMoves() {
 		// initialization of games
-		Blackjack bj1 = new Blackjack(4, true);
-		Blackjack bj2 = new Blackjack(5, true);
-		Blackjack bj3 = new Blackjack(6, false);
-		Blackjack bj4 = new Blackjack(3, false);
+		Blackjack bj1 = new Blackjack();
+		Blackjack bj2 = new Blackjack();
+		Blackjack bj3 = new Blackjack();
+		Blackjack bj4 = new Blackjack();
+		
+		bj1.configureGame(4, true);
+		bj2.configureGame(5, true);
+		bj3.configureGame(6, false);
+		bj4.configureGame(3, false);
 		
 		// initialization of players
 		bj1.getPlayer().initPlayer("first", 100.0);
@@ -85,10 +90,15 @@ public class BlackjackTest {
 	// 2. Test that verifies the correct pay out of the rounds (bets and side bets)
 	@Test
 	public void testPayment() {
-		Blackjack bj1 = new Blackjack(5, false);
-		Blackjack bj2 = new Blackjack(4, true);
-		Blackjack bj3 = new Blackjack(6, false);
-		Blackjack bj4 = new Blackjack(2, false);
+		Blackjack bj1 = new Blackjack();
+		Blackjack bj2 = new Blackjack();
+		Blackjack bj3 = new Blackjack();
+		Blackjack bj4 = new Blackjack();
+		
+		bj1.configureGame(5, false);
+		bj2.configureGame(4, true);
+		bj3.configureGame(6, false);
+		bj4.configureGame(2, false);
 		
 		// initializing name and balance of the player
 		bj1.getPlayer().initPlayer("first", 100.0);
@@ -144,17 +154,23 @@ public class BlackjackTest {
 		bj4.getPlayer().stand(bj4.getPlayer().getHand(0));
 		bj4.getDealer().hit(new CardImpl(7, Suit.SPADES));
 		
+		// verifying outcomes
+		bj1.verifyFinalOutcome(0);
+		bj2.verifyFinalOutcome(0);
+		bj3.verifyFinalOutcome(0);
+		bj4.verifyFinalOutcome(0);
+		
 		// checking the right outcome of the rounds
-		assertEquals(OutcomeType.PLAY_WIN, bj1.verifyFinalOutcome(0));
+		assertEquals(OutcomeType.PLAY_WIN, bj1.getOutcome());
 		assertEquals(118.0, bj1.getPlayer().getBalance());
 		
-		assertEquals(OutcomeType.PLAY_LOSE, bj2.verifyFinalOutcome(0));
+		assertEquals(OutcomeType.PLAY_LOSE, bj2.getOutcome());
 		assertEquals(222.0, bj2.getPlayer().getBalance());
 		
-		assertEquals(OutcomeType.PLAY_BJ, bj3.verifyFinalOutcome(0));
+		assertEquals(OutcomeType.PLAY_BJ, bj3.getOutcome());
 		assertEquals(345.0, bj3.getPlayer().getBalance());
 		
-		assertEquals(OutcomeType.PUSH, bj4.verifyFinalOutcome(0));
+		assertEquals(OutcomeType.PUSH, bj4.getOutcome());
 		assertEquals(422.0, bj4.getPlayer().getBalance());
 	}
 	
@@ -162,8 +178,11 @@ public class BlackjackTest {
 	@Test
 	public void testMovesExceptions() {
 		// initializing new bj objects
-		Blackjack bj1 = new Blackjack(4, true);
-		Blackjack bj2 = new Blackjack(6, false);
+		Blackjack bj1 = new Blackjack();
+		Blackjack bj2 = new Blackjack();
+		
+		bj1.configureGame(4, true);
+		bj2.configureGame(6, false);
 		
 		// initializing players
 		bj1.getPlayer().initPlayer("primo", 100.0);

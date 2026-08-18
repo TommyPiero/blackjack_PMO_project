@@ -5,7 +5,7 @@ import java.util.Scanner;
 import it.uniurb.blackjack.model.cards.Card;
 import it.uniurb.blackjack.model.cards.PerfectPairs;
 import it.uniurb.blackjack.model.game.OutcomeType;
-import it.uniurb.blackjack.model.participants.Participant;
+import it.uniurb.blackjack.model.participants.Dealer;
 import it.uniurb.blackjack.model.participants.Player;
 
 // class that implements the view of the model in a command line version
@@ -59,10 +59,63 @@ public class BlackjackTextView implements BlackjackView {
 		return(balance);
 	}
 
+	public int askNumDecks() {
+		// declaration of local variables
+		String  input;             // starting input in a string format
+		int     numDecks = 0;      // number of decks to use in the shoe
+		boolean isCorrect = false; // boolean for a correct input from the user
+		
+		do {
+			System.out.println("How many decks you want to use (between 2 and 8)?");
+			input = scanner.nextLine().trim();
+			
+			try {
+				numDecks = Integer.parseInt(input);
+
+				if (numDecks >= 2 &&
+					numDecks <= 8)
+					isCorrect = true;
+				else
+					System.out.println("The number of decks must be between 2 and 8!");
+			} catch (NumberFormatException e) {
+				System.out.println("Error: not valid number inserted");
+			}
+		} while (!isCorrect);
+		
+		return(numDecks);
+	}
+	
+	public boolean askDealerType() {
+		// declaration of local variables
+		String  input;              // starting input in a string format
+		boolean softDealer = false; // bool for the choice of the player about the dealer's type
+		boolean isCorrect = false;  // boolean for a correct input from the user
+		
+		do {
+			System.out.println("Do you want a soft hit dealer? (He hits also with soft 17)");
+			input = scanner.nextLine().trim();
+			
+			try {
+				if (input.equals("y") ||
+					input.equals("n"))
+					isCorrect = true;
+				else
+					System.out.println("The answer is not valid retry");
+			} catch (NumberFormatException e) {
+				System.out.println("Error: not valid value inserted");
+			}
+		} while (!isCorrect);
+		
+		if (input.equals("y"))
+			softDealer = true;
+		
+		return(softDealer);
+	}
+	
 	public double askChips() {
 		// declaration of local variables
-		String input; // starting input in a string format
-		Double chips = 0.0; // number of chips bet
+		String  input;             // starting input in a string format
+		Double  chips = 0.0;       // number of chips bet
 		boolean isCorrect = false; // boolean for a correct input from the user
 
 		do {
@@ -85,7 +138,7 @@ public class BlackjackTextView implements BlackjackView {
 
 		} while (!isCorrect);
 
-		return (chips);
+		return(chips);
 	}
 
 	public double askSideBet() {
@@ -116,18 +169,18 @@ public class BlackjackTextView implements BlackjackView {
 		return (chipsOnSideBet);
 	}
 
-	public void showStartTable(final Participant player, final Participant dealer) {
+	public void showStartTable(final Player player, final Dealer dealer) {
 		System.out.println("\n==========================");
 		System.out.println("         GAME TABLE        ");
 		System.out.println("===========================");
-		
+		System.out.println("\nPlayer balance: " + player.getBalance() + "\n");
 		// printing dealer cards
 		System.out.println("Dealer cards:");
-		for (Card card: dealer.getHand(0).getCards())
-			System.out.println(card.toString());
+		System.out.println("COVERED CARD");
+		System.out.println(dealer.getUncoveredCard().toString());
 		
 		// printing dealer score
-		System.out.println("Dealer score: " + dealer.getHand(0).getScore());
+		System.out.println("Dealer score: " + (dealer.getHand(0).getScore() - dealer.getCoveredCard().getBlackjackValue()) + "\n");
 		
 		// printing player cards
 		System.out.println("Player cards:");
@@ -135,21 +188,21 @@ public class BlackjackTextView implements BlackjackView {
 			System.out.println(card.toString());
 				
 		// printing player score
-		System.out.println("Player score: " + player.getHand(0).getScore());
+		System.out.println("Player score: " + player.getHand(0).getScore() + "\n");
 	}
 
-	public void showNextTable(final Participant player, final Participant dealer) {
+	public void showNextTable(final Player player, final Dealer dealer) {
 		System.out.println("\n==========================");
 		System.out.println("         GAME TABLE        ");
 		System.out.println("===========================");
 		
 		// printing dealer cards
 		System.out.println("Dealer cards:");
-		for (Card card: dealer.getHand(0).getCards())
-			System.out.println(card.toString());
+		System.out.println("Covered card");
+		System.out.println(dealer.getUncoveredCard().toString());
 		
 		// printing dealer score
-		System.out.println("Dealer score: " + dealer.getHand(0).getScore());
+		System.out.println("Dealer score: " + (dealer.getHand(0).getScore() - dealer.getCoveredCard().getBlackjackValue()) + "\n");
 		
 		// printing player cards
 		for (int i = 0;
@@ -164,9 +217,40 @@ public class BlackjackTextView implements BlackjackView {
 		for (int i = 0;
 			 (i < player.getNumHands());
 			 i++)
-				System.out.println("Player score of hand " + i + " is:" + player.getHand(i).getScore());
+				System.out.println("Player score of hand " + i + " is: " + player.getHand(i).getScore());
 	}
 
+	public void showFinalTable(final Player player, final Dealer dealer) {
+		System.out.println("\n==========================");
+		System.out.println("         GAME TABLE        ");
+		System.out.println("===========================");
+		
+		// printing dealer cards
+		System.out.println("Dealer cards:");
+		for (Card card : dealer.getHand(0).getCards()) {
+			System.out.println(card.toString());
+		}
+		
+		// printing dealer score
+		System.out.println("Dealer score: " + dealer.getHand(0).getScore() + "\n");
+		
+		// printing player cards
+		for (int i = 0;
+			 (i < player.getNumHands());
+			 i++) {
+			System.out.println("Player cards of hand " + i + ":");
+			for (Card card: player.getHand(i).getCards())
+				System.out.println(card.toString());
+		}
+				
+		// printing player score
+		for (int i = 0;
+			 (i < player.getNumHands());
+			 i++)
+				System.out.println("Player score of hand " + i + " is: " + player.getHand(i).getScore());
+
+	}
+	
 	public String askMoves() {
 		// declaration of local variables
 		String move; // move chose from the player
@@ -185,44 +269,50 @@ public class BlackjackTextView implements BlackjackView {
 		return (move);
 	}
 
-	public void showSideBet(final Player player) {
+	public void showSideBet(final Player player, final double wonMoney) {
 		// printing the correct outcome of perfect pair
 		switch (player.getHand(0).perfectPairCalc()) {
 			case PerfectPairs.PERF_PAIR:
 				System.out.println("It's a perfect pair!");
+				System.out.println("You won " + wonMoney + " chips!");
 				break;
 			case PerfectPairs.COLOU_PAIR:
 				System.out.println("It's a coloured pair!");
+				System.out.println("You won " + wonMoney + " chips!");
 				break;
 			case PerfectPairs.MIX_PAIR:
 				System.out.println("It's a mixed pair!");
+				System.out.println("You won " + wonMoney + " chips!");
 				break;
 			case PerfectPairs.NO_PAIR:
 				System.out.println("It's not a pair!");
+				System.out.println("You lost " + player.getHand(0).getSideBet() + " chips!");
 				break;
 		}
 	}
 	
-	public void showOutcome(final OutcomeType outcome) {
+	public void showOutcome(final OutcomeType outcome, final double wonBet, final Player player) {
+		System.out.println("\n==========================");
+		System.out.println("          RESULTS          ");
+		System.out.println("===========================");
 		// printing the correct outcome
 		switch (outcome) {
 			case OutcomeType.PLAY_WIN:
-				System.out.println("Player won!");
+				System.out.println("Player won " + wonBet + " chips!");
 				break;
 			case OutcomeType.PLAY_LOSE:
-				System.out.println("Player lost!");
+				System.out.println("Player lost " + player.getHand(0).getBet() + " chips!");
 				break;
 			case OutcomeType.PLAY_BJ:
-				System.out.println("Player won with a Blackjack!");
+				System.out.println("Player won with a Blackjack! He won " + wonBet + " chips!");
 				break;
 			case OutcomeType.PUSH:
-				System.out.println("It's a draw!");
+				System.out.println("It's a draw! Player receives back " + wonBet + " chips!");
 				break;
 		}
 	}
 
 	public boolean askForNewRound() {
-		
 		// declaration of local variables
 		String  input;             // starting input in string format
 		boolean isCorrect = false; // bool for the check of a correct value
