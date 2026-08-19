@@ -10,7 +10,7 @@ import it.uniurb.blackjack.model.participants.Player;
 import it.uniurb.blackjack.model.participants.PlayerImpl;
 
 // class that implements the logic of the game Blackjack
-public class Blackjack implements GameType {
+public class Blackjack implements SideBettedGameType {
 	// declaration of the fields of the class
 	private Dealer        dealer;         // the dealer of the table
 	private Player        player;         // the player of the game (single player)
