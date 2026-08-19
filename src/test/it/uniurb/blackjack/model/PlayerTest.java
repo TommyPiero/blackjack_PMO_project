@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-import it.uniurb.blackjack.model.participants.Player;
+import it.uniurb.blackjack.model.participants.PlayerImpl;
 
 //implementation of a class for testing the correct behavior of Player class 
 public class PlayerTest {
@@ -12,11 +12,11 @@ public class PlayerTest {
 	@Test
 	public void testEdgeNewPlayRound() {
 		// initializing different players
-		Player player1 = new Player();
-		Player player2 = new Player();
-		Player player3 = new Player();
-		Player player4 = new Player();
-		Player player5 = new Player();
+		PlayerImpl player1 = new PlayerImpl();
+		PlayerImpl player2 = new PlayerImpl();
+		PlayerImpl player3 = new PlayerImpl();
+		PlayerImpl player4 = new PlayerImpl();
+		PlayerImpl player5 = new PlayerImpl();
 		
 		// initializing names and balance of players
 		player1.initPlayer("Telemaco73", 500.0);

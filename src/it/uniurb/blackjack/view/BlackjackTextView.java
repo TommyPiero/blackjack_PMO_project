@@ -209,7 +209,7 @@ public class BlackjackTextView implements BlackjackView {
 		System.out.println(dealer.getUncoveredCard().toString());
 		
 		// printing dealer score
-		System.out.println("Dealer score: " + (dealer.getHand(0).getScore() - dealer.getCoveredCard().getBlackjackValue()) + "\n");
+		System.out.println("Dealer score: " + (dealer.getHand().getScore() - dealer.getCoveredCard().getBlackjackValue()) + "\n");
 		
 		// printing player cards
 		System.out.println("Player cards:");
@@ -231,7 +231,7 @@ public class BlackjackTextView implements BlackjackView {
 		System.out.println(dealer.getUncoveredCard().toString());
 		
 		// printing dealer score
-		System.out.println("Dealer score: " + (dealer.getHand(0).getScore() - dealer.getCoveredCard().getBlackjackValue()) + "\n");
+		System.out.println("Dealer score: " + (dealer.getHand().getScore() - dealer.getCoveredCard().getBlackjackValue()) + "\n");
 		
 		// printing player cards
 		for (int i = 0;
@@ -256,12 +256,12 @@ public class BlackjackTextView implements BlackjackView {
 		
 		// printing dealer cards
 		System.out.println("Dealer cards:");
-		for (Card card : dealer.getHand(0).getCards()) {
+		for (Card card : dealer.getHand().getCards()) {
 			System.out.println(card.toString());
 		}
 		
 		// printing dealer score
-		System.out.println("Dealer score: " + dealer.getHand(0).getScore() + "\n");
+		System.out.println("Dealer score: " + dealer.getHand().getScore() + "\n");
 		
 		// printing player cards
 		for (int i = 0;

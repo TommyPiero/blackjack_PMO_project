@@ -6,16 +6,17 @@ import java.util.List;
 
 // class that implements the interface Shoe
 public class ShoeImpl implements Shoe {
-	// declaration of fields of the class
+	
+	// declaration of class' fields
 	private List<Card> cards; // list of cards, a set of decks (from 2 to 8) that represent a shoe
 	
-	// constructor of the class
+	// class' constructor
 	public ShoeImpl(final int numDecks) {
+		
 		// throwing an exception if the number of decks doesn't respect the correct bounds (2-8)
 		if (numDecks < 2 ||
 			numDecks > 8)
 			throw new IllegalArgumentException("Not valid number of decks");
-		
 		
 		this.cards = new LinkedList<Card>();
 		
@@ -38,17 +39,18 @@ public class ShoeImpl implements Shoe {
 
 	// private method that shuffle the shoe
 	private void shuffleShoe() {
-		// shuffling the decks between them
+		// shuffling all the shoe's cards
 		Collections.shuffle(cards);
 	}
 
 	public Card drawCard() {
 		// declaration of local variables
-		Card cardToGive;
+		Card cardToGive; // card to be drawn and handed to the player
 		
-		// if the shoe is empty it throws an error
+		// throwing an error if the shoe is empty
 		if (this.cards.isEmpty())
-			throw new IllegalStateException("The shoe is empty");
+			throw new IllegalStateException("The shoe is empty!");
+		
 		// taking the first card of the deck
 		cardToGive = this.cards.get(0);
 				

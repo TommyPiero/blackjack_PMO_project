@@ -5,17 +5,19 @@ import it.uniurb.blackjack.model.cards.Shoe;
 import it.uniurb.blackjack.model.cards.ShoeImpl;
 import it.uniurb.blackjack.model.cards.PerfectPairs;
 import it.uniurb.blackjack.model.participants.Dealer;
+import it.uniurb.blackjack.model.participants.DealerImpl;
 import it.uniurb.blackjack.model.participants.Player;
+import it.uniurb.blackjack.model.participants.PlayerImpl;
 
 // class that implements the logic of the game Blackjack
 public class Blackjack implements GameType {
 	// declaration of the fields of the class
-	private Dealer         dealer;         // the dealer of the table
-	private Player         player;         // the player of the game (single player)
-	private Shoe           shoe;           // generic shoe used for cards
-	private GameState      gameState;      // actual state of the game 
-	private Configuration  configurations; // configurations of the game
-	private OutcomeType    roundOutcome;   // outcome of a round
+	private Dealer        dealer;         // the dealer of the table
+	private Player        player;         // the player of the game (single player)
+	private Shoe          shoe;           // generic shoe used for cards
+	private GameState     gameState;      // actual state of the game 
+	private Configuration configurations; // configurations of the game
+	private OutcomeType   roundOutcome;   // outcome of a round
 	
 	// constructor of the class
 	public Blackjack() {
@@ -26,9 +28,9 @@ public class Blackjack implements GameType {
 	// setter method that configure the game
 	public void configureGame(final int numDecks, final boolean hitOnSoft) {
 		this.configurations = new ConfigurationImpl(numDecks, hitOnSoft);
-		this.dealer = new Dealer(hitOnSoft);
+		this.dealer = new DealerImpl(hitOnSoft);
 		this.shoe = new ShoeImpl(numDecks);
-		this.player = new Player();
+		this.player = new PlayerImpl();
 	}
 	
 	public void startGame(final String playerName, final double balance) {
@@ -36,9 +38,9 @@ public class Blackjack implements GameType {
 		this.player.initPlayer(playerName, balance);
 	}
 	
-	public void startRound(final double bet, final double perfPairBet) {
+	public void startRound(final double bet, final double sideBet) {
 		// player gets a hand, isFromSplit set to false because is a new round
-		this.player.newRound(bet, perfPairBet);
+		this.player.newRound(bet, sideBet);
 		// dealer gets a hand
 		this.dealer.newRound();
 		// giving standard cards to player and dealer
@@ -120,14 +122,14 @@ public class Blackjack implements GameType {
 		// declaration of local variables
 		double wonMoney = 0.0;							     // money won from a round
 		int playerScore = this.player.getHand(n).getScore(); // score of the player
-		int dealerScore = this.dealer.getHand(0).getScore(); // score of the dealer
+		int dealerScore = this.dealer.getHand().getScore(); // score of the dealer
 		
 		// in this case the player lose the bet and he doesn't win money
 		if (this.player.getHand(n).isBust()) 
 			this.roundOutcome = OutcomeType.PLAY_LOSE;
 		// in this case the player wins with a Blackjack and receives back the bet and a half
 		else if ((this.player.getHand(n).isBlackjack()) &&
-				 !(this.dealer.getHand(0).isBlackjack())) {
+				 !(this.dealer.getHand().isBlackjack())) {
 			wonMoney = this.player.winTheBet(2.5, n);
 			this.roundOutcome = OutcomeType.PLAY_BJ;
 		}
@@ -138,7 +140,7 @@ public class Blackjack implements GameType {
 		}
 		// in this case the player wins normally and receives back double of the bet
 		else if ((playerScore > dealerScore) ||
-				 (this.dealer.getHand(0).isBust())) {
+				 (this.dealer.getHand().isBust())) {
 			wonMoney = this.player.winTheBet(2, n);
 			this.roundOutcome = OutcomeType.PLAY_WIN;
 		}
@@ -155,7 +157,7 @@ public class Blackjack implements GameType {
 		double winInsurance = 0; // money won from the insurance
 		
 		if (this.player.isInsured()) {
-			if (this.dealer.getHand(0).isBlackjack()) {
+			if (this.dealer.getHand().isBlackjack()) {
 				winInsurance = this.player.winInsurance();
 			}
 		}

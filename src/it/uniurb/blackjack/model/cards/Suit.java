@@ -1,6 +1,6 @@
 package it.uniurb.blackjack.model.cards;
 
-// enum for the suit of cards
+// enum for management of cards' suits
 public enum Suit {
 	HEARTS,
 	DIAMONDS,

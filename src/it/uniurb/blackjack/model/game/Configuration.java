@@ -1,5 +1,7 @@
 package it.uniurb.blackjack.model.game;
 
+// interface that declare the methods of the class configuration
+// this class will shape the concept of the configurations of the game
 public interface Configuration {
 	// declaration of methods
 	

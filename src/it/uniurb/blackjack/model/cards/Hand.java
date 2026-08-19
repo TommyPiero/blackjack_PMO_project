@@ -2,6 +2,8 @@ package it.uniurb.blackjack.model.cards;
 
 import java.util.List;
 
+// interface that declare the methods of the hand class
+// this class will shape the concept of hand, with the drawn cards and all the states belonging to them
 public interface Hand {
 	// declaration of methods
 	
@@ -20,16 +22,16 @@ public interface Hand {
 	// getter method for the state of the hand (stand, blackjack, active, bust)
 	public HandState getHandState();
 	
-	// getter method for the number of soft aces
+	// getter method for soft aces (the hand has a soft ace or not)
 	public boolean hasSoftAce();
 	
 	// getter method for the derivation of the hand (from split or not)
 	public boolean isFromSplit();
 	
-	// setter method for changing the state of the hand
+	// setter method for changing the state of the hand to stand
 	public void stopCards();
 	
-	// getter method that calculates the level of a perfect pair
+	// getter method that calculates the level of a perfect pair (perfect, colored, mixed, no perfect pair)
 	public PerfectPairs perfectPairCalc();
 	
 	// getter method that returns if a hand is bust or not

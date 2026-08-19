@@ -9,7 +9,9 @@ public class CardImpl implements Card {
 	private final int       blackjackValue; // BJ value of the card, calculated following game rules
 	private final CardColor cardColor;      // color of the card (red or black)        
 	
+	// class' constructor
 	public CardImpl(final int nominalValue, final Suit cardSuit) {
+		
 		this.nominalValue = nominalValue;
 		this.cardSuit = cardSuit;
 		
@@ -21,6 +23,12 @@ public class CardImpl implements Card {
 			this.cardColor = CardColor.BLACK;
 		
 		// management of the value of the card following the blackjack rules
+		
+		// throwing an exception if the nominal value is lower than 1 or higher than 13
+		if (this.nominalValue < 1 ||
+			this.nominalValue > 13)
+			throw new IllegalArgumentException("Not valid nominal value!");
+		
 		// cards from 2 to 10 maintain their nominal value
 		if (this.nominalValue >= 2 &&
 			this.nominalValue <= 10)
@@ -30,10 +38,8 @@ public class CardImpl implements Card {
 				 this.nominalValue <= 13)
 			this.blackjackValue = 10;
 		// ace is initialized as eleven, the management of hard or soft ace will be carried out by the hand
-		else if (this.nominalValue == 1)
-			this.blackjackValue = 11;
 		else
-			throw new IllegalArgumentException("Not valid nominal value");
+			this.blackjackValue = 11;
 	}
 	
 	public int getNominalValue() {
@@ -57,6 +63,7 @@ public class CardImpl implements Card {
 	}
 	
 	// overriding toString method for the print in the command line version
+	@Override
 	public String toString() {
 		return(this.nominalValue + " of " + this.cardSuit.toString());
 	}

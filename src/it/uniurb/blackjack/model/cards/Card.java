@@ -1,5 +1,7 @@
 package it.uniurb.blackjack.model.cards;
 
+// interface that declare the methods of the card class
+// this class will shape the concept of single card from a deck
 public interface Card {
 	// declaration of methods
 	

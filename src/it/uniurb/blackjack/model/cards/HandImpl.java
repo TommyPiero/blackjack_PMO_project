@@ -3,33 +3,37 @@ package it.uniurb.blackjack.model.cards;
 import java.util.LinkedList;
 import java.util.List;
 
+//implementation of the interface Hand
 public class HandImpl implements Hand {
-	// declaration of the fields of the class
+	
+	// class' fields declaration
 	private List<Card>   cards;         // cards of the hand
-	private double       bet;           // bet linked to the hand
-	private double       perfPairBet;   // bet linked to the perfect pair bet, it can be 0
+	private double       mainBet;       // main bet linked to the hand
+	private double       sideBet;       // bet linked to the side bet, it can be 0
 	private boolean      hasSoftAce;    // number of soft aces in the hand (aces that has value of 11)
 	private HandState    handState;     // state of the hand (stand, blackjack, active, bust)
 	private boolean      isFromSplit;   // bool value that record if a hand is from a split
 	private PerfectPairs perfPairLevel; // bool value that record if a hand is a perfect pair
 	
-	// constructor of the class
-	public HandImpl(final double bet, final boolean isFromSplit, final double perfPairBet) {
+	// class' constructor
+	public HandImpl(final double mainBet, final boolean isFromSplit, final double sideBet) {
 		// checking possible errors in the initialization of the class		
 		// throwing an exception if the hand is from a split and the sideBet is higher than 0
 		if (isFromSplit &&
-			perfPairBet > 0)
-			throw new IllegalArgumentException("The hand from a split can't have side bets");
+			sideBet > 0)
+			throw new IllegalArgumentException("The hand from a split can't have side bets!");
 		
-		// initializing the list of cards and the score to 0
+		// initializing the list of cards, the bets and the states
 		this.cards = new LinkedList<Card>();
-		this.bet = bet;
-		this.perfPairBet = perfPairBet;
+		this.mainBet = mainBet;
+		this.sideBet = sideBet;
+		// there are no cards in the hand, so there cannot be a soft ace
 		this.hasSoftAce = false;
 		// setting the state of the hand to active 
 		this.handState = HandState.ACTIVE;
 		this.isFromSplit = isFromSplit;
-		this.perfPairLevel = null;
+		// perfect pair level initialized as no pair because in the beginning there are no cards in the hand
+		this.perfPairLevel = PerfectPairs.NO_PAIR;
 	}
 
 	// method used for the calculation of the score and the management of hard and soft aces
@@ -50,20 +54,22 @@ public class HandImpl implements Hand {
 		// changing the value of aces while the score is more than 21 and there is at least one ace 
 		while (actualScore > 21 &&
 			   numAce > 0) {
-			// an hard ace (11) is switched in a soft ace (1) if the score is more than 21
+			// a soft ace (11) is switched in a hard ace (1) if the score is more than 21
 			actualScore -= 10;
 			numAce--;
 		}
 		
-		// if there are no more hard aces and the score is more than 21 the hand is considered bust
+		// if there are no more soft aces and the score is more than 21 the hand is considered bust
 		if (actualScore > 21)
 			this.handState = HandState.BUST;
 		
-		// if the hand has only two cards and the score is equal to 21, the hand is a blackjack
+		// if the hand has only two cards and the score is equal to 21, the hand is a blackjack 
 		if (actualScore == 21) {
-			this.handState = HandState.STAND;
-			if (this.cards.size() == 2)
+			if (this.cards.size() == 2) {
 				this.handState = HandState.BLACKJACK;
+			} else {
+				this.handState = HandState.STAND;
+			}
 		}
 		
 		// setting the soft ace to true if there is at least one ace in this section
@@ -74,11 +80,11 @@ public class HandImpl implements Hand {
 	}
 	
 	public double getBet() {
-		return(this.bet);
+		return(this.mainBet);
 	}
 	
 	public double getSideBet() {
-		return(this.perfPairBet);
+		return(this.sideBet);
 	}
 	
 	public List<Card> getCards() {
@@ -101,7 +107,6 @@ public class HandImpl implements Hand {
 		this.handState = HandState.STAND;
 	}
 
-	// method that calculates and returns the type of the perfect pair (perfect, coloured, mixed, no perfect pair)
 	public PerfectPairs perfectPairCalc() {
 
 		// throwing an exception if the hand has more than two cards
@@ -112,15 +117,15 @@ public class HandImpl implements Hand {
 		if (this.isFromSplit)
 			throw new IllegalStateException("A perfect pair can't be calculated on a hand that comes from a split");
 		
-		// if the cards has the same nominal value and it doesn't come from a split is a perfect pair
+		// if the cards has the same nominal value is a pair
 		if (this.cards.get(0).getNominalValue() == this.cards.get(1).getNominalValue()) {
-			// if the cards has the same suit is a perfect pair (25:1)
+			// if the cards has also the same suit is a perfect pair (25:1)
 			if (this.cards.get(0).getSuit() == this.cards.get(1).getSuit())
 				this.perfPairLevel = PerfectPairs.PERF_PAIR;
-			// if the cards has the same suit is a coloured pair (12:1)
+			// if the cards has the same color is a colored pair (12:1)
 			else if (this.cards.get(0).getColor().equals(this.cards.get(1).getColor()))
 				this.perfPairLevel = PerfectPairs.COLOU_PAIR;
-			// if the cards has only the same nominal value is a mixed perfect pair (6:1)
+			// if the cards has only the same nominal value is a mixed pair (6:1)
 			else
 				this.perfPairLevel = PerfectPairs.MIX_PAIR;
 		} 
@@ -157,6 +162,6 @@ public class HandImpl implements Hand {
 	}
 
 	public void doubleBet() {
-		this.bet *= 2;
+		this.mainBet *= 2;
 	}
 }

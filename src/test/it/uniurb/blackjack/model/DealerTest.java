@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import it.uniurb.blackjack.model.cards.CardImpl;
 import it.uniurb.blackjack.model.cards.Suit;
-import it.uniurb.blackjack.model.participants.Dealer;
+import it.uniurb.blackjack.model.participants.DealerImpl;
 
 //implementation of a class for testing the correct behavior of Dealer class 
 public class DealerTest {
@@ -15,10 +15,10 @@ public class DealerTest {
 	@Test
 	public void testIsDealerInGame() {
 		// initializing dealers with different hands
-		Dealer dealer1 = new Dealer(false);
-		Dealer dealer2 = new Dealer(false);
-		Dealer dealer3 = new Dealer(true);
-		Dealer dealer4 = new Dealer(true);
+		DealerImpl dealer1 = new DealerImpl(false);
+		DealerImpl dealer2 = new DealerImpl(false);
+		DealerImpl dealer3 = new DealerImpl(true);
+		DealerImpl dealer4 = new DealerImpl(true);
 		
 		// initializing hands for the dealers
 		dealer1.newRound();
