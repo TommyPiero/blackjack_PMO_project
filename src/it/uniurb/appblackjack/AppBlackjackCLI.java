@@ -6,10 +6,10 @@ import it.uniurb.blackjack.model.game.Blackjack;
 import it.uniurb.blackjack.view.BlackjackTextView;
 import it.uniurb.blackjack.view.BlackjackView;
 
-// Entry point of the Blackjack application.
+// Entry point of the Blackjack application in his CLI version.
 // This class is responsible for assembling the Model, View, and Controller
 // components and starting the game loop.
-public class AppBlackjack {
+public class AppBlackjackCLI {
 
 	public static void main(String[] args) {
 		// allocating the model
