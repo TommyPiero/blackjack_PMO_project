@@ -37,7 +37,7 @@ public class HandImpl implements Hand {
 	}
 
 	// method used for the calculation of the score and the management of hard and soft aces
-	public int getScore() {
+	private int calcScore() {
 		// declaration and initialization of local variables
 		int actualScore = 0; // actual score of the hand
 		int numAce = 0;      // number of aces in the hand
@@ -59,24 +59,34 @@ public class HandImpl implements Hand {
 			numAce--;
 		}
 		
-		// if there are no more soft aces and the score is more than 21 the hand is considered bust
-		if (actualScore > 21)
-			this.handState = HandState.BUST;
+		// setting the soft ace to true if there is at least one ace in this section
+		if (numAce > 0)
+			this.hasSoftAce = true;
 		
+		return(actualScore);
+	}
+
+	// method that updates the state of the hand
+	private void updateState() {
+		// declaration and initialization of local variables
+		int handScore = getScore(); // actual hand score
+		
+		// if there are no more soft aces and the score is more than 21 the hand is considered bust
+		if (handScore > 21)
+			this.handState = HandState.BUST;
+				
 		// if the hand has only two cards and the score is equal to 21, the hand is a blackjack 
-		if (actualScore == 21) {
+		if (handScore == 21) {
 			if (this.cards.size() == 2) {
 				this.handState = HandState.BLACKJACK;
 			} else {
 				this.handState = HandState.STAND;
 			}
 		}
-		
-		// setting the soft ace to true if there is at least one ace in this section
-		if (numAce > 0)
-			this.hasSoftAce = true;
-		
-		return(actualScore);
+	}
+	
+	public int getScore() {
+		return(calcScore());
 	}
 	
 	public double getBet() {
@@ -102,7 +112,7 @@ public class HandImpl implements Hand {
 	public boolean isFromSplit() {
 		return(this.isFromSplit);
 	}
-
+	
 	public void stopCards() {
 		this.handState = HandState.STAND;
 	}
@@ -138,18 +148,15 @@ public class HandImpl implements Hand {
 	}
 	
 	public boolean isBust() {
-		// if the score of the hand is higher than 21 the hand is considered bust
-		return(this.getScore() > 21);
+		return(this.handState.equals(HandState.BUST));
 	}
 
 	public boolean isBlackjack() {
-		return(this.getScore() == 21 &&
-			   this.cards.size() == 2);
+		return(this.handState.equals(HandState.BLACKJACK));
 	}
 	
 	public boolean isStand() {
-		return((this.getScore() == 21) &&
-			   (this.cards.size() > 2));
+		return(this.handState.equals(HandState.STAND));
 	}
 	
 	public boolean isInGame() {
@@ -159,6 +166,8 @@ public class HandImpl implements Hand {
 	public void takeCard(final Card card) {
 		// adding the card to the hand
 		this.cards.add(card);
+		// updating the state of the hand
+		updateState();
 	}
 
 	public void doubleBet() {

@@ -1,5 +1,10 @@
 package it.uniurb.blackjack.model.game;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import it.uniurb.blackjack.model.cards.Card;
+import it.uniurb.blackjack.model.cards.Hand;
 import it.uniurb.blackjack.model.cards.HandState;
 import it.uniurb.blackjack.model.cards.Shoe;
 import it.uniurb.blackjack.model.cards.ShoeImpl;
@@ -22,7 +27,7 @@ public class Blackjack implements SideBettedGameType {
 	// constructor of the class
 	public Blackjack() {
 		this.gameState = GameState.WAITING_BET;
-		this.roundOutcome = OutcomeType.PLAY_LOSE;
+		this.roundOutcome = OutcomeType.PUSH;
 	}
 
 	// setter method that configure the game
@@ -165,6 +170,41 @@ public class Blackjack implements SideBettedGameType {
 		return(winInsurance);
 	}
 	
+	// getter for the player hands
+	public List<HandFields> getPlayerHands() {
+		// declaration of local variables
+		List<HandFields> hands = new LinkedList<HandFields>(); // fields of player's hands
+		
+		// adding the fields of the correct hand for each player's hand
+		for(int i = 0;
+			(i < this.player.getNumHands());
+			i++) {
+			Hand hand = this.player.getHand(i);
+			
+			hands.add(new HandFields(hand.getCards(),
+					                 hand.getScore(),
+					                 hand.getBet(),
+					                 hand.isBust(),
+					                 hand.isStand(),
+					                 hand.isInGame()));
+		}
+		
+		return(hands);
+	}
+	
+	// getter for the dealer hand
+	public HandFields getDealerHand() {
+		// declaration of local variables
+		HandFields hand = new HandFields(this.dealer.getHand().getCards(), // hand to return
+				 						 this.dealer.getHand().getScore(),
+				 						 this.dealer.getHand().getBet(),
+				 						 this.dealer.getHand().isBust(),
+				 						 this.dealer.getHand().isStand(),
+				 						 this.dealer.getHand().isInGame());
+		
+		return(hand);
+	}
+	
 	// getter method for the player
 	public Player getPlayer() {
 		return(this.player);
@@ -188,5 +228,56 @@ public class Blackjack implements SideBettedGameType {
 	// getter method that return the outcome of the round
 	public OutcomeType getOutcome() {
 		return(this.roundOutcome);
+	}
+	
+	// getter method for the player's balance
+	public double getPlayerBalance() {
+		return(this.player.getBalance());
+	}
+	
+	// getter method for the player's hand bet
+	public double getPlayerBet(final int n) {
+		return(this.player.getHand(n).getBet());
+	}
+	
+	// getter method for the player's hand side bet
+	public double getPlayerSideBet() {
+		return(this.player.getHand(0).getSideBet());
+	}
+	
+	// getter method for the dealer's covered card
+	public Card getDealerCovCard() {
+		return(this.dealer.getCoveredCard());
+	}
+	
+	// getter method for the dealer's uncovered card
+	public Card getDealerUncovCard() {
+		return(this.dealer.getUncoveredCard());
+	}
+	
+	// getter method for dealer's hand score
+	public int getDealerStartHandScore() {
+		return(this.dealer.getHand().getScore() - this.dealer.getCoveredCard().getBlackjackValue());
+	}
+	
+	// getter for player's cards
+	public List<Card> getPlayerCards(final int n) {
+		return(this.player.getHand(n).getCards());
+	}
+	
+	// getter for player's score
+	public int getPlayerScore(final int n) {
+		return(this.player.getHand(n).getScore());
+	}
+	
+	// getter for hand's perfect pair level
+	public PerfectPairs getPerfPairLevel() {
+		return(this.player.getHand(0).perfectPairCalc());
+		
+	}
+	
+	// getter for the number of player's hands
+	public int getNumPlayerHands() {
+		return(this.player.getNumHands());
 	}
 }

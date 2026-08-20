@@ -2,10 +2,10 @@ package it.uniurb.blackjack.view;
 
 import java.util.Scanner;
 
+import it.uniurb.blackjack.controller.TableState;
 import it.uniurb.blackjack.model.cards.Card;
 import it.uniurb.blackjack.model.cards.PerfectPairs;
 import it.uniurb.blackjack.model.game.OutcomeType;
-import it.uniurb.blackjack.model.participants.Dealer;
 import it.uniurb.blackjack.model.participants.Player;
 
 // class that implements the view of the model in a command line version
@@ -196,31 +196,31 @@ public class BlackjackTextView implements BlackjackView {
 		return(isInsured);
 	}
 	
-	public void showStartTable(final Player player, final Dealer dealer) {
+	public void showStartTable(final TableState startTableState) {
 		System.out.println("\n==========================");
 		System.out.println("         GAME TABLE        ");
 		System.out.println("===========================");
-		System.out.println("\nPlayer balance: " + player.getBalance() + "\n");
-		System.out.println("\nRound bet: " + player.getHand(0).getBet());
-		System.out.println("\nRound side bet: " + player.getHand(0).getSideBet() + "\n");
+		System.out.println("\nPlayer balance: " + startTableState.playerBalance() + "\n");
+		System.out.println("\nRound bet: " + startTableState.playerHands().get(0).bet());
+		System.out.println("\nRound side bet: " + startTableState.playerSideBet() + "\n");
 		// printing dealer cards
 		System.out.println("Dealer cards:");
 		System.out.println("COVERED CARD");
-		System.out.println(dealer.getUncoveredCard().toString());
+		System.out.println(startTableState.dealerUncoveredCard().toString());
 		
 		// printing dealer score
-		System.out.println("Dealer score: " + (dealer.getHand().getScore() - dealer.getCoveredCard().getBlackjackValue()) + "\n");
+		System.out.println("Dealer score: " + startTableState.dealerStartHandScore() + "\n");
 		
 		// printing player cards
 		System.out.println("Player cards:");
-		for (Card card: player.getHand(0).getCards())
+		for (Card card: startTableState.playerHands().get(0).cards())
 			System.out.println(card.toString());
 				
 		// printing player score
-		System.out.println("Player score: " + player.getHand(0).getScore() + "\n");
+		System.out.println("Player score: " + startTableState.playerHands().get(0).score() + "\n");
 	}
 
-	public void showNextTable(final Player player, final Dealer dealer) {
+	public void showNextTable(final TableState tableState) {
 		System.out.println("\n==========================");
 		System.out.println("         GAME TABLE        ");
 		System.out.println("===========================");
@@ -228,55 +228,55 @@ public class BlackjackTextView implements BlackjackView {
 		// printing dealer cards
 		System.out.println("Dealer cards:");
 		System.out.println("Covered card");
-		System.out.println(dealer.getUncoveredCard().toString());
+		System.out.println(tableState.dealerUncoveredCard().toString());
 		
 		// printing dealer score
-		System.out.println("Dealer score: " + (dealer.getHand().getScore() - dealer.getCoveredCard().getBlackjackValue()) + "\n");
+		System.out.println("Dealer score: " + (tableState.dealerStartHandScore()) + "\n");
 		
 		// printing player cards
 		for (int i = 0;
-			 (i < player.getNumHands());
+			 (i < tableState.numPlayerHands());
 			 i++) {
-			System.out.println("Player cards of hand " + i + ":");
-			for (Card card: player.getHand(i).getCards())
+			System.out.println("Player cards of hand " + (i + 1) + ":");
+			for (Card card: tableState.playerHands().get(i).cards())
 				System.out.println(card.toString());
 		}
 				
 		// printing player score
 		for (int i = 0;
-			 (i < player.getNumHands());
+			 (i < tableState.numPlayerHands());
 			 i++)
-				System.out.println("Player score of hand " + i + " is: " + player.getHand(i).getScore());
+				System.out.println("Player score of hand " + (i + 1) + " is: " + tableState.playerHands().get(i).score());
 	}
 
-	public void showFinalTable(final Player player, final Dealer dealer) {
+	public void showFinalTable(final TableState tableState) {
 		System.out.println("\n==========================");
 		System.out.println("         GAME TABLE        ");
 		System.out.println("===========================");
 		
 		// printing dealer cards
 		System.out.println("Dealer cards:");
-		for (Card card : dealer.getHand().getCards()) {
+		for (Card card : tableState.dealerHand().cards()) {
 			System.out.println(card.toString());
 		}
 		
 		// printing dealer score
-		System.out.println("Dealer score: " + dealer.getHand().getScore() + "\n");
+		System.out.println("Dealer score: " + tableState.dealerHand().score() + "\n");
 		
 		// printing player cards
 		for (int i = 0;
-			 (i < player.getNumHands());
+			 (i < tableState.numPlayerHands());
 			 i++) {
 			System.out.println("Player cards of hand " + i + ":");
-			for (Card card: player.getHand(i).getCards())
+			for (Card card: tableState.playerHands().get(i).cards())
 				System.out.println(card.toString());
 		}
 				
 		// printing player score
 		for (int i = 0;
-			 (i < player.getNumHands());
+			 (i < tableState.numPlayerHands());
 			 i++)
-				System.out.println("Player score of hand " + i + " is: " + player.getHand(i).getScore());
+				System.out.println("Player score of hand " + i + " is: " + tableState.playerHands().get(i).score());
 
 	}
 	
@@ -298,9 +298,9 @@ public class BlackjackTextView implements BlackjackView {
 		return (move);
 	}
 
-	public void showSideBet(final Player player, final double wonMoney) {
+	public void showSideBet(final TableState tableState, final double wonMoney) {
 		// printing the correct outcome of perfect pair
-		switch (player.getHand(0).perfectPairCalc()) {
+		switch (tableState.playerPerfPairLevel()) {
 			case PerfectPairs.PERF_PAIR:
 				System.out.println("It's a perfect pair!");
 				System.out.println("You won " + wonMoney + " chips!");
@@ -315,12 +315,12 @@ public class BlackjackTextView implements BlackjackView {
 				break;
 			case PerfectPairs.NO_PAIR:
 				System.out.println("It's not a pair!");
-				System.out.println("You lost " + player.getHand(0).getSideBet() + " chips!");
+				System.out.println("You lost " + tableState.playerSideBet() + " chips!");
 				break;
 		}
 	}
 	
-	public void showOutcome(final double wonBet, final OutcomeType outcome, final Player player) {
+	public void showOutcome(final TableState tableState, final double wonBet, final OutcomeType outcome) {
 		System.out.println("\n==========================");
 		System.out.println("          RESULTS          ");
 		System.out.println("===========================");
@@ -330,7 +330,7 @@ public class BlackjackTextView implements BlackjackView {
 				System.out.println("Player won " + wonBet + " chips!");
 				break;
 			case OutcomeType.PLAY_LOSE:
-				System.out.println("Player lost " + player.getHand(0).getBet() + " chips!");
+				System.out.println("Player lost " + tableState.playerHands().get(0).bet() + " chips!");
 				break;
 			case OutcomeType.PLAY_BJ:
 				System.out.println("Player won with a Blackjack! He won " + wonBet + " chips!");

@@ -19,7 +19,7 @@ public interface Hand {
 	// getter method for the list of cards
 	public List<Card> getCards();
 	
-	// getter method for the state of the hand (stand, blackjack, active, bust)
+	// getter method for the hand state
 	public HandState getHandState();
 	
 	// getter method for soft aces (the hand has a soft ace or not)

@@ -18,7 +18,7 @@ public class DealerImpl implements Dealer {
 		this.hand = null;
 		this.hitOnSoft = hitOnSoft;
 	}
-
+	
 	public String getName() {
 		return(this.name);
 	}
@@ -48,7 +48,8 @@ public class DealerImpl implements Dealer {
 		// if the dealer is still in game and has a score over 17 he stops
 		if (isInGame &&
 			this.hand.getScore() > 17) {
-			this.hand.stopCards();
+			if (this.hand.getScore() <= 21)
+				this.hand.stopCards();
 			isInGame = false;
 		}
 		// if the dealer is still in game, has a score of 17 and doesn't hit on a soft 17 he stops

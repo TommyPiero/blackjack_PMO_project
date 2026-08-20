@@ -1,5 +1,7 @@
 package it.uniurb.blackjack.view;
 
+
+import it.uniurb.blackjack.controller.TableState;
 import it.uniurb.blackjack.model.game.OutcomeType;
 import it.uniurb.blackjack.model.participants.Dealer;
 import it.uniurb.blackjack.model.participants.Player;
@@ -30,26 +32,27 @@ public interface BlackjackView {
 	public boolean askInsurance();
 	
 	// method that shows the table (cards of player and dealer)
-	public void showStartTable(final Player player, final Dealer dealer);
+	public void showStartTable(final TableState tableState);
 
 	// method that incrementally shows the new table with updates of cards
-	public void showNextTable(final Player player, final Dealer dealer);
+	public void showNextTable(final TableState tableState);
 	
 	// method that shows the final table with all the uncovered card
-	public void showFinalTable(final Player player, final Dealer dealer);
+	public void showFinalTable(final TableState tableState);
 	
 	// method that shows and asks the possible moves
 	public String askMoves();
 	
 	// method that shows the outcome of sideBets
-	public void showSideBet(final Player player, final double wonMoney);
+	public void showSideBet(final TableState tablestate, final double wonMoney);
 	
 	// method that shows the outcome of the round
-	public void showOutcome(final double wonBet, final OutcomeType outcome, final Player player);
+	public void showOutcome(final TableState tablestate, final double wonBet, final OutcomeType outcome);
 	
 	// method that asks the player if he wants to play another round
 	public boolean askForNewRound(final Player player);
 
 	// method used for showing error messages to the user
 	public void showErrorMessage(final String string);
+
 }
