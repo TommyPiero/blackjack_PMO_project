@@ -174,7 +174,47 @@ public class BlackjackTest {
 		assertEquals(422.0, bj4.getPlayer().getBalance());
 	}
 	
-	// 3. Test for edge cases and exceptions
+	// 3. Test for the insurance
+	@Test
+	public void testInsurance() {
+		// initializing new bj objects
+		Blackjack bj1 = new Blackjack();
+		Blackjack bj2 = new Blackjack();
+				
+		bj1.configureGame(2, true);
+		bj2.configureGame(3, false);
+		
+		// initializing players
+		bj1.getPlayer().initPlayer("first", 100.0);
+		bj2.getPlayer().initPlayer("second", 200.0);
+		
+		// dealers gets a card and ace as second card
+		bj1.getPlayer().newRound(20.0, 0.0);
+		bj1.getDealer().newRound();
+		bj2.getPlayer().newRound(10.0, 0.0);
+		bj2.getDealer().newRound();
+		bj1.getDealer().hit(new CardImpl(12, Suit.CLUBS));
+		bj1.getDealer().hit(new CardImpl(1, Suit.HEARTS));
+		
+		bj2.getDealer().hit(new CardImpl(4, Suit.DIAMONDS));
+		bj2.getDealer().hit(new CardImpl(1, Suit.SPADES));
+		
+		// players get two cards and they ensure
+		bj1.getPlayer().hit(new CardImpl(10, Suit.DIAMONDS), bj1.getPlayer().getHand(0));
+		bj1.getPlayer().hit(new CardImpl(12, Suit.HEARTS), bj1.getPlayer().getHand(0));
+		bj1.getPlayer().insure();
+		
+		bj2.getPlayer().hit(new CardImpl(3, Suit.DIAMONDS), bj2.getPlayer().getHand(0));
+		bj2.getPlayer().hit(new CardImpl(1, Suit.SPADES), bj2.getPlayer().getHand(0));
+		bj2.getPlayer().insure();
+		
+		// the first insurance policy pays back the bet, conversely, the second insurance policy does not pay
+		assertEquals(20.0, bj1.verifyInsurance());
+		assertEquals(0.0, bj2.verifyInsurance());
+	}
+	
+	
+	// 4. Test for edge cases and exceptions
 	@Test
 	public void testMovesExceptions() {
 		// initializing new bj objects
@@ -185,8 +225,8 @@ public class BlackjackTest {
 		bj2.configureGame(6, false);
 		
 		// initializing players
-		bj1.getPlayer().initPlayer("primo", 100.0);
-		bj2.getPlayer().initPlayer("secondo", 200.0);
+		bj1.getPlayer().initPlayer("first", 100.0);
+		bj2.getPlayer().initPlayer("second", 200.0);
 		
 		// trying to make a move before the bet has set
 		assertThrows(IllegalStateException.class, () -> {

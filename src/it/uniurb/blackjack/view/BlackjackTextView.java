@@ -19,13 +19,20 @@ public class BlackjackTextView implements BlackjackView {
 
 	public String askName() {
 		// declaration of local variables
-		String name; // name of the player
-
+		String  name;            // name of the player
+		boolean isValid = false; // flag that record if a name is correct
+		
 		// asking for the name, names with more than 30 chars are not accepted
 		do {
 			System.out.println("\nInsert your user name(max 30 chars): ");
 			name = scanner.nextLine().trim();
-		} while (name.length() > 30);
+			if (name.length() <= 30 &&
+				name.length() > 0)
+				isValid = true;
+			else
+				System.out.println("The name must be between 1 and 30 characters long!");
+			
+		} while (!isValid);
 
 		return (name);
 	}
@@ -224,7 +231,7 @@ public class BlackjackTextView implements BlackjackView {
 		System.out.println("\n==========================");
 		System.out.println("         GAME TABLE        ");
 		System.out.println("===========================");
-		
+
 		// printing dealer cards
 		System.out.println("Dealer cards:");
 		System.out.println("Covered card");
@@ -253,7 +260,7 @@ public class BlackjackTextView implements BlackjackView {
 		System.out.println("\n==========================");
 		System.out.println("         GAME TABLE        ");
 		System.out.println("===========================");
-		
+
 		// printing dealer cards
 		System.out.println("Dealer cards:");
 		for (Card card : tableState.dealerHand().cards()) {
@@ -320,9 +327,9 @@ public class BlackjackTextView implements BlackjackView {
 		}
 	}
 	
-	public void showOutcome(final TableState tableState, final double wonBet, final OutcomeType outcome) {
+	public void showOutcome(final TableState tableState, final double wonBet, final OutcomeType outcome, final int i) {
 		System.out.println("\n==========================");
-		System.out.println("          RESULTS          ");
+		System.out.println("     RESULTS FOR HAND " + i + "    ");
 		System.out.println("===========================");
 		// printing the correct outcome
 		switch (outcome) {
@@ -330,7 +337,7 @@ public class BlackjackTextView implements BlackjackView {
 				System.out.println("Player won " + wonBet + " chips!");
 				break;
 			case OutcomeType.PLAY_LOSE:
-				System.out.println("Player lost " + tableState.playerHands().get(0).bet() + " chips!");
+				System.out.println("Player lost " + tableState.playerHands().get(i).bet() + " chips!");
 				break;
 			case OutcomeType.PLAY_BJ:
 				System.out.println("Player won with a Blackjack! He won " + wonBet + " chips!");

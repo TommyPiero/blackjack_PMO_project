@@ -88,16 +88,6 @@ public class BlackjackTextController implements BlackjackController {
 				 (i < this.blackjack.getNumPlayerHands());
 				 i++) {
 				while (this.blackjack.getPlayerHands().get(i).isInGame()) {
-					// declaration and initialization of the record for the actual table
-					TableState newTableState = new TableState(this.blackjack.getPlayerBalance(),
-															  playerSideBet,
-															  this.blackjack.getPlayerHands(),
-															  dealerUncovCard,
-															  dealerStartHandScore,
-															  perfPairLevel,
-					   										  this.blackjack.getNumPlayerHands(),
-					   										  this.blackjack.getDealerHand());
-					
 					String   input;               // next move in string format
 					MoveType move = null;         // next player move
 					boolean  isMoveValid = false; // bool that says if a move is valid or not
@@ -129,6 +119,16 @@ public class BlackjackTextController implements BlackjackController {
 							this.view.showErrorMessage("Error: " + e.getMessage());
 						}
 					}
+					// declaration and initialization of the record for the actual table
+					TableState newTableState = new TableState(this.blackjack.getPlayerBalance(),
+															  playerSideBet,
+															  this.blackjack.getPlayerHands(),
+															  dealerUncovCard,
+															  dealerStartHandScore,
+															  perfPairLevel,
+					   										  this.blackjack.getNumPlayerHands(),
+					   										  this.blackjack.getDealerHand());
+					
 					// showing the updated table
 					this.view.showNextTable(newTableState);					
 				}
@@ -156,7 +156,7 @@ public class BlackjackTextController implements BlackjackController {
 			for (int i = 0;
 				 (i < this.blackjack.getNumPlayerHands());
 				 i++)
-				 this.view.showOutcome(finalTableState, this.blackjack.verifyFinalOutcome(i), this.blackjack.getOutcome());
+				 this.view.showOutcome(finalTableState, this.blackjack.verifyFinalOutcome(i), this.blackjack.getOutcome(), i);
 			
 			// asking the player for a new game
 			playAgain = this.view.askForNewRound(this.blackjack.getPlayer());

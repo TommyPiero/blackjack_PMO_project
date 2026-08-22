@@ -3,7 +3,6 @@ package it.uniurb.blackjack.view;
 
 import it.uniurb.blackjack.controller.TableState;
 import it.uniurb.blackjack.model.game.OutcomeType;
-import it.uniurb.blackjack.model.participants.Dealer;
 import it.uniurb.blackjack.model.participants.Player;
 
 // interface for the view of the game, it contains the principal methods that shows parts of the game
@@ -47,7 +46,7 @@ public interface BlackjackView {
 	public void showSideBet(final TableState tablestate, final double wonMoney);
 	
 	// method that shows the outcome of the round
-	public void showOutcome(final TableState tablestate, final double wonBet, final OutcomeType outcome);
+	public void showOutcome(final TableState tablestate, final double wonBet, final OutcomeType outcome, final int i);
 	
 	// method that asks the player if he wants to play another round
 	public boolean askForNewRound(final Player player);

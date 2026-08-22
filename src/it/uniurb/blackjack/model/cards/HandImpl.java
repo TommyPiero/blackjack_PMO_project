@@ -60,8 +60,7 @@ public class HandImpl implements Hand {
 		}
 		
 		// setting the soft ace to true if there is at least one ace in this section
-		if (numAce > 0)
-			this.hasSoftAce = true;
+		this.hasSoftAce = (numAce > 0);
 		
 		return(actualScore);
 	}

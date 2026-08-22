@@ -17,13 +17,16 @@ public class PlayerTest {
 		PlayerImpl player3 = new PlayerImpl();
 		PlayerImpl player4 = new PlayerImpl();
 		PlayerImpl player5 = new PlayerImpl();
+		PlayerImpl player6 = new PlayerImpl();
 		
 		// initializing names and balance of players
-		player1.initPlayer("Telemaco73", 500.0);
-		player2.initPlayer("Tapi05", 700.0);
-		player3.initPlayer("ciaociao", 10.0);
-		player4.initPlayer("Tony178", 100.0);
-		player5.initPlayer("non_abbastanza_soldi", 5.0);
+		player1.initPlayer("OK", 500.0);
+		player2.initPlayer("Not_valid_bet", 700.0);
+		player3.initPlayer("Not_valid_side_bet", 10.0);
+		player4.initPlayer("Not_valid_bets", 100.0);
+		player5.initPlayer("not_enough_money", 5.0);
+		player6.initPlayer("not_enough_money_for_insurance", 5.0);
+		
 		// starting new rounds for the players
 		// expecting the first player to not throw an exception
 		player1.newRound(10.0, 2.0);
@@ -39,9 +42,15 @@ public class PlayerTest {
 		assertThrows(IllegalArgumentException.class, () -> {
 			player4.newRound(0.0, -8.0);
 		});
-		// expecting the third player to throw an exception (not enough balance)
+		// expecting the fifth player to throw an exception (not enough balance)
 		assertThrows(IllegalArgumentException.class, () -> {
 			player5.newRound(15.0, 0.0);
+		});
+		
+		player6.newRound(5.0, 0.0);
+		// expecting the sixth player to throw an exception (not enough money for the insurance)
+		assertThrows(IllegalStateException.class, () -> {
+			player6.insure();
 		});
 	}
 }
