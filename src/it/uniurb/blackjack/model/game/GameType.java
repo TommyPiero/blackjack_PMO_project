@@ -7,9 +7,6 @@ public interface GameType {
 	// method that starts all the game
 	public void startGame(final String playerName, final double balance);
 	
-	// method that starts a round
-	public void startRound(final double bet, final double sideBet);
-	
 	// method that verifies the outcome of a play
 	public double verifyFinalOutcome(final int n);
 }

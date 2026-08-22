@@ -1,5 +1,8 @@
 package it.uniurb.blackjack.controller;
 
+
+import it.uniurb.blackjack.model.cards.Card;
+import it.uniurb.blackjack.model.cards.PerfectPairs;
 import it.uniurb.blackjack.model.game.Blackjack;
 import it.uniurb.blackjack.model.game.MoveType;
 import it.uniurb.blackjack.view.BlackjackView;
@@ -50,13 +53,27 @@ public class BlackjackTextController implements BlackjackController {
 					this.view.showErrorMessage("Error: " + e.getMessage());
 				}
 			}
+			// declaration and initialization of fields to pass to view's methods
+			double playerSideBet = this.blackjack.getPlayerSideBet();               // side bet linked to the hand
+			Card   dealerUncovCard = this.blackjack.getDealerUncovCard();           // uncovered dealer's card
+			int    dealerStartHandScore = this.blackjack.getDealerStartHandScore(); // dealer's start hand score
+			PerfectPairs perfPairLevel = this.blackjack.getPerfPairLevel();         // perfect pair level
+			// starting table state
+			TableState startTableState = new TableState(this.blackjack.getPlayerBalance(),
+												   		playerSideBet,
+												   		this.blackjack.getPlayerHands(),
+												   		dealerUncovCard,
+												   		dealerStartHandScore,
+												   		perfPairLevel,
+												   		this.blackjack.getNumPlayerHands(),
+												   		this.blackjack.getDealerHand());
 			
 			// printing the first version of the table
-			this.view.showStartTable(this.blackjack.getPlayer(), this.blackjack.getDealer());
+			this.view.showStartTable(startTableState);
 			// calculating and printing the outcome of the side bet
-			this.view.showSideBet(this.blackjack.getPlayer(), this.blackjack.verifySideBet());
+			this.view.showSideBet(startTableState, this.blackjack.verifySideBet());
 			// asking for the insurance if the dealer as an ace as uncovered card
-			if (this.blackjack.getDealer().getUncoveredCard().isAnAce()) {
+			if (startTableState.dealerUncoveredCard().isAnAce()) {
 				try {
 					if (this.view.askInsurance()) {
 						this.blackjack.getPlayer().insure();
@@ -68,9 +85,9 @@ public class BlackjackTextController implements BlackjackController {
 			}
 
 			for (int i = 0;
-				 (i < this.blackjack.getPlayer().getNumHands());
+				 (i < this.blackjack.getNumPlayerHands());
 				 i++) {
-				while (this.blackjack.getPlayer().getHand(i).isInGame()) {
+				while (this.blackjack.getPlayerHands().get(i).isInGame()) {
 					String   input;               // next move in string format
 					MoveType move = null;         // next player move
 					boolean  isMoveValid = false; // bool that says if a move is valid or not
@@ -102,8 +119,18 @@ public class BlackjackTextController implements BlackjackController {
 							this.view.showErrorMessage("Error: " + e.getMessage());
 						}
 					}
+					// declaration and initialization of the record for the actual table
+					TableState newTableState = new TableState(this.blackjack.getPlayerBalance(),
+															  playerSideBet,
+															  this.blackjack.getPlayerHands(),
+															  dealerUncovCard,
+															  dealerStartHandScore,
+															  perfPairLevel,
+					   										  this.blackjack.getNumPlayerHands(),
+					   										  this.blackjack.getDealerHand());
+					
 					// showing the updated table
-					this.view.showNextTable(this.blackjack.getPlayer(), this.blackjack.getDealer());					
+					this.view.showNextTable(newTableState);					
 				}
 			}
 			// changing the turn
@@ -111,19 +138,30 @@ public class BlackjackTextController implements BlackjackController {
 			
 			// playing and showing the dealer turn
 			this.blackjack.playDealerHand();
-			this.view.showFinalTable(this.blackjack.getPlayer(), this.blackjack.getDealer());
+			
+			// declaration and initialization of the record for the final table
+			TableState finalTableState = new TableState(this.blackjack.getPlayerBalance(),
+														playerSideBet,
+														this.blackjack.getPlayerHands(),
+														dealerUncovCard,
+														dealerStartHandScore,
+														perfPairLevel,
+			   										    this.blackjack.getNumPlayerHands(),
+			   										    this.blackjack.getDealerHand());
+			
+			this.view.showFinalTable(finalTableState);
 			
 			
 			// evaluating the results and printing
 			for (int i = 0;
-				 (i < this.blackjack.getPlayer().getNumHands());
+				 (i < this.blackjack.getNumPlayerHands());
 				 i++)
-				 this.view.showOutcome(this.blackjack.verifyFinalOutcome(i), this.blackjack.getOutcome(), this.blackjack.getPlayer());
+				 this.view.showOutcome(finalTableState, this.blackjack.verifyFinalOutcome(i), this.blackjack.getOutcome(), i);
 			
 			// asking the player for a new game
 			playAgain = this.view.askForNewRound(this.blackjack.getPlayer());
 		} while (playAgain &&
-				 this.blackjack.getPlayer().getBalance() > 0);
+				 this.blackjack.getPlayerBalance() > 0);
 	}
 
 }

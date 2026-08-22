@@ -11,10 +11,10 @@ import it.uniurb.blackjack.model.cards.HandImpl;
 public class PlayerImpl implements Player {
 	
 	// declaration of class' fields
-	private String       playerName; // name of the player
-	private List<Hand>   hands;		 // two possible hands for the player (one from the split)
-	private double       balance;    // balance of the player for the bets
-	private boolean      isInsured;  // boolean value for the insurance
+	private String       playerName;     // name of the player
+	private List<Hand>   hands;		     // two possible hands for the player (one from the split)
+	private double       balance;        // balance of the player for the bets
+	private boolean      isInsured;      // boolean value for the insurance    
 	
 	// class' constructor
 	public PlayerImpl() {
@@ -165,7 +165,7 @@ public class PlayerImpl implements Player {
 	
 	public double winInsurance() {
 		// declaration of local variables
-		double moneyInsurance = (this.getHand(0).getBet() * 2); // money won from the insurance
+		double moneyInsurance = (this.getHand(0).getBet()); // money won from the insurance
 	
 		this.balance += moneyInsurance;
 		

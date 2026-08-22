@@ -51,10 +51,13 @@ public class HandImplTest {
 		// giving cards to the hands
 		hand1.takeCard(new CardImpl(6, Suit.HEARTS));
 		hand1.takeCard(new CardImpl(12, Suit.DIAMONDS));
+		
 		hand2.takeCard(new CardImpl(1, Suit.CLUBS));
 		hand2.takeCard(new CardImpl(9, Suit.SPADES));
+		
 		hand3.takeCard(new CardImpl(1, Suit.CLUBS));
 		hand3.takeCard(new CardImpl(1, Suit.SPADES));
+		
 		hand4.takeCard(new CardImpl(10, Suit.CLUBS));
 		hand4.takeCard(new CardImpl(13, Suit.DIAMONDS));
 		
@@ -97,9 +100,11 @@ public class HandImplTest {
 		hand1.takeCard(new CardImpl(10, Suit.DIAMONDS));
 		hand1.takeCard(new CardImpl(8, Suit.SPADES));
 		hand1.takeCard(new CardImpl(4, Suit.HEARTS));
+		
 		hand2.takeCard(new CardImpl(3, Suit.DIAMONDS));
 		hand2.takeCard(new CardImpl(6, Suit.CLUBS));
 		hand2.takeCard(new CardImpl(1, Suit.HEARTS));
+		
 		hand3.takeCard(new CardImpl(12, Suit.SPADES));
 		hand3.takeCard(new CardImpl(13, Suit.SPADES));
 		hand3.takeCard(new CardImpl(5, Suit.DIAMONDS));
@@ -126,12 +131,16 @@ public class HandImplTest {
 		// giving cards to the hands
 		hand1.takeCard(new CardImpl(8, Suit.HEARTS));
 		hand1.takeCard(new CardImpl(10, Suit.CLUBS));
+		
 		hand2.takeCard(new CardImpl(12, Suit.DIAMONDS));
 		hand2.takeCard(new CardImpl(1, Suit.SPADES));
+		
 		hand3.takeCard(new CardImpl(13, Suit.HEARTS));
 		hand3.takeCard(new CardImpl(10, Suit.DIAMONDS));
+		
 		hand4.takeCard(new CardImpl(11, Suit.CLUBS));
 		hand4.takeCard(new CardImpl(1, Suit.SPADES));
+		
 		hand5.takeCard(new CardImpl(9, Suit.CLUBS));
 		hand5.takeCard(new CardImpl(6, Suit.HEARTS));
 		hand5.takeCard(new CardImpl(9, Suit.CLUBS));
@@ -161,8 +170,10 @@ public class HandImplTest {
 		hand1.takeCard(new CardImpl(7, Suit.CLUBS));
 		hand1.takeCard(new CardImpl(6, Suit.HEARTS));
 		hand1.takeCard(new CardImpl(8, Suit.CLUBS));
+		
 		hand2.takeCard(new CardImpl(10, Suit.SPADES));
 		hand2.takeCard(new CardImpl(1, Suit.DIAMONDS));
+		
 		hand3.takeCard(new CardImpl(3, Suit.HEARTS));
 		hand3.takeCard(new CardImpl(4, Suit.SPADES));
 		
@@ -187,10 +198,13 @@ public class HandImplTest {
 		// giving cards to the hands
 		hand1.takeCard(new CardImpl(7, Suit.DIAMONDS));
 		hand1.takeCard(new CardImpl(7, Suit.DIAMONDS));
+		
 		hand2.takeCard(new CardImpl(9, Suit.CLUBS));
 		hand2.takeCard(new CardImpl(9, Suit.SPADES));
+		
 		hand3.takeCard(new CardImpl(1, Suit.HEARTS));
 		hand3.takeCard(new CardImpl(1, Suit.CLUBS));
+		
 		hand4.takeCard(new CardImpl(12, Suit.HEARTS));
 		hand4.takeCard(new CardImpl(13, Suit.HEARTS));
 		
@@ -216,9 +230,11 @@ public class HandImplTest {
 		// giving cards to the hands
 		hand1.takeCard(new CardImpl(1, Suit.CLUBS));
 		hand1.takeCard(new CardImpl(6, Suit.HEARTS));
+		
 		hand2.takeCard(new CardImpl(1, Suit.SPADES));
 		hand2.takeCard(new CardImpl(9, Suit.DIAMONDS));
 		hand2.takeCard(new CardImpl(6, Suit.DIAMONDS));
+		
 		hand3.takeCard(new CardImpl(1, Suit.HEARTS));
 		hand3.takeCard(new CardImpl(1, Suit.SPADES));
 		
