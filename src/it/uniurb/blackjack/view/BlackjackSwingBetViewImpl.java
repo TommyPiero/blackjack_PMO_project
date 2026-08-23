@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -112,6 +113,10 @@ public class BlackjackSwingBetViewImpl extends JPanel implements BlackjackSwingB
     // setter method for the listener
     public void setPlaceBetsListener(final ActionListener listener) {
     	this.placeBetsButton.addActionListener(listener);
+    }
+    
+    public void showErrorMessage(final String string) {
+		JOptionPane.showMessageDialog(this, string, "Errore", JOptionPane.ERROR_MESSAGE);
     }
     
 	private Component createStyledLabel(final String text) {

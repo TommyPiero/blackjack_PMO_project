@@ -12,10 +12,11 @@ public class BlackjackFrame extends JFrame {
 
     private static final String INIT_SCREEN = "init";
     private static final String BET_SCREEN = "bet";
-
+    private static final String TABLE_SCREEN = "table";
+    
     private BlackjackSwingMainView initScreen;
     private BlackjackSwingBetViewImpl betScreen;
-    
+    private BlackjackSwingTableViewImpl tableView;
     // class' constructor
     public BlackjackFrame() {
         
@@ -30,9 +31,11 @@ public class BlackjackFrame extends JFrame {
 
         this.initScreen = new BlackjackSwingMainView();
         this.betScreen = new BlackjackSwingBetViewImpl();
-
+        this.tableView = new BlackjackSwingTableViewImpl();
+        
         this.panelContainer.add(this.initScreen, INIT_SCREEN);
         this.panelContainer.add(this.betScreen, BET_SCREEN);
+        this.panelContainer.add(this.tableView, TABLE_SCREEN);
         
         add(this.panelContainer);
         cardLayout.show(this.panelContainer, INIT_SCREEN);
@@ -42,11 +45,19 @@ public class BlackjackFrame extends JFrame {
         cardLayout.show(this.panelContainer, BET_SCREEN);
     }
     
+    public void showTableScreen() {
+        cardLayout.show(this.panelContainer, TABLE_SCREEN);
+    }
+    
     public BlackjackSwingMainView getInitScreen() {
         return(this.initScreen);
     }
 
     public BlackjackSwingBetViewImpl getBetScreen() {
         return(this.betScreen);
+    }
+    
+    public BlackjackSwingTableViewImpl getTableScreen() {
+    	return(this.tableView);
     }
 }

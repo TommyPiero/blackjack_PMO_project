@@ -17,4 +17,6 @@ public interface BlackjackSwingBetView {
     
     // setter method for the listener
     public void setPlaceBetsListener(final ActionListener listener);
+
+	public void showErrorMessage(String string);
 }
