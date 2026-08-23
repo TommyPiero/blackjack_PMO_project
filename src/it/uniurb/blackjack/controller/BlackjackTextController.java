@@ -44,7 +44,7 @@ public class BlackjackTextController implements BlackjackController {
 			while (!isBetValid) {
 				try {
 					// asking for the main bet and the side bet
-					mainBet = this.view.askChips(this.blackjack.getPlayer());
+					mainBet = this.view.askChips(this.blackjack.getPlayerBalance());
 					sideBet = this.view.askSideBet();
 					// setting a new round with the checked bets
 					this.blackjack.startRound(mainBet, sideBet);

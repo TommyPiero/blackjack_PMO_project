@@ -4,6 +4,4 @@ package it.uniurb.blackjack.controller;
 public interface BlackjackController {
 	// declaration of methods
 	
-	// method for starting a game
-	public void startGame();
 }

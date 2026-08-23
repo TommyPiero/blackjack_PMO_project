@@ -18,11 +18,12 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
+import it.uniurb.blackjack.controller.TableState;
 import it.uniurb.blackjack.model.game.OutcomeType;
 import it.uniurb.blackjack.model.participants.Dealer;
 import it.uniurb.blackjack.model.participants.Player;
 
-public class BlackjackSwingMainView extends JPanel implements BlackjackView {
+public class BlackjackSwingMainView extends JPanel{
 	
 	// declaration of class' fields
 	private JTextField nameField;       // field for the player's name
@@ -30,7 +31,7 @@ public class BlackjackSwingMainView extends JPanel implements BlackjackView {
     private JTextField numDecksField;   // field for the number of decks
     private JCheckBox  typeDealerField; // field for the dealer type
 	private JButton    confirmButton;   // button for starting the game
-    
+	
 	// definition of colors for the menu
 	private final Color CASINO_GREEN = new Color(7, 94, 46); 
     private final Color DARK_GOLD    = new Color(212, 175, 55); 
@@ -106,14 +107,14 @@ public class BlackjackSwingMainView extends JPanel implements BlackjackView {
         this.add(buttonWrapper, BorderLayout.SOUTH);
     }
     
-	private Component createStyledLabel(String text) {
+	private Component createStyledLabel(final String text) {
 		JLabel label = new JLabel(text);
         label.setFont(new Font("Arial", Font.BOLD, 13));
         label.setForeground(LIGHT_TEXT);
         return label;
 	}
 
-	private JTextField createStyledTextField(int columns) {
+	private JTextField createStyledTextField(final int columns) {
 		JTextField textField = new JTextField(columns);
         textField.setFont(new Font("Arial", Font.PLAIN, 13));
         textField.setBackground(new Color(245, 245, 245)); // Grigio chiarissimo quasi bianco
@@ -134,18 +135,6 @@ public class BlackjackSwingMainView extends JPanel implements BlackjackView {
 		return(Double.parseDouble(balanceField.getText().trim()));
 	}
 
-	@Override
-	public double askChips(Player player) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public double askSideBet() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 	public int askNumDecks() {
 		return(Integer.parseInt(this.numDecksField.getText().trim()));
 	}
@@ -160,59 +149,12 @@ public class BlackjackSwingMainView extends JPanel implements BlackjackView {
 		return(isSoftDealer);
 	}
 
-	@Override
-	public boolean askInsurance() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void showStartTable(Player player, Dealer dealer) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void showNextTable(Player player, Dealer dealer) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void showFinalTable(Player player, Dealer dealer) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public String askMoves() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void showSideBet(Player player, double wonMoney) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void showOutcome(double wonBet, OutcomeType outcome, Player player) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean askForNewRound(Player player) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public void showErrorMessage(String string) {
+	public void showErrorMessage(final String string) {
 		JOptionPane.showMessageDialog(this, string, "Errore", JOptionPane.ERROR_MESSAGE);
 	}
 
-	public void setConfirmButtonListener(ActionListener listener) {
+	public void setConfirmButtonListener(final ActionListener listener) {
         this.confirmButton.addActionListener(listener);
     }
+
 }

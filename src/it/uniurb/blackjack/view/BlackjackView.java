@@ -16,7 +16,7 @@ public interface BlackjackView {
 	public double askBalance();
 	
 	// method that shows and asks chips (5, 10, 25, 50) for the bet
-	public double askChips(final Player player);
+	public double askChips(final double balance);
 	
 	// method that asks a side bet to the player
 	public double askSideBet();

@@ -119,14 +119,14 @@ public class BlackjackTextView implements BlackjackView {
 		return(softDealer);
 	}
 	
-	public double askChips(final Player player) {
+	public double askChips(final double balance) {
 		// declaration of local variables
 		String  input;             // starting input in a string format
 		Double  chips = 0.0;       // number of chips bet
 		boolean isCorrect = false; // boolean for a correct input from the user
 
 		do {
-			System.out.println("\nHow many chips you want to bet? The remaining balance is: " + player.getBalance());
+			System.out.println("\nHow many chips you want to bet? The remaining balance is: " + balance);
 			input = scanner.nextLine().trim();
 
 			// changing the , with . for avoiding bugs

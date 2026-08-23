@@ -19,7 +19,7 @@ public class AppBlackjackCLI {
 		BlackjackView view = new BlackjackTextView();
 		
 		// creating the controller
-		BlackjackController controller = new BlackjackTextController(model, view);
+		BlackjackTextController controller = new BlackjackTextController(model, view);
 		
 		System.out.println("STARTING A NEW GAME LOOP");
 		
