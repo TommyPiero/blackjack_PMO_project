@@ -186,7 +186,8 @@ public class Blackjack implements SideBettedGameType {
 					                 hand.getBet(),
 					                 hand.isBust(),
 					                 hand.isStand(),
-					                 hand.isInGame()));
+					                 hand.isInGame(),
+					                 hand.isBlackjack()));
 		}
 		
 		return(hands);
@@ -200,7 +201,8 @@ public class Blackjack implements SideBettedGameType {
 				 						 this.dealer.getHand().getBet(),
 				 						 this.dealer.getHand().isBust(),
 				 						 this.dealer.getHand().isStand(),
-				 						 this.dealer.getHand().isInGame());
+				 						 this.dealer.getHand().isInGame(),
+				 						 this.dealer.getHand().isBlackjack());
 		
 		return(hand);
 	}

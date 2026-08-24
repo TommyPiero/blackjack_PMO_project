@@ -30,6 +30,7 @@ import it.uniurb.blackjack.model.cards.Card;
 import it.uniurb.blackjack.model.cards.CardColor;
 import it.uniurb.blackjack.model.cards.PerfectPairs;
 import it.uniurb.blackjack.model.cards.Suit;
+import it.uniurb.blackjack.model.game.OutcomeType;
 
 import java.awt.BorderLayout;
 
@@ -306,12 +307,9 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 		
 		Window parent = SwingUtilities.getWindowAncestor(this);
 
-	    JDialog dialog = new JDialog(
-	        parent,
-	        "Side Bet",
-	        Dialog.ModalityType.MODELESS
-	    );
-
+	    JDialog dialog = new JDialog(parent, "Side Bet", Dialog.ModalityType.APPLICATION_MODAL);
+	    dialog.setModal(true);
+	    dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 	    dialog.setSize(500, 280);
 	    dialog.setResizable(false);
 
@@ -390,6 +388,315 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 	    dialog.setVisible(true);
 	}
 
+	public void showMainBetOutcome(final double winMoney, final OutcomeType outcome, final Runnable onContinue) {
+
+		Window parent = SwingUtilities.getWindowAncestor(this);
+
+	    JDialog dialog = new JDialog(parent, "Outcome", Dialog.ModalityType.APPLICATION_MODAL);
+	    dialog.setModal(true);
+	    dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+	    dialog.setSize(500, 280);
+	    dialog.setResizable(false);
+
+	    Point parentLocation = parent.getLocationOnScreen();
+
+	    int x = parentLocation.x
+	            + (parent.getWidth() - dialog.getWidth()) / 2;
+
+	    int y = parentLocation.y
+	            + 30;
+
+	    dialog.setLocation(x, y);
+		
+	    JPanel panel = new JPanel();
+	    panel.setLayout(
+	        new BoxLayout(panel, BoxLayout.Y_AXIS)
+	    );
+
+	    panel.setBackground(CASINO_GREEN);
+
+	    panel.setBorder(
+	        BorderFactory.createCompoundBorder(
+	            BorderFactory.createLineBorder(
+	                DARK_GOLD,
+	                4
+	            ),
+	            BorderFactory.createEmptyBorder(
+	                30, 40, 30, 40
+	            )
+	        )
+	    );
+
+	    JLabel title = new JLabel("OUTCOME");
+	    title.setFont(new Font("Arial", Font.BOLD, 30));
+	    title.setForeground(DARK_GOLD);
+	    title.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+	    JLabel result;
+	    
+	    switch (outcome) {
+	    	case OutcomeType.PLAY_WIN:
+	    		result = new JLabel("YOU WIN " + String.format("%.2f", winMoney) + " €!");
+	    		break;
+	    	case OutcomeType.PLAY_BJ:
+	    		result = new JLabel("YOU WIN " + String.format("%.2f", winMoney) + " € WITH A BLACKJACK!");
+	    		break;
+	    	case OutcomeType.PUSH:
+	    		result = new JLabel("IT'S A DRAW, YOU GET " + String.format("%.2f", winMoney) + " € BACK!");
+	    		break;
+	    	case OutcomeType.PLAY_LOSE:
+	    		result = new JLabel("YOU LOST!");
+	    		break;
+	    	default:
+	    		result = new JLabel("MAIN BET RESULT");
+	    		break;
+	    }
+
+	    result.setFont(new Font("Arial", Font.BOLD, 20));
+	    result.setForeground(LIGHT_TEXT);
+	    result.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+	    JButton continueButton = createButton("CONTINUE");
+	    continueButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+	    continueButton.addActionListener(
+	            e -> {dialog.dispose();
+	            onContinue.run();
+	        });
+
+	    panel.add(title);
+	    panel.add(Box.createVerticalStrut(20));
+	    panel.add(result);
+	    panel.add(Box.createVerticalStrut(10));
+	    panel.add(continueButton);
+	    
+	    dialog.setContentPane(panel);
+
+	    dialog.setVisible(true);
+	}
+	
+	public void showNewRoundDialog(final Runnable onYes) {
+		// declaration and initialization of local variables
+		Window parent = SwingUtilities.getWindowAncestor(this); // window for asking for a new round
+
+		// setting windows dialog
+	    JDialog dialog = new JDialog(parent, "Blackjack", Dialog.ModalityType.APPLICATION_MODAL);
+	    dialog.setModal(true);
+	    dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+	    dialog.setSize(450, 220);
+	    dialog.setResizable(false);
+	    dialog.setLocationRelativeTo(parent);
+
+	    // setting panel
+	    JPanel panel = new JPanel();
+	    panel.setLayout(
+	        new BoxLayout(panel, BoxLayout.Y_AXIS)
+	    );
+
+	    panel.setBackground(CASINO_GREEN);
+
+	    panel.setBorder(
+	        BorderFactory.createCompoundBorder(
+	            BorderFactory.createLineBorder(
+	                DARK_GOLD, 4
+	            ),
+	            BorderFactory.createEmptyBorder(
+	                25, 40, 25, 40
+	            )
+	        )
+	    );
+
+	    // setting windows title, it asks for a new round
+	    JLabel title = new JLabel("PLAY AGAIN?");
+
+	    title.setFont(
+	        new Font("Arial", Font.BOLD, 28)
+	    );
+
+	    title.setForeground(DARK_GOLD);
+	    title.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+	    // setting the buttons panel for yes or no
+	    JPanel buttonsPanel = new JPanel(
+	        new FlowLayout(
+	            FlowLayout.CENTER,
+	            20,
+	            10
+	        )
+	    );
+
+	    buttonsPanel.setBackground(CASINO_GREEN);
+
+	    // setting the two buttons
+	    JButton yesButton = createButton("YES");
+	    JButton noButton = createButton("NO");
+
+	    // on yes, the bets panel is opened again
+	    yesButton.addActionListener(e -> {
+	        dialog.dispose();
+	        onYes.run();
+	    });
+
+	    // on no, the application gets closed
+	    noButton.addActionListener(e -> {
+	        dialog.dispose();
+	        System.exit(0);
+	    });
+
+	    buttonsPanel.add(yesButton);
+	    buttonsPanel.add(noButton);
+
+	    panel.add(title);
+
+	    panel.add(
+	        Box.createVerticalStrut(35)
+	    );
+
+	    panel.add(buttonsPanel);
+
+	    dialog.setContentPane(panel);
+	    dialog.setVisible(true);
+	}
+	
+	public void showInsuranceDialog(final Runnable onYes) {
+		// declaration and initialization of local variables
+		Window parent = SwingUtilities.getWindowAncestor(this); // window for asking for the insurance
+
+		// setting windows dialog
+		JDialog dialog = new JDialog(parent,"Blackjack",Dialog.ModalityType.APPLICATION_MODAL);
+		dialog.setModal(true);
+		dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+		dialog.setSize(450, 220);
+		dialog.setResizable(false);
+		dialog.setLocationRelativeTo(parent);
+
+		// setting panel
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+		panel.setBackground(CASINO_GREEN);
+
+		panel.setBorder(BorderFactory.createCompoundBorder(
+			            BorderFactory.createLineBorder(DARK_GOLD, 4),
+			            BorderFactory.createEmptyBorder(25, 40, 25, 40)));
+
+		// setting windows title, it asks for a new round
+		JLabel title = new JLabel("DO YOU WANT TO GET INSURANCE?");
+
+		title.setFont(new Font("Arial", Font.BOLD, 20));
+
+		title.setForeground(DARK_GOLD);
+		title.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		// setting the buttons panel for yes or no
+		JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+
+		buttonsPanel.setBackground(CASINO_GREEN);
+
+		// setting the two buttons
+		JButton yesButton = createButton("YES");
+		JButton noButton = createButton("NO");
+
+		// on yes, the player insure
+		yesButton.addActionListener(e -> {
+			dialog.dispose();
+			onYes.run();
+		});
+
+		noButton.addActionListener(e -> {
+			dialog.dispose();
+		});
+
+		buttonsPanel.add(yesButton);
+		buttonsPanel.add(noButton);
+
+		panel.add(title);
+
+		panel.add(Box.createVerticalStrut(35));
+
+		panel.add(buttonsPanel);
+
+		dialog.setContentPane(panel);
+		dialog.setVisible(true);
+	}
+	
+	public void showInsuranceOutcome(final double winMoney, final Runnable onContinue) {
+		// declaration and initialization of local variables
+		Window parent = SwingUtilities.getWindowAncestor(this); // window for the insurance outcome
+
+	    JDialog dialog = new JDialog(parent, "Outcome",  Dialog.ModalityType.APPLICATION_MODAL);
+	    dialog.setModal(true);
+	    dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+	    dialog.setSize(500, 280);
+	    dialog.setResizable(false);
+	    
+	    // setting the location of the window
+	    Point parentLocation = parent.getLocationOnScreen();
+
+	    int x = parentLocation.x
+	            + (parent.getWidth() - dialog.getWidth()) / 2;
+
+	    int y = parentLocation.y
+	            + 30;
+
+	    dialog.setLocation(x, y);
+		
+	    // setting the panel
+	    JPanel panel = new JPanel();
+	    panel.setLayout(
+	        new BoxLayout(panel, BoxLayout.Y_AXIS)
+	    );
+
+	    panel.setBackground(CASINO_GREEN);
+
+	    panel.setBorder(
+	        BorderFactory.createCompoundBorder(
+	            BorderFactory.createLineBorder(
+	                DARK_GOLD,
+	                4
+	            ),
+	            BorderFactory.createEmptyBorder(
+	                30, 40, 30, 40
+	            )
+	        )
+	    );
+	    
+	    // setting the title
+	    JLabel title = new JLabel("INSURANCE OUTCOME");
+	    title.setFont(new Font("Arial", Font.BOLD, 28));
+	    title.setForeground(DARK_GOLD);
+	    title.setAlignmentX(Component.CENTER_ALIGNMENT);
+	    
+	    // setting the result
+	    JLabel result;
+	    
+	    if (winMoney == 0) {
+	    	result = new JLabel("YOU LOST THE INSURANCE!");
+	    } else {
+	    	result = new JLabel("YOU WON " + winMoney + " €!");
+	    }
+
+	    result.setFont(new Font("Arial", Font.BOLD, 20));
+	    result.setForeground(LIGHT_TEXT);
+	    result.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+	    JButton continueButton = createButton("CONTINUE");
+	    continueButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+	    continueButton.addActionListener(
+	            e -> {dialog.dispose();
+	            onContinue.run();
+	        });
+
+	    panel.add(title);
+	    panel.add(Box.createVerticalStrut(20));
+	    panel.add(result);
+	    panel.add(Box.createVerticalStrut(10));
+	    panel.add(continueButton);
+	    
+	    dialog.setContentPane(panel);
+
+	    dialog.setVisible(true);
+	}
+	
 	public void setHitListener(final ActionListener listener) {
         this.hitButton.addActionListener(listener);
     }

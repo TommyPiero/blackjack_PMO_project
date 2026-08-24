@@ -82,6 +82,8 @@ public class PlayerImpl implements Player {
 		this.hands.add(newHand);
 		// deduction of the sum of the bets from the balance
 		this.balance -= (bet + sideBet);
+		// insurance is set to false
+		this.isInsured = false;
 	}
 	
 	public void hit(final Card card, final Hand hand) {

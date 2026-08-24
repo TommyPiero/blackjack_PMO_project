@@ -10,5 +10,6 @@ public record HandFields(
 		double bet,
 		boolean isBust,
 		boolean isStand,
-		boolean isInGame
+		boolean isInGame,
+		boolean isBlackjack
 ) {}
