@@ -4,13 +4,14 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 import it.uniurb.blackjack.model.cards.Card;
+import it.uniurb.blackjack.model.cards.PerfectPairs;
 
 // interface for the methods that will show the game table
 public interface BlackjackSwingTableView {
 	// declaration of methods
 	
 	// method that updates dealer's cards
-	public void updateDealerCards(final Card uncoveredCard, final boolean showCoveredCard, final Card coveredCard);
+	public void updateDealerCards(final Card uncoveredCard, final boolean showCoveredCard, final Card coveredCard, final List<Card> dealerCards);
 		
 	// method that updates dealer's score
 	public void updateDealerScore(final int score);
@@ -24,6 +25,9 @@ public interface BlackjackSwingTableView {
 	// method that updates bets
 	public void updateBet(final double bet, final double sideBet);
 		
+	// method that shows a screen for the outcome of the side bet
+	public void showSideBetOutcome(final double winMoney, final PerfectPairs sideBetLevel);
+	
 	// method that set a listener for the hit button	
 	public void setHitListener(final ActionListener listener);
 		

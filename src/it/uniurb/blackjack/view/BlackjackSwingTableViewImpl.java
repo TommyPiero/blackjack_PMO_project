@@ -6,21 +6,29 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Point;
+import java.awt.Window;
 import java.awt.event.ActionListener;
+import java.awt.Dialog;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.OverlayLayout;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import it.uniurb.blackjack.model.cards.Card;
 import it.uniurb.blackjack.model.cards.CardColor;
+import it.uniurb.blackjack.model.cards.PerfectPairs;
 import it.uniurb.blackjack.model.cards.Suit;
 
 import java.awt.BorderLayout;
@@ -37,6 +45,7 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
     private JPanel playerCardSpace;
     private JLabel balanceLabel;
     private JLabel betLabel;
+    private JPanel sideBetOverlay;
 
     private JButton hitButton;
     private JButton standButton;
@@ -45,6 +54,13 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
     
     // class' constructor
     public BlackjackSwingTableViewImpl() {
+
+        this.setLayout(new OverlayLayout(this));
+
+        this.setBackground(CASINO_GREEN);
+
+        this.setBorder(new EmptyBorder(20, 20, 20, 20));
+    	
     	this.setLayout(new BorderLayout(15, 15));
         this.setBackground(CASINO_GREEN);
         this.setBorder(new EmptyBorder(20, 20, 20, 20));
@@ -65,6 +81,10 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
         // initializing the zone for buttons
         JPanel buttonsZone = createButtonZone();
         mainPanel.add(buttonsZone, BorderLayout.SOUTH);    
+        
+        // Add the table as bottom layer
+        mainPanel.setAlignmentX(0.5f);
+        mainPanel.setAlignmentY(0.5f);
         
         add(mainPanel);
     }
@@ -96,10 +116,10 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
         this.doubleButton = createButton("DOUBLE");
         this.splitButton = createButton("SPLIT");
         
-        buttonsPanel.add(createButton("HIT"));
-        buttonsPanel.add(createButton("STAND"));
-        buttonsPanel.add(createButton("DOUBLE"));
-        buttonsPanel.add(createButton("SPLIT"));
+        buttonsPanel.add(this.hitButton);
+        buttonsPanel.add(this.standButton);
+        buttonsPanel.add(this.doubleButton);
+        buttonsPanel.add(this.splitButton);
         
         zone.add(infoPanel);
         zone.add(buttonsPanel);
@@ -115,9 +135,6 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 		button.setForeground(new Color(30, 30, 30));
 		button.setFocusPainted(false);
 		button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		
-		// this will be linked to the controller that will communicate with model
-		button.addActionListener(e -> System.out.println(text + " premuto"));
 		
 		return(button);
 		
@@ -244,13 +261,15 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 	    }
 	}
 	
-	public void updateDealerCards(final Card uncoveredCard, final boolean showCoveredCard, final Card coveredCard) {
+	public void updateDealerCards(final Card uncoveredCard, final boolean showCoveredCard, final Card coveredCard, final List<Card> dealerCards) {
 	    this.dealerCardSpace.removeAll();
-	    this.dealerCardSpace.add(createCardComponent(uncoveredCard));
 
 	    if (showCoveredCard) {
-	        this.dealerCardSpace.add(createCardComponent(coveredCard));
+	    	for (Card card : dealerCards) {
+		        this.dealerCardSpace.add(createCardComponent(card));
+		    }
 	    } else {
+		    this.dealerCardSpace.add(createCardComponent(uncoveredCard));
 	        this.dealerCardSpace.add(createFaceDownCard());
 	    }
 
@@ -283,6 +302,94 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
         this.betLabel.setText(String.format("Bet: %.2f \u20ac | Side bet: %.2f \u20ac", bet, sideBet));
     }
 	
+	public void showSideBetOutcome(final double winMoney, final PerfectPairs sideBetLevel) {
+		
+		Window parent = SwingUtilities.getWindowAncestor(this);
+
+	    JDialog dialog = new JDialog(
+	        parent,
+	        "Side Bet",
+	        Dialog.ModalityType.MODELESS
+	    );
+
+	    dialog.setSize(500, 280);
+	    dialog.setResizable(false);
+
+	    Point parentLocation = parent.getLocationOnScreen();
+
+	    int x = parentLocation.x
+	            + (parent.getWidth() - dialog.getWidth()) / 2;
+
+	    int y = parentLocation.y
+	            + 30;
+
+	    dialog.setLocation(x, y);
+		
+	    JPanel panel = new JPanel();
+	    panel.setLayout(
+	        new BoxLayout(panel, BoxLayout.Y_AXIS)
+	    );
+
+	    panel.setBackground(CASINO_GREEN);
+
+	    panel.setBorder(
+	        BorderFactory.createCompoundBorder(
+	            BorderFactory.createLineBorder(
+	                DARK_GOLD,
+	                4
+	            ),
+	            BorderFactory.createEmptyBorder(
+	                30, 40, 30, 40
+	            )
+	        )
+	    );
+
+	    JLabel title = new JLabel("SIDE BET");
+	    title.setFont(new Font("Arial", Font.BOLD, 30));
+	    title.setForeground(DARK_GOLD);
+	    title.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+	    JLabel result;
+	    
+	    switch (sideBetLevel) {
+	    	case PerfectPairs.PERF_PAIR:
+	    		result = new JLabel("PERFECT PAIR - YOU WIN " + String.format("%.2f", winMoney) + " €!");
+	    		break;
+	    	case PerfectPairs.COLOU_PAIR:
+	    		result = new JLabel("COLORED PAIR, YOU WIN " + String.format("%.2f", winMoney) + " €!");
+	    		break;
+	    	case PerfectPairs.MIX_PAIR:
+	    		result = new JLabel("MIXED PAIR, YOU WIN " + String.format("%.2f", winMoney) + " €!");
+	    		break;
+	    	case PerfectPairs.NO_PAIR:
+	    		result = new JLabel("NO PAIR, YOU LOST!");
+	    		break;
+	    	default:
+	    		result = new JLabel("SIDE BET RESULT");
+	    		break;
+	    }
+
+	    result.setFont(new Font("Arial", Font.BOLD, 20));
+	    result.setForeground(LIGHT_TEXT);
+	    result.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+	    JButton continueButton = createButton("CONTINUE");
+	    continueButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+	    continueButton.addActionListener(
+	            e -> dialog.dispose()
+	        );
+
+	    panel.add(title);
+	    panel.add(Box.createVerticalStrut(20));
+	    panel.add(result);
+	    panel.add(Box.createVerticalStrut(10));
+	    panel.add(continueButton);
+	    
+	    dialog.setContentPane(panel);
+
+	    dialog.setVisible(true);
+	}
+
 	public void setHitListener(final ActionListener listener) {
         this.hitButton.addActionListener(listener);
     }

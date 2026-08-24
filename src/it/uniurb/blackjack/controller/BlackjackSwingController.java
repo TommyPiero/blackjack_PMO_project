@@ -25,6 +25,8 @@ public class BlackjackSwingController implements BlackjackController {
         this.mainFrame.getTableScreen().setStandListener(e -> onMove(MoveType.STAND));
         this.mainFrame.getTableScreen().setDoubleListener(e -> onMove(MoveType.DOUBLE_DOWN));
         this.mainFrame.getTableScreen().setSplitListener(e -> onMove(MoveType.SPLIT));
+        
+        
 	}
 	
 	private void onMove(MoveType move) {
@@ -35,10 +37,16 @@ public class BlackjackSwingController implements BlackjackController {
 		try {
 			this.blackjack.makeMove(move, activeHand);
 			updateTable();
-
 		} catch (IllegalStateException e) {
 			this.mainFrame.getTableScreen().showErrorMessage("Error: " + e.getMessage());
 		}
+		
+		if (this.blackjack.getPlayerHands().get(activeHand).isBust() ||
+				this.blackjack.getPlayerHands().get(activeHand).isStand()) {
+			this.blackjack.playDealerHand();
+			updateTable();
+		}
+			
 	}
 
 	private void updateTable() {
@@ -54,13 +62,16 @@ public class BlackjackSwingController implements BlackjackController {
 	    table.updatePlayerCards(this.blackjack.getPlayerCards(0), this.blackjack.getPlayerScore(0));
 
 	    // dealer's card: show the covered one only if the round is finished
-	    boolean roundFinito = this.blackjack.isFinished();
+	    boolean roundFinished = this.blackjack.isFinished();
 	    table.updateDealerCards(
 	        this.blackjack.getDealerUncovCard(),
-	        roundFinito,
-	        roundFinito ? this.blackjack.getDealerCovCard() : null
+	        roundFinished,
+	        roundFinished ? this.blackjack.getDealerCovCard() : null,
+	        this.blackjack.getDealerHand().cards()
 	    );
-	    table.updateDealerScore(this.blackjack.getDealerStartHandScore());
+	    
+	    table.updateDealerScore(roundFinished ? this.blackjack.getDealerHand().score() :
+	    									    this.blackjack.getDealerStartHandScore());
 		
 	}
 
@@ -71,13 +82,15 @@ public class BlackjackSwingController implements BlackjackController {
         try {
             double mainBet = Double.parseDouble(betView.getMainBetText());
             double sideBet = Double.parseDouble(betView.getSideBetText());
-            
+                        
             this.blackjack.startRound(mainBet, sideBet);
-
-            updateTable();
-
+            
             this.mainFrame.showTableScreen();
-
+                        
+            updateTable();
+                        
+            this.mainFrame.getTableScreen().showSideBetOutcome(this.blackjack.verifySideBet(), this.blackjack.getPerfPairLevel());
+            
         } catch (NumberFormatException e) {
             betView.showErrorMessage("You have to insert a number for the bets!");
         } catch (IllegalArgumentException e) {

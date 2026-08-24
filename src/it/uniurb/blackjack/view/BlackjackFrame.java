@@ -17,6 +17,7 @@ public class BlackjackFrame extends JFrame {
     private BlackjackSwingMainView initScreen;
     private BlackjackSwingBetViewImpl betScreen;
     private BlackjackSwingTableViewImpl tableView;
+    
     // class' constructor
     public BlackjackFrame() {
         
