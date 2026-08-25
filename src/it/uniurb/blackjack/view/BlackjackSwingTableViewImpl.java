@@ -6,7 +6,6 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.awt.Dialog;
@@ -23,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.OverlayLayout;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
@@ -48,7 +48,6 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
     private JPanel playerHandsSpace;
     private JLabel balanceLabel;
     private JLabel betLabel;
-    private JLabel playerNameLabel;
     private JLabel settingsLabel;
     
     private JButton hitButton;
@@ -56,6 +55,9 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
     private JButton doubleButton;
     private JButton splitButton;
     
+    private Timer   countdownTimer;
+    private JLabel  timerLabel;       
+	private int     secondsRemaining;
     // class' constructor
     public BlackjackSwingTableViewImpl() {
 
@@ -92,7 +94,69 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
         
         add(mainPanel);
     }
-
+    
+    // method that creates a zone for the player
+ 	private JPanel createPlayerZone() {
+ 		// declaration and initialization of local variables
+ 		JPanel zone = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10)); // zone for the player
+ 		
+         zone.setBackground(CASINO_GREEN);
+         
+         zone.setPreferredSize(new Dimension(0, 220));
+         
+         // setting a border for the zone
+         TitledBorder border = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(DARK_GOLD, 2, true), " YOUR HAND ");
+         border.setTitleColor(DARK_GOLD);
+         zone.setBorder(BorderFactory.createCompoundBorder(border, new EmptyBorder(15, 15, 15, 15))); 
+         
+         this.playerHandsSpace = zone;
+         
+ 		return(zone);
+ 	}
+    
+ 	// method that creates a zone for the dealer
+ 	private JPanel createDealerZone() {
+ 		// declaration and initialization of local variables
+ 		JPanel zone = new JPanel(); // new zone for the dealer to create
+         zone.setLayout(new BoxLayout(zone, BoxLayout.Y_AXIS));
+         zone.setBackground(CASINO_GREEN);
+         
+         // setting the label for game settings
+         this.settingsLabel = new JLabel("Decks: - | Dealer: -");
+         this.settingsLabel.setForeground(DARK_GOLD);
+         this.settingsLabel.setFont(new Font("Arial", Font.PLAIN, 11));
+         this.settingsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+         
+         // creating a title for the zone
+         JLabel title = new JLabel("DEALER");
+         title.setFont(new Font("Arial", Font.BOLD, 14));
+         title.setForeground(DARK_GOLD);
+         title.setAlignmentX(Component.CENTER_ALIGNMENT);
+         
+         // blank zone that will contain dealer's cards
+         JPanel cardSpace = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
+         this.dealerCardSpace = cardSpace;
+         cardSpace.setBackground(CASINO_GREEN);
+         cardSpace.add(createBlankCardSpace());
+         cardSpace.add(createBlankCardSpace());
+         
+         // setting a label for the score
+         JLabel score = new JLabel("Score: -");
+         this.dealerScore = score;
+         score.setForeground(LIGHT_TEXT);
+         score.setAlignmentX(Component.CENTER_ALIGNMENT);
+         
+         zone.add(title);
+         zone.add(this.settingsLabel);
+         zone.add(cardSpace);
+         zone.add(score);
+         
+         
+ 		return(zone);
+ 	}
+ 	
+ 	
+ 	
     // method that creates a button zone
 	private JPanel createButtonZone() {
 		// declaration and initialization of local variables
@@ -126,7 +190,14 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
         buttonsPanel.add(this.doubleButton);
         buttonsPanel.add(this.splitButton);
         
+        // setting the timer label
+        this.timerLabel = new JLabel("Remaining time: -");
+        this.timerLabel.setFont(new Font("Arial", Font.BOLD, 12));
+		this.timerLabel.setForeground(DARK_GOLD);
+		this.timerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
         zone.add(infoPanel);
+        zone.add(this.timerLabel);
         zone.add(buttonsPanel);
         
         return(zone);
@@ -145,25 +216,6 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 		
 		return(button);
 		
-	}
-	
-	// method that creates a zone for the player
-	private JPanel createPlayerZone() {
-		// declaration and initialization of local variables
-		JPanel zone = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10)); // zone for the player
-		
-        zone.setBackground(CASINO_GREEN);
-        
-        zone.setPreferredSize(new Dimension(0, 220));
-        
-        // setting a border for the zone
-        TitledBorder border = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(DARK_GOLD, 2, true), " YOUR HAND ");
-        border.setTitleColor(DARK_GOLD);
-        zone.setBorder(BorderFactory.createCompoundBorder(border, new EmptyBorder(15, 15, 15, 15))); 
-        
-        this.playerHandsSpace = zone;
-        
-		return(zone);
 	}
 	
 	// method that creates the space for a hand
@@ -208,47 +260,6 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
         space.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         
         return(space);
-	}
-
-	// method that creates a zone for the dealer
-	private JPanel createDealerZone() {
-		// declaration and initialization of local variables
-		JPanel zone = new JPanel(); // new zone for the dealer to create
-        zone.setLayout(new BoxLayout(zone, BoxLayout.Y_AXIS));
-        zone.setBackground(CASINO_GREEN);
-        
-        // setting the label for game settings
-        this.settingsLabel = new JLabel("Decks: - | Dealer: -");
-        this.settingsLabel.setForeground(DARK_GOLD);
-        this.settingsLabel.setFont(new Font("Arial", Font.PLAIN, 11));
-        this.settingsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
-        // creating a title for the zone
-        JLabel title = new JLabel("DEALER");
-        title.setFont(new Font("Arial", Font.BOLD, 14));
-        title.setForeground(DARK_GOLD);
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
-        // blank zone that will contain dealer's cards
-        JPanel cardSpace = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
-        this.dealerCardSpace = cardSpace;
-        cardSpace.setBackground(CASINO_GREEN);
-        cardSpace.add(createBlankCardSpace());
-        cardSpace.add(createBlankCardSpace());
-        
-        // setting a label for the score
-        JLabel score = new JLabel("Score: -");
-        this.dealerScore = score;
-        score.setForeground(LIGHT_TEXT);
-        score.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
-        zone.add(title);
-        zone.add(this.settingsLabel);
-        zone.add(cardSpace);
-        zone.add(score);
-        
-        
-		return(zone);
 	}
 	
 	// method that creates a card with value and suit
@@ -443,6 +454,35 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 	    dialog.setVisible(true);
 	}
 	
+	// method that starts the timer for making a move
+	public void startMoveTimer(final int seconds, final Runnable onTimeout) {
+		// initialization of the seconds remaining
+		this.secondsRemaining = seconds;
+		
+		// setting the timer
+		this.countdownTimer = new Timer(1000, e -> {
+	        this.secondsRemaining--;
+	        timerLabel.setText("Remaining time: " + this.secondsRemaining + "s");
+	        
+	        // if time finish, stop the timer
+	        if (this.secondsRemaining <= 0) {
+	        	this.countdownTimer.stop();
+	        	// forcing the stand move
+	            onTimeout.run();
+	        }
+		});
+		
+		this.countdownTimer.start();
+	}
+	
+	// method that stops the timer for making a move, used by the controller when the player press a button in time
+	public void stopMoveTimer() {
+		if (this.countdownTimer != null 
+			&& this.countdownTimer.isRunning()) {
+	        this.countdownTimer.stop();
+		}
+	}
+	
 	public void showMainBetOutcome(final List<HandOutcome> outcomes, final Runnable onContinue) {
 		// declaration and initialization of local variables
 		Window parent = SwingUtilities.getWindowAncestor(this); // window for showing main bet outcome
@@ -613,13 +653,19 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 	    dialog.setVisible(true);
 	}
 	
-	public void showInsuranceDialog(final Runnable onYes) {
+	public void showInsuranceTimerDialog(final int seconds, final Runnable onYes) {
 		// declaration and initialization of local variables
 		Window parent = SwingUtilities.getWindowAncestor(this); // window for asking for the insurance
-
+		
+		// setting a label for the timer
+		JLabel timerLabel = new JLabel("Remaining time: " + seconds + "s");
+		timerLabel.setFont(new Font("Arial", Font.BOLD, 12));
+		timerLabel.setForeground(DARK_GOLD);
+		timerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
 		// setting windows dialog
 		JDialog dialog = new JDialog(parent,"Blackjack",Dialog.ModalityType.APPLICATION_MODAL);
-		dialog.setModal(true);
+		dialog.setModalityType(Dialog.DEFAULT_MODALITY_TYPE);
 		dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		dialog.setSize(450, 220);
 		dialog.setResizable(false);
@@ -651,27 +697,45 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 		// setting the two buttons
 		JButton yesButton = createButton("YES");
 		JButton noButton = createButton("NO");
-
+		// array for moving inside the lambda expression that contains remaining seconds
+		int remaining[] = {seconds};
+		
+		// setting a timer for the insurance question
+		Timer timer = new Timer(1000, null);
+		timer.addActionListener(e -> {
+	        remaining[0]--;
+	        timerLabel.setText("Remaining time: " + remaining[0] + "s");
+	        // if remaining time is zero, timer stops
+	        if (remaining[0] <= 0) {
+	            timer.stop();
+	            dialog.dispose();
+	        }
+		});
+		
 		// on yes, the player insure
 		yesButton.addActionListener(e -> {
+			timer.stop();
 			dialog.dispose();
 			onYes.run();
 		});
+	    noButton.addActionListener(e -> {
+	    	timer.stop();
+	    	dialog.dispose();
+	    });
 
-		noButton.addActionListener(e -> {
-			dialog.dispose();
-		});
 
 		buttonsPanel.add(yesButton);
 		buttonsPanel.add(noButton);
 
 		panel.add(title);
-
 		panel.add(Box.createVerticalStrut(35));
-
+		panel.add(timerLabel);
+		panel.add(Box.createVerticalStrut(15));
 		panel.add(buttonsPanel);
-
 		dialog.setContentPane(panel);
+		
+		timer.start();
+		
 		dialog.setVisible(true);
 	}
 	

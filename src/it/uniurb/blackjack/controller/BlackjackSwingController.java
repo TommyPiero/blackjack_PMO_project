@@ -39,7 +39,7 @@ public class BlackjackSwingController {
 	// method that asks the player for insurance
 	private void askForInsurance() {
 		// shows the dialog for the player insurance
-		this.mainFrame.getTableScreen().showInsuranceDialog(
+		this.mainFrame.getTableScreen().showInsuranceTimerDialog(20,
 				() -> {
 					this.blackjack.getPlayer().insure();
 					updateTable();
@@ -59,9 +59,22 @@ public class BlackjackSwingController {
 		    );
 	}
 	
+	// method that permits to force a stand when the player's timer ends
+	private void forceStand() {
+		onMove(MoveType.STAND);
+	}
+	
+	// method that permit to start the player timer for a move
+	private void startPlayerMoveTimer() {
+		this.mainFrame.getTableScreen().startMoveTimer(20, this::forceStand);
+	}
+	
 	// method that permits to make a move and save the changes
 	private void onMove(MoveType move) {
 		try {
+			// timer stops because the player pressed a button or because ended his run
+			this.mainFrame.getTableScreen().stopMoveTimer();
+			
 			// if the hand is in game, play the move
 			if (this.blackjack.getPlayerHands().get(activeHand).isInGame()) {
 				this.blackjack.makeMove(move, activeHand);
@@ -147,6 +160,9 @@ public class BlackjackSwingController {
             this.mainFrame.showTableScreen();
                         
             updateTable();
+            
+            // starting the player timer
+            startPlayerMoveTimer();
             
             // showing the screen for the result of side bets
             if (this.blackjack.getPlayerSideBet() != 0) {

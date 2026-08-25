@@ -40,7 +40,7 @@ public interface BlackjackSwingTableView {
 	public void showNewRoundDialog(final Runnable onYes);
 	
 	// method that shows the dialog that asks the player for the insurance
-	public void showInsuranceDialog(final Runnable onYes);
+	public void showInsuranceTimerDialog(final int seconds, final Runnable onYes);
 	
 	// method that shows the outcome of the insurance
 	public void showInsuranceOutcome(final double winMoney, final Runnable onContinue);
