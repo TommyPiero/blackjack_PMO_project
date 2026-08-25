@@ -24,7 +24,7 @@ public class BlackjackFrame extends JFrame {
     	super("Blackjack");
         // frame's settings
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(900, 500);
+        setSize(900, 600);
         setLocationRelativeTo(null);
 
         this.cardLayout = new CardLayout();

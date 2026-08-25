@@ -1,22 +1,31 @@
 package it.uniurb.blackjack.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import it.uniurb.blackjack.model.game.Blackjack;
+import it.uniurb.blackjack.model.game.HandFields;
+import it.uniurb.blackjack.model.game.HandOutcome;
 import it.uniurb.blackjack.model.game.MoveType;
+import it.uniurb.blackjack.model.game.OutcomeType;
 import it.uniurb.blackjack.view.BlackjackFrame;
 import it.uniurb.blackjack.view.BlackjackSwingBetView;
 import it.uniurb.blackjack.view.BlackjackSwingMainView;
 import it.uniurb.blackjack.view.BlackjackSwingTableViewImpl;
 
-public class BlackjackSwingController implements BlackjackController {
+public class BlackjackSwingController {
 
 	// declaration of class' fields
 	Blackjack blackjack;       // model of the application
 	BlackjackFrame mainFrame;  // view of the application
 	
+	private int activeHand;    // field that records the actual active hand
+	
 	// class' constructor
 	public BlackjackSwingController(final Blackjack blackjack, final BlackjackFrame view) {
 		this.blackjack = blackjack;
 		this.mainFrame = view;
+		this.activeHand = 0;
 		
 		this.mainFrame.getInitScreen().setConfirmButtonListener(e -> onConfirmSetup());
         this.mainFrame.getBetScreen().setPlaceBetsListener(e -> onConfirmBet());
@@ -25,9 +34,7 @@ public class BlackjackSwingController implements BlackjackController {
         this.mainFrame.getTableScreen().setStandListener(e -> onMove(MoveType.STAND));
         this.mainFrame.getTableScreen().setDoubleListener(e -> onMove(MoveType.DOUBLE_DOWN));
         this.mainFrame.getTableScreen().setSplitListener(e -> onMove(MoveType.SPLIT));
-        
-        
-	}
+}
 	
 	// method that asks the player for insurance
 	private void askForInsurance() {
@@ -52,43 +59,52 @@ public class BlackjackSwingController implements BlackjackController {
 		    );
 	}
 	
+	// method that permits to make a move and save the changes
 	private void onMove(MoveType move) {
-		// for now we always act on hand 0: multi-hand handling (after a split) will be added later
-		// declaration and initialization of local variables
-		int activeHand = 0; // active hand
-
 		try {
+			// if the hand is in game, play the move
 			if (this.blackjack.getPlayerHands().get(activeHand).isInGame()) {
 				this.blackjack.makeMove(move, activeHand);
 			}
 			updateTable();
+			// if the hand is not more in game after the move, change the hand
+			if (!this.blackjack.getPlayerHands().get(activeHand).isInGame()) {
+				moveToNextHand();
+			}
 		} catch (IllegalStateException e) {
 			this.mainFrame.getTableScreen().showErrorMessage("Error: " + e.getMessage());
-		}
-		
-		if (!this.blackjack.getPlayerHands().get(activeHand).isInGame()) {
-			if (!this.blackjack.getPlayerHands().get(activeHand).isBust()) {
-				this.blackjack.playDealerHand();
-			}
-			updateTable();
-			if (this.blackjack.getPlayer().isInsured()) {
-				this.mainFrame.getTableScreen().showInsuranceOutcome(
-						this.blackjack.verifyInsurance(),
-						() -> this.mainFrame.getTableScreen().showMainBetOutcome(
-								this.blackjack.verifyFinalOutcome(0),
-								this.blackjack.getOutcome(),
-								this::askForNewRound));
-			} else {
-				this.mainFrame.getTableScreen().showMainBetOutcome(
-						this.blackjack.verifyFinalOutcome(0),
-						this.blackjack.getOutcome(),
-						this::askForNewRound);
-			}
-				
-		}
-			
+		}			
 	}
 
+	// method that permits to move to the next hand
+	private void moveToNextHand() {
+
+	    if ((this.activeHand + 1) < (this.blackjack.getPlayerHands().size())) {
+
+	        this.activeHand++;
+
+	        updateTable();
+
+	    } else {
+
+	        // terminated all hands
+	    	if (!this.blackjack.getPlayerHands().get(activeHand).isInGame()) {
+				if (!this.blackjack.getPlayerHands().get(activeHand).isBust()) {
+					this.blackjack.playDealerHand();
+				}
+				updateTable();
+				if (this.blackjack.getPlayer().isInsured()) {
+					this.mainFrame.getTableScreen().showInsuranceOutcome(
+							this.blackjack.verifyInsurance(),
+							this::showFinalOutcome);
+				} else {
+					showFinalOutcome();
+				}
+	    	}
+	    }
+	}
+	
+	// method that updates the table after moves
 	private void updateTable() {
 		// declaration and initialization of local variables
 		BlackjackSwingTableViewImpl table = this.mainFrame.getTableScreen(); // table screen
@@ -97,9 +113,8 @@ public class BlackjackSwingController implements BlackjackController {
 		table.updateBalance(this.blackjack.getPlayerBalance());
 		table.updateBet(this.blackjack.getPlayerBet(0), this.blackjack.getPlayerSideBet());
 		
-		// cards update
-		// player's cards (hand 0, for now)
-	    table.updatePlayerCards(this.blackjack.getPlayerCards(0), this.blackjack.getPlayerScore(0));
+		// hands update
+	    table.updatePlayerHands(this.blackjack.getPlayerHands(), this.activeHand);
 
 	    // dealer's card: show the covered one only if the round is finished
 	    boolean roundFinished = this.blackjack.isFinished();
@@ -110,6 +125,7 @@ public class BlackjackSwingController implements BlackjackController {
 	        this.blackjack.getDealerHand().cards()
 	    );
 	    
+	    // updating the dealer's score
 	    table.updateDealerScore(roundFinished ? this.blackjack.getDealerHand().score() :
 	    									    this.blackjack.getDealerStartHandScore());
 	}
@@ -125,6 +141,9 @@ public class BlackjackSwingController implements BlackjackController {
                         
             this.blackjack.startRound(mainBet, sideBet);
             
+            // resetting the active hand to zero
+            this.activeHand = 0;
+            
             this.mainFrame.showTableScreen();
                         
             updateTable();
@@ -138,12 +157,11 @@ public class BlackjackSwingController implements BlackjackController {
             	askForInsurance();
             }
             
+            // if the hand is a blackjack finish instantly the player's turn
             if (this.blackjack.getPlayerHands().get(0).isBlackjack()) {
             	this.blackjack.playDealerHand();
             	updateTable();
-            	this.mainFrame.getTableScreen().showMainBetOutcome(this.blackjack.verifyFinalOutcome(0),
-            			                                           this.blackjack.getOutcome(),
-            			                                           this::askForNewRound);
+            	showFinalOutcome();
             }
             
         } catch (NumberFormatException e) {
@@ -173,7 +191,9 @@ public class BlackjackSwingController implements BlackjackController {
             
             this.blackjack.configureGame(numDecks, isSoftDealer);
             this.blackjack.startGame(playerName, playerBalance);
-
+            
+            this.mainFrame.getTableScreen().updateSettings(numDecks, isSoftDealer);
+            
             this.mainFrame.getBetScreen().updateBalanceDisplay(this.blackjack.getPlayerBalance());
             this.mainFrame.showBetScreen();
             
@@ -182,5 +202,20 @@ public class BlackjackSwingController implements BlackjackController {
         } catch (IllegalArgumentException e) {
             init.showErrorMessage("Error: " + e.getMessage());
         }
+	}
+	
+	// method that shows the final outcome
+	private void showFinalOutcome() {
+		// declaration of local variables
+		List<HandFields> hands = this.blackjack.getPlayerHands(); // list of player's hands
+	    List<HandOutcome> results = new ArrayList<>();            // list of hand's results
+
+	    for (int i = 0; i < hands.size(); i++) {
+	        double wonMoney = this.blackjack.verifyFinalOutcome(i);
+	        OutcomeType outcome = this.blackjack.getOutcome();
+	        results.add(new HandOutcome(hands.get(i).bet(), wonMoney, outcome));
+	    }
+
+	    this.mainFrame.getTableScreen().showMainBetOutcome(results, this::askForNewRound);
 	}
 }

@@ -1,7 +1,6 @@
 package it.uniurb.appblackjack;
 
 import it.uniurb.blackjack.controller.BlackjackTextController;
-import it.uniurb.blackjack.controller.BlackjackController;
 import it.uniurb.blackjack.model.game.Blackjack;
 import it.uniurb.blackjack.view.BlackjackTextView;
 import it.uniurb.blackjack.view.BlackjackView;

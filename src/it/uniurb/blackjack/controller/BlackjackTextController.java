@@ -8,7 +8,7 @@ import it.uniurb.blackjack.model.game.MoveType;
 import it.uniurb.blackjack.view.BlackjackView;
 
 // class that implements a controller for a command line version of the game
-public class BlackjackTextController implements BlackjackController {
+public class BlackjackTextController {
 	// declaration of the fields of the class
 	private Blackjack blackjack;    // model of the game
 	private BlackjackView view; // view of the game in a command line version

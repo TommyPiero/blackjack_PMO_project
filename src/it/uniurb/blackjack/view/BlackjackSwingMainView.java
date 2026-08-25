@@ -71,14 +71,13 @@ public class BlackjackSwingMainView extends JPanel{
 
         this.typeDealerField = new JCheckBox("Activate the Soft 17 rule (Hit on soft 17)");
         
-        // Popoliamo il pannello centrale con Label e TextField
-        formPanel.add(createStyledLabel("Nome Giocatore:"));
+        formPanel.add(createStyledLabel("Player name (max 30 characters):"));
         formPanel.add(this.nameField);
         
-        formPanel.add(createStyledLabel("Saldo Iniziale (€):"));
+        formPanel.add(createStyledLabel("Starting balance (max 1000€):"));
         formPanel.add(this.balanceField);
         
-        formPanel.add(createStyledLabel("Numero Mazzi (2-8):"));
+        formPanel.add(createStyledLabel("Number of decks (2-8):"));
         formPanel.add(this.numDecksField);
         
         formPanel.add(createStyledLabel("Dealer Soft Hit (y/n):"));
@@ -86,22 +85,20 @@ public class BlackjackSwingMainView extends JPanel{
 
         this.add(formPanel, BorderLayout.CENTER);
 
-        // 5. CREAZIONE DEL PULSANTE DI CONFERMA (In basso - SOUTH)
         this.confirmButton = new JButton("ENTRA NEL TAVOLO DI GIOCO");
         this.confirmButton.setFont(new Font("Arial", Font.BOLD, 14));
         this.confirmButton.setBackground(DARK_GOLD);
-        this.confirmButton.setForeground(new Color(30, 30, 30)); // Testo scuro sul bottone oro
-        this.confirmButton.setFocusPainted(false); // Rimuove il fastidioso rettangolino attorno al testo al click
-        this.confirmButton.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Manina al passaggio del mouse
+        this.confirmButton.setForeground(new Color(30, 30, 30)); 
+        this.confirmButton.setFocusPainted(false); 
+        this.confirmButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         this.confirmButton.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(Color.WHITE, 1),
-            new EmptyBorder(12, 0, 12, 0) // Rende il bottone più alto e cliccabile
+            new EmptyBorder(12, 0, 12, 0) 
         ));
         
-        // Pannello di posizionamento per non far allungare troppo il bottone a tutto schermo
         JPanel buttonWrapper = new JPanel(new BorderLayout());
         buttonWrapper.setBackground(CASINO_GREEN);
-        buttonWrapper.setBorder(new EmptyBorder(15, 50, 0, 50)); // Stringe il bottone ai lati
+        buttonWrapper.setBorder(new EmptyBorder(15, 50, 0, 50));
         buttonWrapper.add(this.confirmButton, BorderLayout.CENTER);
         
         this.add(buttonWrapper, BorderLayout.SOUTH);
@@ -111,20 +108,22 @@ public class BlackjackSwingMainView extends JPanel{
 		JLabel label = new JLabel(text);
         label.setFont(new Font("Arial", Font.BOLD, 13));
         label.setForeground(LIGHT_TEXT);
-        return label;
+        
+        return(label);
 	}
 
 	private JTextField createStyledTextField(final int columns) {
 		JTextField textField = new JTextField(columns);
         textField.setFont(new Font("Arial", Font.PLAIN, 13));
-        textField.setBackground(new Color(245, 245, 245)); // Grigio chiarissimo quasi bianco
+        textField.setBackground(new Color(245, 245, 245)); 
         textField.setForeground(Color.BLACK);
-        // Aggiunge un po' di margine interno al testo per non farlo stare appiccicato ai bordi del box
+
         textField.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(DARK_GOLD, 1),
             new EmptyBorder(5, 5, 5, 5)
         ));
-        return textField;
+        
+        return (textField);
 	}
 
 	public String askName() {
@@ -143,8 +142,9 @@ public class BlackjackSwingMainView extends JPanel{
 		// declaration and initialization of local variables
 		boolean isSoftDealer = false; // flag that record if the dealer is a soft dealer or not
 		
-		if ((this.typeDealerField.getText().trim()).equals("y"))
+		if (this.typeDealerField.isSelected()) {
 			isSoftDealer = true;
+		}
 		
 		return(isSoftDealer);
 	}

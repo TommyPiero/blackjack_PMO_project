@@ -5,11 +5,15 @@ import java.util.List;
 
 import it.uniurb.blackjack.model.cards.Card;
 import it.uniurb.blackjack.model.cards.PerfectPairs;
-import it.uniurb.blackjack.model.game.OutcomeType;
+import it.uniurb.blackjack.model.game.HandFields;
+import it.uniurb.blackjack.model.game.HandOutcome;
 
 // interface for the methods that will show the game table
 public interface BlackjackSwingTableView {
 	// declaration of methods
+	
+	// method that updates the main game settings
+	public void updateSettings(final int numDecks, final boolean hitOnSoft);
 	
 	// method that updates dealer's cards
 	public void updateDealerCards(final Card uncoveredCard, final boolean showCoveredCard, final Card coveredCard, final List<Card> dealerCards);
@@ -17,8 +21,8 @@ public interface BlackjackSwingTableView {
 	// method that updates dealer's score
 	public void updateDealerScore(final int score);
 	
-	// method that updates player's cards
-	public void updatePlayerCards(final List<Card> cards, final int score);
+	// method that updates player's hands
+	public void updatePlayerHands(final List<HandFields> hands, final int activeHand);
 		
 	// method that updates balance
 	public void updateBalance(final double balance);
@@ -30,7 +34,7 @@ public interface BlackjackSwingTableView {
 	public void showSideBetOutcome(final double winMoney, final PerfectPairs sideBetLevel);
 	
 	// method that shows a screen for the outcome of the main bet
-	public void showMainBetOutcome(final double winMoney, final OutcomeType outcome, final Runnable onContinue);
+	public void showMainBetOutcome(final List<HandOutcome> outcomes, final Runnable onContinue);
 	
 	// method that shows the dialog that asks the player for a new round
 	public void showNewRoundDialog(final Runnable onYes);
