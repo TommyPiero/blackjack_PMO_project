@@ -28,7 +28,7 @@ public interface BlackjackView {
 	public boolean askDealerType(); 
 	
 	// method that asks for insurance if the round permits it
-	public boolean askInsurance();
+	public boolean askInsuranceWithTimeOut();
 	
 	// method that shows the table (cards of player and dealer)
 	public void showStartTable(final TableState tableState);
@@ -39,8 +39,8 @@ public interface BlackjackView {
 	// method that shows the final table with all the uncovered card
 	public void showFinalTable(final TableState tableState);
 	
-	// method that shows and asks the possible moves
-	public String askMoves();
+	// method that shows and asks the possible moves with a time out of 20 seconds
+	public String askMoveWithTimeOut();
 	
 	// method that shows the outcome of sideBets
 	public void showSideBet(final TableState tablestate, final double wonMoney);

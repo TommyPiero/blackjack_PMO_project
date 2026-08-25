@@ -21,9 +21,9 @@ public class BlackjackTextController {
 
 	public void startGame() {
 		// declaration of local variables
-		String playerName = this.view.askName(); // name of the player
-		double balance = this.view.askBalance(); // starting balance of the player
-		boolean playAgain = true;                // flag for the player if he wants to play another round
+		String  playerName = this.view.askName(); // name of the player
+		double  balance = this.view.askBalance(); // starting balance of the player
+		boolean playAgain = true;                 // flag for the player if he wants to play another round
 		
 		// setting a new game
 		this.blackjack.configureGame(this.view.askNumDecks(), this.view.askDealerType());
@@ -75,7 +75,7 @@ public class BlackjackTextController {
 			// asking for the insurance if the dealer as an ace as uncovered card
 			if (startTableState.dealerUncoveredCard().isAnAce()) {
 				try {
-					if (this.view.askInsurance()) {
+					if (this.view.askInsuranceWithTimeOut()) {
 						this.blackjack.getPlayer().insure();
 						this.blackjack.verifyInsurance();
 					}
@@ -94,7 +94,7 @@ public class BlackjackTextController {
 					
 					while (!isMoveValid) {
 						try {
-							input = this.view.askMoves();
+							input = this.view.askMoveWithTimeOut();
 							// selecting the correct move based on the string
 							switch (input) {
 								case "+":

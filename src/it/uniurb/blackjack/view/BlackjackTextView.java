@@ -1,5 +1,6 @@
 package it.uniurb.blackjack.view;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 import it.uniurb.blackjack.controller.TableState;
@@ -176,26 +177,42 @@ public class BlackjackTextView implements BlackjackView {
 		return (chipsOnSideBet);
 	}
 	
-	public boolean askInsurance() {
-		// declaration of local variables
-		String  input;             // starting input from the user
-		boolean isInsured = false; // boolean output that control if the player wants to insure
-		boolean isCorrect = false; // boolean control for the number of chips
+	public boolean askInsuranceWithTimeOut() {
+		// declaration and initialization of local variables
+		final int     TIMEOUT_SECONDS = 20;                   // max time for the timer, 20 seconds
+        long          startTime = System.currentTimeMillis(); // starting time
+		String        input = null;             			  // starting input from the user
+		StringBuilder inputBuffer = new StringBuilder();      // buffer for the input
+		boolean       isInsured = false;					  // flag that record if a player is insured or not
 		
-		do {
-			System.out.println("\nDo you want to insure(y/n)? It will cost half of the bet");
-			input = scanner.nextLine().trim();
-			
-			try {
-				if (input.equals("y") ||
-					input.equals("n"))
-					isCorrect = true;
-				else
-					System.out.println("The answer is not valid retry");
-			} catch (NumberFormatException e) {
-				System.out.println("Error: not valid value inserted");
+		// asking for insurance
+		System.out.println("\nDo you want to insure(y/n)? It will cost half of the bet");
+		try {
+			while (System.currentTimeMillis() - startTime < TIMEOUT_SECONDS * 1000L) {
+	            long remaining = TIMEOUT_SECONDS - (System.currentTimeMillis() - startTime) / 1000;
+	            System.out.print("\rRemaining time: " + remaining + "s   ");
+	            
+	            if (System.in.available() > 0) {
+	                int ch = System.in.read();
+	                if (ch == '\n') {
+	                    input = inputBuffer.toString().trim();
+	                    break;
+	                } else if (ch != '\r') {
+	                    inputBuffer.append((char) ch);
+	                }
+	            }
+	            Thread.sleep(1000);
 			}
-		} while (!isCorrect);
+		} catch (IOException | InterruptedException e) {
+	        throw new RuntimeException("Error on reading input", e);
+	    }
+		
+		System.out.println();
+
+	    if (input == null) {
+	        System.out.println("Time's up! Insurance refused automatically!");
+	        return false;
+	    }
 		
 		if (input.equals("y"))
 			isInsured = true;
@@ -287,22 +304,44 @@ public class BlackjackTextView implements BlackjackView {
 
 	}
 	
-	public String askMoves() {
-		// declaration of local variables
-		String move; // move chose from the player
-		boolean isCorrect = false; // bool for the correct outcome of the input
-
-		do {
-			System.out.println("Choose a move: hit(+), stand(-), double down(x), split(/)");
-			move = scanner.nextLine().trim();
-
-			if (move.equals("+") || move.equals("-") || move.equals("x") || move.equals("/"))
-				isCorrect = true;
-			else
-				System.out.println("The move is not valid");
-		} while (!isCorrect);
-
-		return (move);
+	public String askMoveWithTimeOut() {
+		// declaration and initialization of local variables
+        final int     TIMEOUT_SECONDS = 20;                   // max time for the timer, 20 seconds
+        long          startTime = System.currentTimeMillis(); // starting time
+        StringBuilder inputBuffer = new StringBuilder();      // buffer for the input
+		String        move = null;                            // move chose from the player
+		
+		// asking for a move
+		System.out.println("Choose a move: hit(+), stand(-), double down(x), split(/)");
+		try {
+			while (System.currentTimeMillis() - startTime < TIMEOUT_SECONDS * 1000L) {
+	            long remaining = TIMEOUT_SECONDS - (System.currentTimeMillis() - startTime) / 1000;
+	            System.out.print("\rRemaining time: " + remaining + "s   ");
+	            
+	            if (System.in.available() > 0) {
+	                int ch = System.in.read();
+	                if (ch == '\n') {
+	                    move = inputBuffer.toString().trim();
+	                    break;
+	                } else if (ch != '\r') {
+	                    inputBuffer.append((char) ch);
+	                }
+	            }
+	            Thread.sleep(1000);
+			}
+		} catch (IOException | InterruptedException e) {
+	        throw new RuntimeException("Error on reading input", e);
+	    }
+		
+		System.out.println();
+			
+		// setting to stand when the timer finish
+		if (move == null || !(move.equals("+") || move.equals("-") || move.equals("x") || move.equals("/"))) {
+	        System.out.println("Time's up or not valid move! Forced stand.");
+	        move = "-";
+	    }
+		
+		return(move);
 	}
 
 	public void showSideBet(final TableState tableState, final double wonMoney) {
@@ -329,8 +368,9 @@ public class BlackjackTextView implements BlackjackView {
 	
 	public void showOutcome(final TableState tableState, final double wonBet, final OutcomeType outcome, final int i) {
 		System.out.println("\n==========================");
-		System.out.println("     RESULTS FOR HAND " + i + "    ");
+		System.out.println("     RESULTS FOR HAND " + (i + 1) + "    ");
 		System.out.println("===========================");
+		
 		// printing the correct outcome
 		switch (outcome) {
 			case OutcomeType.PLAY_WIN:
