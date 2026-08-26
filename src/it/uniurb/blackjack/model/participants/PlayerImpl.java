@@ -102,8 +102,15 @@ public class PlayerImpl implements Player {
 	public void doubleDown(final Card card, final Hand hand) {
 		// if there is enough money a card is taken
 		if (this.balance < hand.getBet()) {
-			throw new IllegalStateException("Player has not enough money");
+			throw new IllegalStateException("Player has not enough money!");
 		}
+		
+		// throwing an error if the card are more than two
+		// double down can be done only in a hand with two cards
+		if (hand.getCards().size() != 2 ) {
+			throw new IllegalStateException("Double down can be executed only with two cards!");
+		}
+		
 		// taking a new card and decreasing the balance of the value of the bet
 		hand.takeCard(card);
 		balance -= hand.getBet();
@@ -116,15 +123,23 @@ public class PlayerImpl implements Player {
 	
 	public void split(final Card cardOne, final Card cardTwo, final Hand hand) {
 		// throwing an exception if there is not enough money
-		if (this.balance < hand.getBet())
-			throw new IllegalStateException("Player has not enough money");
+		if (this.balance < hand.getBet()) {
+			throw new IllegalStateException("Player has not enough money!");
+		}
 		// throwing an exception if the hand comes from a split
-		if (hand.isFromSplit())
-			throw new IllegalStateException("Can't split an hand that comes from a split");
+		if (hand.isFromSplit()) {
+			throw new IllegalStateException("Can't split an hand that comes from a split!");
+		}
 		// throwing an exception if the hand has more than two cards
-		if (hand.getCards().size() != 2)
-			throw new IllegalStateException("Can't split an hand with more than two cards");
-
+		if (hand.getCards().size() != 2) {
+			throw new IllegalStateException("Can't split an hand with more than two cards!");
+		}
+		// throwing an error if the cards have different nominal value
+		// split can be executed only with card with same nominal value
+		if (hand.getCards().get(0).getNominalValue() != hand.getCards().get(1).getNominalValue()) {
+			throw new IllegalStateException("Can't split an hand of two cards with different nominal value!");
+		}
+		
 		// declaration and initialization of local variables
 		Card firstCard = hand.getCards().get(0);			    // first card of the original hand
 		Card secondCard = hand.getCards().get(1);               // second card of the original hand

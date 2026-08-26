@@ -220,13 +220,19 @@ public class BlackjackTest {
 		// initializing new bj objects
 		Blackjack bj1 = new Blackjack();
 		Blackjack bj2 = new Blackjack();
+		Blackjack bj3 = new Blackjack();
+		Blackjack bj4 = new Blackjack();
 		
 		bj1.configureGame(4, true);
 		bj2.configureGame(6, false);
+		bj3.configureGame(3, false);
+		bj4.configureGame(7, true);
 		
 		// initializing players
 		bj1.getPlayer().initPlayer("first", 100.0);
 		bj2.getPlayer().initPlayer("second", 200.0);
+		bj3.getPlayer().initPlayer("third", 300.0);
+		bj3.getPlayer().initPlayer("fourth", 400.0);
 		
 		// trying to make a move before the bet has set
 		assertThrows(IllegalStateException.class, () -> {
@@ -242,11 +248,11 @@ public class BlackjackTest {
 		});
 		
 		// starting a new round
-		bj2.startRound(20.0, 0.0);
-		// trying to split twice a hand
-		bj2.makeMove(MoveType.SPLIT, 0);
+		bj3.startRound(10.0, 0.0);
+		// trying to double down a hand with more than two cards
+		bj3.makeMove(MoveType.HIT, 0);
 		assertThrows(IllegalStateException.class, () -> {
-			bj2.makeMove(MoveType.SPLIT, 0);
+			bj3.makeMove(MoveType.DOUBLE_DOWN, 0);
 		});
 	}
 }

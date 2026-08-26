@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import it.uniurb.blackjack.model.cards.CardImpl;
+import it.uniurb.blackjack.model.cards.Suit;
 import it.uniurb.blackjack.model.participants.PlayerImpl;
 
 //implementation of a class for testing the correct behavior of Player class 
@@ -51,6 +53,49 @@ public class PlayerTest {
 		// expecting the sixth player to throw an exception (not enough money for the insurance)
 		assertThrows(IllegalStateException.class, () -> {
 			player6.insure();
+		});
+	}
+	
+	// 2. Testing split and double down exceptions
+	@Test
+	public void testSplitDoubleDownExceptions() {
+		// initializing different players
+		PlayerImpl player1 = new PlayerImpl();
+		PlayerImpl player2 = new PlayerImpl();
+		PlayerImpl player3 = new PlayerImpl();
+		
+		// initializing names and balance of players
+		player1.initPlayer("two_splits", 500.0);
+		player2.initPlayer("split_diff_cards", 700.0);
+		player3.initPlayer("illegal_doub_down", 300.0);
+		
+		// starting a new round for player one
+		player1.newRound(10.0, 0.0);
+		player1.hit(new CardImpl(6, Suit.CLUBS), player1.getHand(0));
+		player1.hit(new CardImpl(6, Suit.HEARTS), player1.getHand(0));
+		player1.split(new CardImpl(8, Suit.DIAMONDS), new CardImpl(10, Suit.SPADES), player1.getHand(0));
+		// trying to split a hand twice
+		assertThrows(IllegalStateException.class, () -> {
+			player1.split(new CardImpl(12, Suit.DIAMONDS), new CardImpl(4, Suit.HEARTS), player1.getHand(0));
+		});
+		
+		// starting a new round for player two
+		player2.newRound(20.0, 0.0);
+		player2.hit(new CardImpl(12, Suit.SPADES), player2.getHand(0));
+		player2.hit(new CardImpl(13, Suit.DIAMONDS), player2.getHand(0));
+		// trying to split a hand with cards with different nominal value
+		assertThrows(IllegalStateException.class, () -> {
+			player2.split(new CardImpl(11, Suit.HEARTS), new CardImpl(2, Suit.CLUBS), player2.getHand(0));
+		});
+		
+		// starting a new round for player three
+		player3.newRound(30.0, 0.0);
+		player3.hit(new CardImpl(5, Suit.DIAMONDS), player3.getHand(0));
+		player3.hit(new CardImpl(6, Suit.DIAMONDS), player3.getHand(0));
+		player3.hit(new CardImpl(2, Suit.SPADES), player3.getHand(0));
+		// trying to double down with more than two cards
+		assertThrows(IllegalStateException.class, () -> {
+			player3.doubleDown(new CardImpl(5, Suit.SPADES), player3.getHand(0));
 		});
 	}
 }
