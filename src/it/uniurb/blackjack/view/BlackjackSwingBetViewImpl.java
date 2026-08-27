@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
@@ -27,6 +28,7 @@ public class BlackjackSwingBetViewImpl extends JPanel implements BlackjackSwingB
     private JLabel     titleLabel;       // label for the panel's title
     private JPanel     betsPanel;        // panel for inserting bets
     private JPanel     buttonWrapper;    // wrapper for the button
+    private JButton    backButton;       // back button for the bet screen
     
     // initialization of constants for panel's colors
     private final Color CASINO_GREEN = new Color(7, 94, 46);
@@ -93,6 +95,22 @@ public class BlackjackSwingBetViewImpl extends JPanel implements BlackjackSwingB
         buttonWrapper.setBorder(new EmptyBorder(15, 30, 0, 30));
         buttonWrapper.add(this.placeBetsButton, BorderLayout.CENTER);
         this.add(buttonWrapper, BorderLayout.SOUTH);
+        
+        // adding a back button. It permits to return to the previous screen
+
+        this.backButton = new JButton("← BACK");
+        this.backButton.setFont(new Font("Arial", Font.BOLD, 13));
+        this.backButton.setBackground(DARK_GOLD);
+        this.backButton.setForeground(new Color(30, 30, 30));
+        this.backButton.setFocusPainted(false);
+        this.backButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        topPanel.setBackground(CASINO_GREEN);
+
+        topPanel.add(this.backButton);
+
+        add(topPanel, BorderLayout.NORTH);
     }
     
     // method that updates in real time the counter of the balance
@@ -113,6 +131,11 @@ public class BlackjackSwingBetViewImpl extends JPanel implements BlackjackSwingB
     // setter method for the listener
     public void setPlaceBetsListener(final ActionListener listener) {
     	this.placeBetsButton.addActionListener(listener);
+    }
+    
+    // setter method for the back button listener
+    public void setBackButtonListener(final ActionListener listener) {
+        this.backButton.addActionListener(listener);
     }
     
     public void showErrorMessage(final String string) {

@@ -6,14 +6,17 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.Window;
 import java.awt.event.ActionListener;
+import java.net.URL;
 import java.awt.Dialog;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -58,9 +61,14 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
     private Timer   countdownTimer;
     private JLabel  timerLabel;       
 	private int     secondsRemaining;
+	
+	private String currentSetType;
+	
     // class' constructor
     public BlackjackSwingTableViewImpl() {
 
+    	this.currentSetType = "PixelCards";
+    	
         this.setLayout(new OverlayLayout(this));
 
         this.setBackground(CASINO_GREEN);
@@ -253,7 +261,7 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 	
 	// method that creates a blank space for a future card
 	private Component createBlankCardSpace() {
-		// declaration and initialization of local variables
+		// declaration and initialization of local variables		
 		JPanel space = new JPanel(); // panel for blank card
         space.setPreferredSize(new Dimension(64, 92));
         space.setBackground(Color.WHITE);
@@ -265,28 +273,20 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 	// method that creates a card with value and suit
 	private JPanel createCardComponent(final Card card) {
 		// declaration and initialization of local variables
+		String fileName = "card_" + card.getSuit().toString().toLowerCase() + "_" + card.getNominalValue() + ".png"; // name of card's image file
+		
+		ImageIcon icon = loadCardImage(fileName);
+		
 		JPanel cardPanel = new JPanel(new BorderLayout()); // panel for a card
 	    cardPanel.setPreferredSize(new Dimension(64, 92));
 	    cardPanel.setBackground(Color.WHITE);
 	    cardPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 	    
-	    // initializing the color of the card
-	    boolean isRed = (card.getColor() == CardColor.RED);
-	    Color suitColor = isRed ? new Color(200, 30, 30) : Color.BLACK;
-
-	    // initializing the value of the card
-	    JLabel valueLabel = new JLabel(cardValueText(card));
-	    valueLabel.setForeground(suitColor);
-	    valueLabel.setBorder(new EmptyBorder(4, 6, 0, 0));
-	    
-	    // initializing the suit of the card
-	    JLabel suitLabel = new JLabel(suitSymbol(card.getSuit()), SwingConstants.RIGHT);
-	    suitLabel.setForeground(suitColor);
-	    suitLabel.setBorder(new EmptyBorder(0, 0, 4, 6));
+	    // creating card label
+	    JLabel cardLabel = new JLabel(icon);
 
 	    // adding card to the panel
-	    cardPanel.add(valueLabel, BorderLayout.NORTH);
-	    cardPanel.add(suitLabel, BorderLayout.SOUTH);
+	    cardPanel.add(cardLabel);
 	    
 	    return(cardPanel);
 	}
@@ -294,33 +294,45 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 	// method that create a face down card
 	private JPanel createFaceDownCard() {
 		// declaration and initialization of local variables
-	    JPanel cardPanel = new JPanel(); // panel for a card
+		ImageIcon icon = loadCardImage("card_back.png"); // name of file for face down card
+	    JPanel cardPanel = new JPanel();            	 // panel for a card
 	    
 	    cardPanel.setPreferredSize(new Dimension(64, 92));
 	    cardPanel.setBackground(new Color(30, 30, 30));
 	    cardPanel.setBorder(BorderFactory.createLineBorder(DARK_GOLD));
+	    
+	    // creating card label
+	    JLabel cardLabel = new JLabel(icon);
+	    
+	    cardPanel.add(cardLabel);
+	    
 	    return cardPanel;
 	}
 	
-	// method that return a text value for each BJ value of cards
-	private String cardValueText(final Card card) {
-	    if (card.isAnAce()) return "A";
-	    int value = card.getNominalValue();
-	    if (value == 11) return "J";
-	    if (value == 12) return "Q";
-	    if (value == 13) return "K";
-	    return String.valueOf(value);
+	// method that loads the image of cards
+	private ImageIcon loadCardImage(final String fileName) {
+		URL imageUrl = getClass().getResource("/Resources." + this.currentSetType + "/" + fileName);
+		
+		if (imageUrl == null) {
+	        throw new IllegalStateException("Card image not found: " + fileName);
+	    }
+		
+		ImageIcon original = new ImageIcon(imageUrl);
+		
+		int originalWidth = original.getIconWidth();
+	    int originalHeight = original.getIconHeight();
+	    
+	    int targetWidth = 80;
+	    int targetHeight = (int) (targetWidth * ((double) originalHeight / originalWidth));
+	    
+	    
+		
+	    Image scaled = original.getImage().getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
+	    return new ImageIcon(scaled);
 	}
 	
-	// method that return a suit symbol
-	private String suitSymbol(final Suit suit) {
-	    switch (suit) {
-	        case Suit.HEARTS:   return "\u2665";
-	        case Suit.DIAMONDS: return "\u2666";
-	        case Suit.CLUBS:    return "\u2663";
-	        case Suit.SPADES:   return "\u2660";
-	        default:       return "?";
-	    }
+	public void setCardSetType(final String cardSetType) {
+	    this.currentSetType = cardSetType;
 	}
 	
 	public void updateSettings(final int numDecks, final boolean hitOnSoft) {

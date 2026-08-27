@@ -34,7 +34,9 @@ public class BlackjackSwingController {
         this.mainFrame.getTableScreen().setStandListener(e -> onMove(MoveType.STAND));
         this.mainFrame.getTableScreen().setDoubleListener(e -> onMove(MoveType.DOUBLE_DOWN));
         this.mainFrame.getTableScreen().setSplitListener(e -> onMove(MoveType.SPLIT));
-}
+        this.mainFrame.getBetScreen()
+        .setBackButtonListener(e -> onBackToInit());
+	}
 	
 	// method that asks the player for insurance
 	private void askForInsurance() {
@@ -72,12 +74,11 @@ public class BlackjackSwingController {
 	// method that permits to make a move and save the changes
 	private void onMove(MoveType move) {
 		try {
-			// timer stops because the player pressed a button or because ended his run
-			this.mainFrame.getTableScreen().stopMoveTimer();
-			
 			// if the hand is in game, play the move
 			if (this.blackjack.getPlayerHands().get(activeHand).isInGame()) {
 				this.blackjack.makeMove(move, activeHand);
+				// timer stops because the player pressed a button or because ended his run
+				this.mainFrame.getTableScreen().stopMoveTimer();
 			}
 			updateTable();
 			// if the hand is not more in game after the move, change the hand
@@ -187,6 +188,11 @@ public class BlackjackSwingController {
         }
 	}
 
+	// method that permits to get back to the starting screen
+	private void onBackToInit() {
+	    this.mainFrame.showInitScreen();;
+	}
+	
 	// method for initializing player and game
 	private void onConfirmSetup() {
 		// declaration and initialization of local variables
@@ -197,6 +203,7 @@ public class BlackjackSwingController {
             boolean isSoftDealer = init.askDealerType();
             String playerName = init.askName();
             double playerBalance = init.askBalance();
+            String cardSetType = this.mainFrame.getInitScreen().askCardSetType();
             
             if (playerName.isEmpty())
                 throw new IllegalArgumentException("Compile all the fields");
@@ -209,6 +216,7 @@ public class BlackjackSwingController {
             this.blackjack.startGame(playerName, playerBalance);
             
             this.mainFrame.getTableScreen().updateSettings(numDecks, isSoftDealer);
+            this.mainFrame.getTableScreen().setCardSetType(cardSetType);
             
             this.mainFrame.getBetScreen().updateBalanceDisplay(this.blackjack.getPlayerBalance());
             this.mainFrame.showBetScreen();

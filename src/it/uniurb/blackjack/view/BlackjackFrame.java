@@ -42,6 +42,10 @@ public class BlackjackFrame extends JFrame {
         cardLayout.show(this.panelContainer, INIT_SCREEN);
     }
 
+    public void showInitScreen() {
+    	cardLayout.show(this.panelContainer, INIT_SCREEN);
+    }
+    
     public void showBetScreen() {
         cardLayout.show(this.panelContainer, BET_SCREEN);
     }
