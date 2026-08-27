@@ -18,5 +18,9 @@ public interface BlackjackSwingBetView {
     // setter method for the listener
     public void setPlaceBetsListener(final ActionListener listener);
 
+    // setter method for the back button listener
+    public void setBackButtonListener(final ActionListener listener);
+    
+    // method that shows an error message
 	public void showErrorMessage(String string);
 }

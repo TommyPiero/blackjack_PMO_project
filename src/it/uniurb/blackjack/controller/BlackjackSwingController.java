@@ -1,5 +1,6 @@
 package it.uniurb.blackjack.controller;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,21 +9,21 @@ import it.uniurb.blackjack.model.game.HandFields;
 import it.uniurb.blackjack.model.game.HandOutcome;
 import it.uniurb.blackjack.model.game.MoveType;
 import it.uniurb.blackjack.model.game.OutcomeType;
-import it.uniurb.blackjack.view.BlackjackFrame;
+import it.uniurb.blackjack.view.BlackjackFrameImpl;
 import it.uniurb.blackjack.view.BlackjackSwingBetView;
-import it.uniurb.blackjack.view.BlackjackSwingMainView;
+import it.uniurb.blackjack.view.BlackjackSwingInitViewImpl;
 import it.uniurb.blackjack.view.BlackjackSwingTableViewImpl;
 
 public class BlackjackSwingController {
 
 	// declaration of class' fields
 	Blackjack blackjack;       // model of the application
-	BlackjackFrame mainFrame;  // view of the application
+	BlackjackFrameImpl mainFrame;  // view of the application
 	
 	private int activeHand;    // field that records the actual active hand
 	
 	// class' constructor
-	public BlackjackSwingController(final Blackjack blackjack, final BlackjackFrame view) {
+	public BlackjackSwingController(final Blackjack blackjack, final BlackjackFrameImpl view) {
 		this.blackjack = blackjack;
 		this.mainFrame = view;
 		this.activeHand = 0;
@@ -84,10 +85,14 @@ public class BlackjackSwingController {
 			// if the hand is not more in game after the move, change the hand
 			if (!this.blackjack.getPlayerHands().get(activeHand).isInGame()) {
 				moveToNextHand();
-			}
+			} else {
+	            startPlayerMoveTimer();
+	        }
 		} catch (IllegalStateException e) {
 			this.mainFrame.getTableScreen().showErrorMessage("Error: " + e.getMessage());
 		}			
+		
+		
 	}
 
 	// method that permits to move to the next hand
@@ -196,7 +201,7 @@ public class BlackjackSwingController {
 	// method for initializing player and game
 	private void onConfirmSetup() {
 		// declaration and initialization of local variables
-		BlackjackSwingMainView init = this.mainFrame.getInitScreen(); // player initialization screen
+		BlackjackSwingInitViewImpl init = this.mainFrame.getInitScreen(); // player initialization screen
 		
         try {
             int numDecks = init.askNumDecks();
@@ -204,6 +209,7 @@ public class BlackjackSwingController {
             String playerName = init.askName();
             double playerBalance = init.askBalance();
             String cardSetType = this.mainFrame.getInitScreen().askCardSetType();
+            Color  tableColor = this.mainFrame.getInitScreen().askTableColor();
             
             if (playerName.isEmpty())
                 throw new IllegalArgumentException("Compile all the fields");
@@ -217,6 +223,7 @@ public class BlackjackSwingController {
             
             this.mainFrame.getTableScreen().updateSettings(numDecks, isSoftDealer);
             this.mainFrame.getTableScreen().setCardSetType(cardSetType);
+            this.mainFrame.getTableScreen().setTableColor(tableColor);
             
             this.mainFrame.getBetScreen().updateBalanceDisplay(this.blackjack.getPlayerBalance());
             this.mainFrame.showBetScreen();

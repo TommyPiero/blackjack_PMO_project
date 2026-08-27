@@ -6,9 +6,12 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.Window;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.awt.Dialog;
 import java.util.List;
@@ -22,17 +25,13 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.OverlayLayout;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import it.uniurb.blackjack.model.cards.Card;
-import it.uniurb.blackjack.model.cards.CardColor;
 import it.uniurb.blackjack.model.cards.PerfectPairs;
-import it.uniurb.blackjack.model.cards.Suit;
 import it.uniurb.blackjack.model.game.HandFields;
 import it.uniurb.blackjack.model.game.HandOutcome;
 import it.uniurb.blackjack.model.game.OutcomeType;
@@ -41,60 +40,64 @@ import java.awt.BorderLayout;
 
 public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwingTableView{
 	// declaration of color constants
-	private final Color CASINO_GREEN = new Color(7, 94, 46);
-    private final Color DARK_GOLD    = new Color(212, 175, 55);
-    private final Color LIGHT_TEXT   = Color.WHITE;
-
+	private static final Color CASINO_GREEN = new Color(7, 94, 46);    // color for the menus background
+    private static final Color DARK_GOLD    = new Color(212, 175, 55); // color for the borders
+    private static final Color LIGHT_TEXT   = Color.WHITE;             // color for the labels
+    
     // declaration of local fields
-    private JPanel dealerCardSpace;
-    private JLabel dealerScore;
-    private JPanel playerHandsSpace;
-    private JLabel balanceLabel;
-    private JLabel betLabel;
-    private JLabel settingsLabel;
-    
-    private JButton hitButton;
-    private JButton standButton;
-    private JButton doubleButton;
-    private JButton splitButton;
-    
-    private Timer   countdownTimer;
-    private JLabel  timerLabel;       
-	private int     secondsRemaining;
-	
-	private String currentSetType;
+    private JPanel  mainPanel;         // main panel of the table
+    private JPanel  dealerZone;        // zone for the dealer
+    private JPanel  playerZone;        // zone for the player
+    private JPanel  buttonsZone;       // zone for the buttons 
+    private JPanel  dealerCardSpace;   // panel for the dealer's cards space
+    private JLabel  dealerScore;       // label that will contain the dealer's score
+    private JPanel  playerHandsSpace;  // panel for the player's hands space
+    private JLabel  balanceLabel;      // label that will contain the player's balance
+    private JLabel  betLabel;		   // label that will contain the hand bets
+    private JPanel  infoPanel;         // panel for player info
+    private JLabel  settingsLabel;     // label that will contain informations about game settings
+    private JButton hitButton;         // button for the hit move
+    private JButton standButton;       // button for the stand move
+    private JButton doubleButton;      // button for the double down move
+    private JButton splitButton;       // button for the split move
+    private JPanel  buttonsPanel;      // panel for the move buttons
+    private Timer   countdownTimer;    // timer for the count down
+    private JLabel  timerLabel;        // label that will show the timer with the remaining time
+	private int     secondsRemaining;  // seconds of timer remaining
+	private String  currentSetType;    // current set type name
+	private Color   currentTableColor; // current table color
 	
     // class' constructor
     public BlackjackSwingTableViewImpl() {
-
+    	// setting a default type for the set type and the table color
     	this.currentSetType = "PixelCards";
+    	this.currentTableColor = new Color(7, 94, 46);
     	
-        this.setLayout(new OverlayLayout(this));
-
-        this.setBackground(CASINO_GREEN);
-
-        this.setBorder(new EmptyBorder(20, 20, 20, 20));
-    	
+    	// setting table layout
     	this.setLayout(new BorderLayout(15, 15));
-        this.setBackground(CASINO_GREEN);
+        this.setBackground(this.currentTableColor);
         this.setBorder(new EmptyBorder(20, 20, 20, 20));
         
         // initializing the main panel with five spaces (NORTH, CENTER, SOUTH, WEST, EAST)
         JPanel mainPanel = new JPanel(new BorderLayout(15, 15));
-        mainPanel.setBackground(CASINO_GREEN);
-        mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        this.mainPanel = mainPanel;
+        this.mainPanel.setBackground(this.currentTableColor);
+        this.mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         
         // initializing the zone for dealer's cards
         JPanel dealerZone = createDealerZone();
-        mainPanel.add(dealerZone, BorderLayout.NORTH);
+        this.dealerZone = dealerZone;
+        mainPanel.add(this.dealerZone, BorderLayout.NORTH);
         
         // initializing the zone for player's cards
         JPanel playerZone = createPlayerZone();
-        mainPanel.add(playerZone, BorderLayout.CENTER);
+        this.playerZone = playerZone;
+        mainPanel.add(this.playerZone, BorderLayout.CENTER);
         
         // initializing the zone for buttons
         JPanel buttonsZone = createButtonZone();
-        mainPanel.add(buttonsZone, BorderLayout.SOUTH);    
+        this.buttonsZone = buttonsZone;
+        mainPanel.add(this.buttonsZone, BorderLayout.SOUTH);    
         
         // Add the table as bottom layer
         mainPanel.setAlignmentX(0.5f);
@@ -108,16 +111,16 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
  		// declaration and initialization of local variables
  		JPanel zone = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10)); // zone for the player
  		
-         zone.setBackground(CASINO_GREEN);
+        zone.setBackground(this.currentTableColor);
          
-         zone.setPreferredSize(new Dimension(0, 220));
+        zone.setPreferredSize(new Dimension(0, 220));
          
-         // setting a border for the zone
-         TitledBorder border = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(DARK_GOLD, 2, true), " YOUR HAND ");
-         border.setTitleColor(DARK_GOLD);
-         zone.setBorder(BorderFactory.createCompoundBorder(border, new EmptyBorder(15, 15, 15, 15))); 
+        // setting a border for the zone
+        TitledBorder border = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(DARK_GOLD, 2, true), " YOUR HAND ");
+        border.setTitleColor(DARK_GOLD);
+        zone.setBorder(BorderFactory.createCompoundBorder(border, new EmptyBorder(15, 15, 15, 15))); 
          
-         this.playerHandsSpace = zone;
+        this.playerHandsSpace = zone;
          
  		return(zone);
  	}
@@ -126,38 +129,38 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
  	private JPanel createDealerZone() {
  		// declaration and initialization of local variables
  		JPanel zone = new JPanel(); // new zone for the dealer to create
-         zone.setLayout(new BoxLayout(zone, BoxLayout.Y_AXIS));
-         zone.setBackground(CASINO_GREEN);
+        zone.setLayout(new BoxLayout(zone, BoxLayout.Y_AXIS));
+        zone.setBackground(this.currentTableColor);
          
-         // setting the label for game settings
-         this.settingsLabel = new JLabel("Decks: - | Dealer: -");
-         this.settingsLabel.setForeground(DARK_GOLD);
-         this.settingsLabel.setFont(new Font("Arial", Font.PLAIN, 11));
-         this.settingsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        // setting the label for game settings
+        this.settingsLabel = new JLabel("Decks: - | Dealer: -");
+        this.settingsLabel.setForeground(DARK_GOLD);
+        this.settingsLabel.setFont(new Font("Arial", Font.PLAIN, 11));
+        this.settingsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
          
-         // creating a title for the zone
-         JLabel title = new JLabel("DEALER");
-         title.setFont(new Font("Arial", Font.BOLD, 14));
-         title.setForeground(DARK_GOLD);
-         title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        // creating a title for the zone
+        JLabel title = new JLabel("DEALER");
+        title.setFont(new Font("Arial", Font.BOLD, 14));
+        title.setForeground(DARK_GOLD);
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
          
-         // blank zone that will contain dealer's cards
-         JPanel cardSpace = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
-         this.dealerCardSpace = cardSpace;
-         cardSpace.setBackground(CASINO_GREEN);
-         cardSpace.add(createBlankCardSpace());
-         cardSpace.add(createBlankCardSpace());
+        // blank zone that will contain dealer's cards
+        JPanel cardSpace = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
+        this.dealerCardSpace = cardSpace;
+        cardSpace.setBackground(this.currentTableColor);
+        cardSpace.add(createBlankCardSpace());
+        cardSpace.add(createBlankCardSpace());
          
-         // setting a label for the score
-         JLabel score = new JLabel("Score: -");
-         this.dealerScore = score;
-         score.setForeground(LIGHT_TEXT);
-         score.setAlignmentX(Component.CENTER_ALIGNMENT);
+        // setting a label for the score
+        JLabel score = new JLabel("Score: -");
+        this.dealerScore = score;
+        score.setForeground(LIGHT_TEXT);
+        score.setAlignmentX(Component.CENTER_ALIGNMENT);
          
-         zone.add(title);
-         zone.add(this.settingsLabel);
-         zone.add(cardSpace);
-         zone.add(score);
+        zone.add(title);
+        zone.add(this.settingsLabel);
+        zone.add(cardSpace);
+        zone.add(score);
          
          
  		return(zone);
@@ -170,33 +173,35 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 		// declaration and initialization of local variables
 		JPanel zone = new JPanel(); // zone for button
         zone.setLayout(new BoxLayout(zone, BoxLayout.Y_AXIS));
-        zone.setBackground(CASINO_GREEN);
+        zone.setBackground(this.currentTableColor);
         
         // line with balance and bet
         JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 5));
-        infoPanel.setBackground(CASINO_GREEN);
+        this.infoPanel = infoPanel;
+        this.infoPanel.setBackground(this.currentTableColor);
         JLabel balance = new JLabel("Balance: -");
         this.balanceLabel = balance;
         balance.setForeground(LIGHT_TEXT);
         JLabel bet = new JLabel("Bet: -");
         this.betLabel = bet;
         bet.setForeground(LIGHT_TEXT);
-        infoPanel.add(balance);
-        infoPanel.add(bet);
+        this.infoPanel.add(balance);
+        this.infoPanel.add(bet);
         
         // line with button moves
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        buttonsPanel.setBackground(CASINO_GREEN);
+        this.buttonsPanel = buttonsPanel;
+        this.buttonsPanel.setBackground(this.currentTableColor);
         
         this.hitButton = createButton("HIT");
         this.standButton = createButton("STAND");
         this.doubleButton = createButton("DOUBLE");
         this.splitButton = createButton("SPLIT");
         
-        buttonsPanel.add(this.hitButton);
-        buttonsPanel.add(this.standButton);
-        buttonsPanel.add(this.doubleButton);
-        buttonsPanel.add(this.splitButton);
+        this.buttonsPanel.add(this.hitButton);
+        this.buttonsPanel.add(this.standButton);
+        this.buttonsPanel.add(this.doubleButton);
+        this.buttonsPanel.add(this.splitButton);
         
         // setting the timer label
         this.timerLabel = new JLabel("Remaining time: -");
@@ -204,9 +209,9 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 		this.timerLabel.setForeground(DARK_GOLD);
 		this.timerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
-        zone.add(infoPanel);
+        zone.add(this.infoPanel);
         zone.add(this.timerLabel);
-        zone.add(buttonsPanel);
+        zone.add(this.buttonsPanel);
         
         return(zone);
 	}
@@ -231,7 +236,7 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 		// declaration and initialization of local variables
 		JPanel handPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5)); // panel for a hand
 
-		handPanel.setBackground(CASINO_GREEN);
+		handPanel.setBackground(this.currentTableColor);
 
 		// setting border color
 		Color borderColor = isActive ? Color.WHITE : DARK_GOLD;
@@ -279,12 +284,13 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 		
 		JPanel cardPanel = new JPanel(new BorderLayout()); // panel for a card
 	    cardPanel.setPreferredSize(new Dimension(64, 92));
-	    cardPanel.setBackground(Color.WHITE);
-	    cardPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+	    cardPanel.setBackground(this.currentTableColor);
+	    cardPanel.setBorder(BorderFactory.createLineBorder(this.currentTableColor));
 	    
-	    // creating card label
+	    // creating card label with proportional dimensions
 	    JLabel cardLabel = new JLabel(icon);
-
+	    cardLabel.setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
+	    
 	    // adding card to the panel
 	    cardPanel.add(cardLabel);
 	    
@@ -297,13 +303,14 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 		ImageIcon icon = loadCardImage("card_back.png"); // name of file for face down card
 	    JPanel cardPanel = new JPanel();            	 // panel for a card
 	    
-	    cardPanel.setPreferredSize(new Dimension(64, 92));
-	    cardPanel.setBackground(new Color(30, 30, 30));
-	    cardPanel.setBorder(BorderFactory.createLineBorder(DARK_GOLD));
+	    cardPanel.setPreferredSize(new Dimension(66, 94));
+	    cardPanel.setBackground(this.currentTableColor);
+	    cardPanel.setBorder(BorderFactory.createLineBorder(this.currentTableColor));
 	    
-	    // creating card label
+	    // creating card label with proportional dimensions
 	    JLabel cardLabel = new JLabel(icon);
-	    
+	    cardLabel.setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
+
 	    cardPanel.add(cardLabel);
 	    
 	    return cardPanel;
@@ -311,8 +318,10 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 	
 	// method that loads the image of cards
 	private ImageIcon loadCardImage(final String fileName) {
+		// initializing the image URL
 		URL imageUrl = getClass().getResource("/Resources." + this.currentSetType + "/" + fileName);
 		
+		// throwing an exception if the URL is null
 		if (imageUrl == null) {
 	        throw new IllegalStateException("Card image not found: " + fileName);
 	    }
@@ -322,17 +331,44 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 		int originalWidth = original.getIconWidth();
 	    int originalHeight = original.getIconHeight();
 	    
-	    int targetWidth = 80;
+	    // resizing proportionally the images, if pixel cards change the width value
+	    int targetWidth = this.currentSetType.equals("PixelCards") ? 90 : 64;;
 	    int targetHeight = (int) (targetWidth * ((double) originalHeight / originalWidth));
+	   
+	    Image scaled;
+	    if (this.currentSetType.equals("PixelCards")) {
+	    	BufferedImage buffered = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
+	        Graphics2D g = buffered.createGraphics();
+	        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+	        g.drawImage(original.getImage(), 0, 0, targetWidth, targetHeight, null);
+	        g.dispose();
+	        scaled = buffered;
+	    } else {
+	    	scaled = original.getImage().getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
+	    }
 	    
-	    
-		
-	    Image scaled = original.getImage().getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
 	    return new ImageIcon(scaled);
 	}
 	
 	public void setCardSetType(final String cardSetType) {
 	    this.currentSetType = cardSetType;
+	}
+	
+	public void setTableColor(final Color tableColor) {
+		this.currentTableColor = tableColor;
+		
+		// setting the color in all the panels
+		this.setBackground(tableColor);
+		this.mainPanel.setBackground(tableColor);
+	    this.dealerZone.setBackground(tableColor);
+	    this.playerZone.setBackground(tableColor);
+	    this.buttonsZone.setBackground(tableColor);
+	    this.dealerCardSpace.setBackground(tableColor);
+	    this.playerHandsSpace.setBackground(tableColor);
+	    this.infoPanel.setBackground(tableColor);
+	    this.buttonsPanel.setBackground(tableColor);
+	    this.revalidate();
+	    this.repaint();
 	}
 	
 	public void updateSettings(final int numDecks, final boolean hitOnSoft) {
@@ -399,23 +435,12 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 
 	    // setting panel
 	    JPanel panel = new JPanel();
-	    panel.setLayout(
-	        new BoxLayout(panel, BoxLayout.Y_AXIS)
-	    );
+	    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
 	    panel.setBackground(CASINO_GREEN);
 
-	    panel.setBorder(
-	        BorderFactory.createCompoundBorder(
-	            BorderFactory.createLineBorder(
-	                DARK_GOLD,
-	                4
-	            ),
-	            BorderFactory.createEmptyBorder(
-	                30, 40, 30, 40
-	            )
-	        )
-	    );
+	    panel.setBorder( BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(DARK_GOLD, 4),
+	            											BorderFactory.createEmptyBorder(30, 40, 30, 40)));
 	    
 	    // setting title for the pop up
 	    JLabel title = new JLabel("SIDE BET");
@@ -451,9 +476,7 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 	    // setting the continue button that close the window
 	    JButton continueButton = createButton("CONTINUE");
 	    continueButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-	    continueButton.addActionListener(
-	            e -> dialog.dispose()
-	        );
+	    continueButton.addActionListener(e -> dialog.dispose());
 
 	    panel.add(title);
 	    panel.add(Box.createVerticalStrut(20));
@@ -466,7 +489,6 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 	    dialog.setVisible(true);
 	}
 	
-	// method that starts the timer for making a move
 	public void startMoveTimer(final int seconds, final Runnable onTimeout) {
 		// initialization of the seconds remaining
 		this.secondsRemaining = seconds;
@@ -487,10 +509,9 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 		this.countdownTimer.start();
 	}
 	
-	// method that stops the timer for making a move, used by the controller when the player press a button in time
 	public void stopMoveTimer() {
-		if (this.countdownTimer != null 
-			&& this.countdownTimer.isRunning()) {
+		if (this.countdownTimer != null &&
+			this.countdownTimer.isRunning()) {
 	        this.countdownTimer.stop();
 		}
 	}
@@ -512,19 +533,10 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 	        new BoxLayout(panel, BoxLayout.Y_AXIS)
 	    );
 
-	    panel.setBackground(CASINO_GREEN);
+	    panel.setBackground(this.currentTableColor);
 
-	    panel.setBorder(
-	        BorderFactory.createCompoundBorder(
-	            BorderFactory.createLineBorder(
-	                DARK_GOLD,
-	                4
-	            ),
-	            BorderFactory.createEmptyBorder(
-	                30, 40, 30, 40
-	            )
-	        )
-	    );
+	    panel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(DARK_GOLD, 4),
+	            										   BorderFactory.createEmptyBorder(30, 40, 30, 40)));
 
 	    // setting title
 	    JLabel title = new JLabel("OUTCOME");
@@ -600,39 +612,24 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 	        new BoxLayout(panel, BoxLayout.Y_AXIS)
 	    );
 
-	    panel.setBackground(CASINO_GREEN);
+	    panel.setBackground(this.currentTableColor);
 
 	    panel.setBorder(
-	        BorderFactory.createCompoundBorder(
-	            BorderFactory.createLineBorder(
-	                DARK_GOLD, 4
-	            ),
-	            BorderFactory.createEmptyBorder(
-	                25, 40, 25, 40
-	            )
-	        )
-	    );
+	        BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(DARK_GOLD, 4), 
+	        								   BorderFactory.createEmptyBorder(25, 40, 25, 40)));
 
 	    // setting windows title, it asks for a new round
 	    JLabel title = new JLabel("PLAY AGAIN?");
 
-	    title.setFont(
-	        new Font("Arial", Font.BOLD, 28)
-	    );
+	    title.setFont(new Font("Arial", Font.BOLD, 28));
 
 	    title.setForeground(DARK_GOLD);
 	    title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 	    // setting the buttons panel for yes or no
-	    JPanel buttonsPanel = new JPanel(
-	        new FlowLayout(
-	            FlowLayout.CENTER,
-	            20,
-	            10
-	        )
-	    );
+	    JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
 
-	    buttonsPanel.setBackground(CASINO_GREEN);
+	    buttonsPanel.setBackground(this.currentTableColor);
 
 	    // setting the two buttons
 	    JButton yesButton = createButton("YES");
@@ -647,7 +644,6 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 	    // on no, the application gets closed
 	    noButton.addActionListener(e -> {
 	        dialog.dispose();
-	        System.exit(0);
 	    });
 
 	    buttonsPanel.add(yesButton);
@@ -655,9 +651,7 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 
 	    panel.add(title);
 
-	    panel.add(
-	        Box.createVerticalStrut(35)
-	    );
+	    panel.add(Box.createVerticalStrut(35));
 
 	    panel.add(buttonsPanel);
 
@@ -687,7 +681,7 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-		panel.setBackground(CASINO_GREEN);
+		panel.setBackground(this.currentTableColor);
 
 		panel.setBorder(BorderFactory.createCompoundBorder(
 			            BorderFactory.createLineBorder(DARK_GOLD, 4),
@@ -704,7 +698,7 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 		// setting the buttons panel for yes or no
 		JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
 
-		buttonsPanel.setBackground(CASINO_GREEN);
+		buttonsPanel.setBackground(this.currentTableColor);
 
 		// setting the two buttons
 		JButton yesButton = createButton("YES");
@@ -767,19 +761,11 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 	        new BoxLayout(panel, BoxLayout.Y_AXIS)
 	    );
 
-	    panel.setBackground(CASINO_GREEN);
+	    panel.setBackground(this.currentTableColor);
 
 	    panel.setBorder(
-	        BorderFactory.createCompoundBorder(
-	            BorderFactory.createLineBorder(
-	                DARK_GOLD,
-	                4
-	            ),
-	            BorderFactory.createEmptyBorder(
-	                30, 40, 30, 40
-	            )
-	        )
-	    );
+	        BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(DARK_GOLD, 4),
+	        								   BorderFactory.createEmptyBorder(30, 40, 30, 40)));
 	    
 	    // setting the title
 	    JLabel title = new JLabel("INSURANCE OUTCOME");
@@ -803,8 +789,8 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 	    // setting the continue button, after pressed it will show the main outcome
 	    JButton continueButton = createButton("CONTINUE");
 	    continueButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-	    continueButton.addActionListener(
-	            e -> {dialog.dispose();
+	    continueButton.addActionListener(e -> {
+	    		dialog.dispose();
 	            onContinue.run();
 	        });
 

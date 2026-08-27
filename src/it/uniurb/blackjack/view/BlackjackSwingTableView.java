@@ -1,5 +1,6 @@
 package it.uniurb.blackjack.view;
 
+import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.util.List;
 
@@ -11,6 +12,12 @@ import it.uniurb.blackjack.model.game.HandOutcome;
 // interface for the methods that will show the game table
 public interface BlackjackSwingTableView {
 	// declaration of methods
+	
+	// setter method for the card set type
+	public void setCardSetType(final String cardSetType);
+	
+	// setter method for the table color
+	public void setTableColor(final Color tableColor);
 	
 	// method that updates the main game settings
 	public void updateSettings(final int numDecks, final boolean hitOnSoft);
@@ -32,6 +39,12 @@ public interface BlackjackSwingTableView {
 		
 	// method that shows a screen for the outcome of the side bet
 	public void showSideBetOutcome(final double winMoney, final PerfectPairs sideBetLevel);
+	
+	// method that starts the timer for making a move
+	public void startMoveTimer(final int seconds, final Runnable onTimeout);
+	
+	// method that stops the timer for making a move, used by the controller when the player press a button in time
+	public void stopMoveTimer();
 	
 	// method that shows a screen for the outcome of the main bet
 	public void showMainBetOutcome(final List<HandOutcome> outcomes, final Runnable onContinue);

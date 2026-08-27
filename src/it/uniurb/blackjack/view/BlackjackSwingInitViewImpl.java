@@ -6,9 +6,12 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.net.URL;
 
 import javax.swing.BorderFactory;
@@ -26,12 +29,15 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
-import it.uniurb.blackjack.controller.TableState;
-import it.uniurb.blackjack.model.game.OutcomeType;
-import it.uniurb.blackjack.model.participants.Dealer;
-import it.uniurb.blackjack.model.participants.Player;
-
-public class BlackjackSwingMainView extends JPanel{
+//class that extends JPanel and that will manage the panel for game initialization
+public class BlackjackSwingInitViewImpl extends JPanel implements BlackjackSwingInitView{
+	// definition of colors for the menu
+	private static final Color CASINO_GREEN = new Color(7, 94, 46);    // color for the menus background
+	private static final Color DARK_GOLD    = new Color(212, 175, 55); // color for the borders
+	private static final Color LIGHT_TEXT   = Color.WHITE;			   // color for the labels
+    private static final Color TABLE_GREEN = new Color(20, 90, 50);    // first color choice for the table background
+    private static final Color TABLE_RED = new Color(120, 25, 25);     // second color choice for the table background
+    private static final Color TABLE_BLUE = new Color(20, 50, 90);     // third color choice for the table background
 	
 	// declaration of class' fields
 	private JTextField   nameField;       // field for the player's name
@@ -39,46 +45,41 @@ public class BlackjackSwingMainView extends JPanel{
     private JTextField   numDecksField;   // field for the number of decks
     private JCheckBox    typeDealerField; // field for the dealer type
 	private JButton      confirmButton;   // button for starting the game
-	private JRadioButton pixelRadio;
-	private JRadioButton modernRadio;
-	private JRadioButton classicRadio;
-	private ButtonGroup  cardSetGroup;
+	private JRadioButton pixelRadio;      // radio for the pixel set
+	private JRadioButton modernRadio;     // radio for the modern set
+	private JRadioButton classicRadio;    // radio for the classic set
+	private ButtonGroup  cardSetGroup;    // button group for the choice of the set
+	private JRadioButton greenTableRadio; // radio for the green table
+	private JRadioButton redTableRadio;   // radio for the red table
+	private JRadioButton blueTableRadio;  // radio for the blue table
+	private ButtonGroup  tableColorGroup; // button group for the choice of the table color
 	
-	// definition of colors for the menu
-	private final Color CASINO_GREEN = new Color(7, 94, 46); 
-    private final Color DARK_GOLD    = new Color(212, 175, 55); 
-    private final Color LIGHT_TEXT   = Color.WHITE;
-	
-    
-    
     // class' constructor
-    public BlackjackSwingMainView() {
+    public BlackjackSwingInitViewImpl() {
     	this.setLayout(new BorderLayout(15, 15));
         this.setBackground(CASINO_GREEN);
         
         this.setBorder(new EmptyBorder(25, 25, 25, 25));
     	
-        // title creation
+        // title creation and setting
         JLabel titleLabel = new JLabel("♣ ♦ BLACKJACK CASINÒ ♦ ♠", JLabel.CENTER);
         titleLabel.setFont(new Font("Georgia", Font.BOLD, 26));
         titleLabel.setForeground(DARK_GOLD);
         titleLabel.setBorder(new EmptyBorder(0, 0, 15, 0));
         this.add(titleLabel, BorderLayout.NORTH);
         
+        // panel creation and setting
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new GridLayout(4, 2, 12, 12)); 
         formPanel.setBackground(CASINO_GREEN);
         
-        TitledBorder formBorder = BorderFactory.createTitledBorder(
-            BorderFactory.createLineBorder(DARK_GOLD, 2, true), " TABLE CONFIGURATION "
-        );
+        // border creation and setting
+        TitledBorder formBorder = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(DARK_GOLD, 2, true), " TABLE CONFIGURATION ");
         formBorder.setTitleColor(DARK_GOLD);
         formBorder.setTitleFont(new Font("Arial", Font.BOLD, 12));
-        formPanel.setBorder(BorderFactory.createCompoundBorder(
-            formBorder, 
-            new EmptyBorder(20, 20, 20, 20) 
-        ));
+        formPanel.setBorder(BorderFactory.createCompoundBorder(formBorder, new EmptyBorder(20, 20, 20, 20)));
         
+        // creating fields for player choices
         this.nameField = createStyledTextField(15);
         this.balanceField = createStyledTextField(10);
         this.numDecksField = createStyledTextField(10);
@@ -99,13 +100,15 @@ public class BlackjackSwingMainView extends JPanel{
 
         this.add(formPanel, BorderLayout.CENTER);
 
+        // creating a new wrapper for the set choice
         JPanel centerWrapper = new JPanel();
         centerWrapper.setLayout(new BoxLayout(centerWrapper, BoxLayout.Y_AXIS));
         centerWrapper.setBackground(CASINO_GREEN);
         centerWrapper.add(formPanel);
         centerWrapper.add(Box.createVerticalStrut(20));
         centerWrapper.add(createCardSetSelection());
-        
+        centerWrapper.add(Box.createVerticalStrut(20));
+        centerWrapper.add(createTableColorSelection());
         this.add(centerWrapper, BorderLayout.CENTER);
         
         this.confirmButton = new JButton("ENTER GAME TABLE");
@@ -115,10 +118,9 @@ public class BlackjackSwingMainView extends JPanel{
         this.confirmButton.setFocusPainted(false); 
         this.confirmButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         this.confirmButton.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(Color.WHITE, 1),
-            new EmptyBorder(12, 0, 12, 0) 
-        ));
+        							 BorderFactory.createLineBorder(Color.WHITE, 1), new EmptyBorder(12, 0, 12, 0)));
         
+        // creating a button for traveling into the bet menu
         JPanel buttonWrapper = new JPanel(new BorderLayout());
         buttonWrapper.setBackground(CASINO_GREEN);
         buttonWrapper.setBorder(new EmptyBorder(15, 50, 0, 50));
@@ -127,6 +129,7 @@ public class BlackjackSwingMainView extends JPanel{
         this.add(buttonWrapper, BorderLayout.SOUTH);
     }
     
+    // method that creates a styled label with a text passed as a parameter
 	private Component createStyledLabel(final String text) {
 		JLabel label = new JLabel(text);
         label.setFont(new Font("Arial", Font.BOLD, 13));
@@ -134,21 +137,21 @@ public class BlackjackSwingMainView extends JPanel{
         
         return(label);
 	}
-
+	
+	// method that creates a styled text field
 	private JTextField createStyledTextField(final int columns) {
 		JTextField textField = new JTextField(columns);
         textField.setFont(new Font("Arial", Font.PLAIN, 13));
         textField.setBackground(new Color(245, 245, 245)); 
         textField.setForeground(Color.BLACK);
 
-        textField.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(DARK_GOLD, 1),
-            new EmptyBorder(5, 5, 5, 5)
-        ));
+        textField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(DARK_GOLD, 1),
+        																					  new EmptyBorder(5, 5, 5, 5)));
         
         return (textField);
 	}
 	
+	// method that creates the selection zone for the sets
 	private JPanel createCardSetSelection() {
 		// creating the panel for the selection
 		JPanel panel = new JPanel();
@@ -205,32 +208,83 @@ public class BlackjackSwingMainView extends JPanel{
 	
 	// method that create an image for the preview (three aces)
 	private ImageIcon loadPreviewIcon(final String setName) {
+		// initializing the image URL
 		URL url = getClass().getResource("/Resources." + setName + "/card_hearts_13.png");
-	    if (url == null) {
+	    
+		// if the URL is null throwing an exception
+		if (url == null) {
 	        throw new IllegalStateException("Card not found: " + setName);
 	    }
-	    ImageIcon original = new ImageIcon(url);
-	    int targetWidth = 64;
+	    
+		// resizing the image
+		ImageIcon original = new ImageIcon(url);
+	    
+		int targetWidth = setName.equals("PixelCards") ? 90 : 64;;
 	    int targetHeight = (int) (targetWidth * ((double) original.getIconHeight() / original.getIconWidth()));
-	    Image scaled = original.getImage().getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
+	   
+	    Image scaled;
+	    if (setName.equals("PixelCards")) {
+	    	BufferedImage buffered = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
+	        Graphics2D g = buffered.createGraphics();
+	        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+	        g.drawImage(original.getImage(), 0, 0, targetWidth, targetHeight, null);
+	        g.dispose();
+	        scaled = buffered;
+	    } else {
+	    	scaled = original.getImage().getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
+	    }
 	    
 	    return(new ImageIcon(scaled));
 	}
 	
-	// method that returns the set name selected
-	public String askCardSetType() {
-		// declaration of local variables
-		String setName; // name of the choose set
-		
-	    if (this.pixelRadio.isSelected()) {
-	    	setName = "PixelCards";
-	    } else if (this.modernRadio.isSelected()) {
-	    	setName = "ModernCards";
-	    } else {
-	    	setName = "ClassicCards";
-	    }
-	    
-	    return(setName);
+	// method that creates the selection zone for table color
+	private JPanel createTableColorSelection() {
+		// creating the panel for the selection
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setBackground(CASINO_GREEN);
+		    
+		// setting the title of the selection
+		JLabel title = new JLabel("Choose the color of the table:");
+		title.setForeground(LIGHT_TEXT);
+		title.setAlignmentX(Component.CENTER_ALIGNMENT);
+		    
+		// setting the option row
+		JPanel optionsRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 25, 10));
+		optionsRow.setBackground(CASINO_GREEN);
+		    
+		this.tableColorGroup = new ButtonGroup();
+		this.greenTableRadio = createTableColorOption("Green", optionsRow);
+		this.redTableRadio = createTableColorOption("Red", optionsRow);
+		this.blueTableRadio = createTableColorOption("Blue", optionsRow);
+		    
+		// standard choice
+		this.greenTableRadio.setSelected(true);
+		    
+		panel.add(title);
+		panel.add(optionsRow);
+		    
+		return(panel);
+	}
+	
+	// method that creates an option for the table color
+	private JRadioButton createTableColorOption(final String tableColor, final JPanel choicePanel) {
+		// creating and setting the panel for the choice
+		JPanel optionPanel = new JPanel();
+		optionPanel.setLayout(new BoxLayout(optionPanel, BoxLayout.Y_AXIS));
+		optionPanel.setBackground(CASINO_GREEN);
+		   
+		JRadioButton radio = new JRadioButton(tableColor);
+		radio.setForeground(LIGHT_TEXT);
+		radio.setBackground(CASINO_GREEN);
+		radio.setAlignmentX(Component.CENTER_ALIGNMENT);
+		    
+		this.tableColorGroup.add(radio);
+		    
+		optionPanel.add(radio);
+		choicePanel.add(optionPanel);
+		    
+		return(radio);
 	}
 
 	public String askName() {
@@ -256,12 +310,42 @@ public class BlackjackSwingMainView extends JPanel{
 		return(isSoftDealer);
 	}
 
-	public void showErrorMessage(final String string) {
-		JOptionPane.showMessageDialog(this, string, "Errore", JOptionPane.ERROR_MESSAGE);
+	public String askCardSetType() {
+		// declaration of local variables
+		String setName; // name of the choose set
+		
+		if (this.pixelRadio.isSelected()) {
+		    setName = "PixelCards";
+		} else if (this.modernRadio.isSelected()) {
+		    setName = "ModernCards";
+		} else {
+		    setName = "ClassicCards";
+		}
+		    
+		return(setName);
 	}
-
+	
+	public Color askTableColor() {
+		// declaration of local variables
+		Color tableColor; // color of the game table
+		
+		if (this.greenTableRadio.isSelected()) {
+			tableColor = TABLE_GREEN;
+		} else if (this.redTableRadio.isSelected()) {
+		    tableColor = TABLE_RED;
+		} else {
+		    tableColor = TABLE_BLUE;
+		}
+		
+		return(tableColor);
+	}
+	
 	public void setConfirmButtonListener(final ActionListener listener) {
         this.confirmButton.addActionListener(listener);
     }
+	
+	public void showErrorMessage(final String string) {
+		JOptionPane.showMessageDialog(this, string, "Errore", JOptionPane.ERROR_MESSAGE);
+	}
 
 }

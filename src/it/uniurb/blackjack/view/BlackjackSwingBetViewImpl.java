@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -18,7 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
-//class that extends JPanel and that will manage the panel for asking bet and side bet
+// class that extends JPanel and that will manage the panel for asking bet and side bet
 public class BlackjackSwingBetViewImpl extends JPanel implements BlackjackSwingBetView{
 	// declaration of class' fields
 	private JLabel     walletLabel;      // label that shows the current balance in real time
@@ -38,7 +39,7 @@ public class BlackjackSwingBetViewImpl extends JPanel implements BlackjackSwingB
     // class' constructor
     public BlackjackSwingBetViewImpl() {
     	// setting the main panel
-    	this.setLayout(new BorderLayout(15, 15));
+    	this.setLayout(new BorderLayout(140, 140));
     	this.setBackground(CASINO_GREEN);
     	this.setBorder(new EmptyBorder(25, 25, 25, 25));
     	
@@ -113,35 +114,7 @@ public class BlackjackSwingBetViewImpl extends JPanel implements BlackjackSwingB
         add(topPanel, BorderLayout.NORTH);
     }
     
-    // method that updates in real time the counter of the balance
-    public void updateBalanceDisplay(final double currentBalance) {
-    	this.walletLabel.setText(String.format("%.2f €", currentBalance));
-    }
-    
-    // getter method for the main bet text
-    public String getMainBetText() {
-    	return(this.mainBetField.getText().trim());
-    }
-    
-    // getter method for the side bet text
-    public String getSideBetText() {
-    	return(this.sideBetField.getText().trim());
-    }
-    
-    // setter method for the listener
-    public void setPlaceBetsListener(final ActionListener listener) {
-    	this.placeBetsButton.addActionListener(listener);
-    }
-    
-    // setter method for the back button listener
-    public void setBackButtonListener(final ActionListener listener) {
-        this.backButton.addActionListener(listener);
-    }
-    
-    public void showErrorMessage(final String string) {
-		JOptionPane.showMessageDialog(this, string, "Errore", JOptionPane.ERROR_MESSAGE);
-    }
-    
+    // method that creates a styled label with a text passed as a parameter
 	private Component createStyledLabel(final String text) {
 		// declaration and initialization of local variables
 		JLabel label = new JLabel(text); // label to create
@@ -150,6 +123,7 @@ public class BlackjackSwingBetViewImpl extends JPanel implements BlackjackSwingB
 		return(label);
 	}
 
+	// method that creates a styled text field
 	private JTextField createStyledTextField(final int columns) {
 		// declaration of local variables
 		JTextField textField = new JTextField(columns); // text field to create
@@ -159,4 +133,28 @@ public class BlackjackSwingBetViewImpl extends JPanel implements BlackjackSwingB
 				BorderFactory.createLineBorder(DARK_GOLD, 1), new EmptyBorder(5, 5, 5, 5)));
 		return(textField);
 	}    
+    
+    public void updateBalanceDisplay(final double currentBalance) {
+    	this.walletLabel.setText(String.format("%.2f €", currentBalance));
+    }
+    
+    public String getMainBetText() {
+    	return(this.mainBetField.getText().trim());
+    }
+    
+    public String getSideBetText() {
+    	return(this.sideBetField.getText().trim());
+    }
+    
+    public void setPlaceBetsListener(final ActionListener listener) {
+    	this.placeBetsButton.addActionListener(listener);
+    }
+    
+    public void setBackButtonListener(final ActionListener listener) {
+        this.backButton.addActionListener(listener);
+    }
+    
+    public void showErrorMessage(final String string) {
+		JOptionPane.showMessageDialog(this, string, "Errore", JOptionPane.ERROR_MESSAGE);
+    }
 }

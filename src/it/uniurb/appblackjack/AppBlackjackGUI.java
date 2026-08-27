@@ -4,7 +4,7 @@ import javax.swing.SwingUtilities;
 
 import it.uniurb.blackjack.controller.BlackjackSwingController;
 import it.uniurb.blackjack.model.game.Blackjack;
-import it.uniurb.blackjack.view.BlackjackFrame;
+import it.uniurb.blackjack.view.BlackjackFrameImpl;
 
 //Entry point of the Blackjack application in his GUI version.
 //This class is responsible for assembling the Model, View, and Controller
@@ -16,7 +16,7 @@ public class AppBlackjackGUI {
 			
 	        Blackjack blackjack = new Blackjack();
 	        
-	        BlackjackFrame frame = new BlackjackFrame();
+	        BlackjackFrameImpl frame = new BlackjackFrameImpl();
 	        
 	        BlackjackSwingController controller = new BlackjackSwingController(blackjack, frame);
 	        
