@@ -55,7 +55,7 @@ public class BlackjackSwingInitViewImpl extends JPanel implements BlackjackSwing
 	private ButtonGroup  tableColorGroup; // button group for the choice of the table color
 	
     // class' constructor
-    public BlackjackSwingInitViewImpl() {
+    public BlackjackSwingInitViewImpl() {    	
     	this.setLayout(new BorderLayout(15, 15));
         this.setBackground(CASINO_GREEN);
         

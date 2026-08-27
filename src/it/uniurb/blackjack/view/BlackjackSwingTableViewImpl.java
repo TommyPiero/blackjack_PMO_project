@@ -66,12 +66,14 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 	private int     secondsRemaining;  // seconds of timer remaining
 	private String  currentSetType;    // current set type name
 	private Color   currentTableColor; // current table color
+	private CardManager cardManager;   // class manager for cards
 	
     // class' constructor
     public BlackjackSwingTableViewImpl() {
     	// setting a default type for the set type and the table color
     	this.currentSetType = "PixelCards";
     	this.currentTableColor = new Color(7, 94, 46);
+    	this.cardManager = new CardManager();
     	
     	// setting table layout
     	this.setLayout(new BorderLayout(15, 15));
@@ -148,8 +150,6 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
         JPanel cardSpace = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
         this.dealerCardSpace = cardSpace;
         cardSpace.setBackground(this.currentTableColor);
-        cardSpace.add(createBlankCardSpace());
-        cardSpace.add(createBlankCardSpace());
          
         // setting a label for the score
         JLabel score = new JLabel("Score: -");
@@ -251,7 +251,7 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 		
 		// adding a component for each card
 		for (Card card : cards) {
-		    handPanel.add(createCardComponent(card));
+		    handPanel.add(this.cardManager.createCardComponent(card, this.currentTableColor, this.currentSetType));
 		}
 
 		// creating and setting a score label
@@ -262,92 +262,6 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 		handPanel.add(scoreLabel);
 
 		return(handPanel);
-	}
-	
-	// method that creates a blank space for a future card
-	private Component createBlankCardSpace() {
-		// declaration and initialization of local variables		
-		JPanel space = new JPanel(); // panel for blank card
-        space.setPreferredSize(new Dimension(64, 92));
-        space.setBackground(Color.WHITE);
-        space.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        
-        return(space);
-	}
-	
-	// method that creates a card with value and suit
-	private JPanel createCardComponent(final Card card) {
-		// declaration and initialization of local variables
-		String fileName = "card_" + card.getSuit().toString().toLowerCase() + "_" + card.getNominalValue() + ".png"; // name of card's image file
-		
-		ImageIcon icon = loadCardImage(fileName);
-		
-		JPanel cardPanel = new JPanel(new BorderLayout()); // panel for a card
-	    cardPanel.setPreferredSize(new Dimension(64, 92));
-	    cardPanel.setBackground(this.currentTableColor);
-	    cardPanel.setBorder(BorderFactory.createLineBorder(this.currentTableColor));
-	    
-	    // creating card label with proportional dimensions
-	    JLabel cardLabel = new JLabel(icon);
-	    cardLabel.setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
-	    
-	    // adding card to the panel
-	    cardPanel.add(cardLabel);
-	    
-	    return(cardPanel);
-	}
-	
-	// method that create a face down card
-	private JPanel createFaceDownCard() {
-		// declaration and initialization of local variables
-		ImageIcon icon = loadCardImage("card_back.png"); // name of file for face down card
-	    JPanel cardPanel = new JPanel();            	 // panel for a card
-	    
-	    cardPanel.setPreferredSize(new Dimension(66, 94));
-	    cardPanel.setBackground(this.currentTableColor);
-	    cardPanel.setBorder(BorderFactory.createLineBorder(this.currentTableColor));
-	    
-	    // creating card label with proportional dimensions
-	    JLabel cardLabel = new JLabel(icon);
-	    cardLabel.setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
-
-	    cardPanel.add(cardLabel);
-	    
-	    return cardPanel;
-	}
-	
-	// method that loads the image of cards
-	private ImageIcon loadCardImage(final String fileName) {
-		// initializing the image URL
-		URL imageUrl = getClass().getResource("/Resources." + this.currentSetType + "/" + fileName);
-		
-		// throwing an exception if the URL is null
-		if (imageUrl == null) {
-	        throw new IllegalStateException("Card image not found: " + fileName);
-	    }
-		
-		ImageIcon original = new ImageIcon(imageUrl);
-		
-		int originalWidth = original.getIconWidth();
-	    int originalHeight = original.getIconHeight();
-	    
-	    // resizing proportionally the images, if pixel cards change the width value
-	    int targetWidth = this.currentSetType.equals("PixelCards") ? 90 : 64;;
-	    int targetHeight = (int) (targetWidth * ((double) originalHeight / originalWidth));
-	   
-	    Image scaled;
-	    if (this.currentSetType.equals("PixelCards")) {
-	    	BufferedImage buffered = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
-	        Graphics2D g = buffered.createGraphics();
-	        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-	        g.drawImage(original.getImage(), 0, 0, targetWidth, targetHeight, null);
-	        g.dispose();
-	        scaled = buffered;
-	    } else {
-	    	scaled = original.getImage().getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
-	    }
-	    
-	    return new ImageIcon(scaled);
 	}
 	
 	public void setCardSetType(final String cardSetType) {
@@ -382,11 +296,11 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 	    // if the player's round is finished shows the covered card
 	    if (showCoveredCard) {
 	    	for (Card card : dealerCards) {
-		        this.dealerCardSpace.add(createCardComponent(card));
+		        this.dealerCardSpace.add(this.cardManager.createCardComponent(card, this.currentTableColor, this.currentSetType));
 		    }
 	    } else {
-	    	this.dealerCardSpace.add(createFaceDownCard());
-		    this.dealerCardSpace.add(createCardComponent(uncoveredCard));
+	    	this.dealerCardSpace.add(this.cardManager.createFaceDownCard(this.currentTableColor, this.currentSetType));
+		    this.dealerCardSpace.add(this.cardManager.createCardComponent(uncoveredCard, this.currentTableColor, this.currentSetType));
 	    }
 
 	    this.dealerCardSpace.revalidate();

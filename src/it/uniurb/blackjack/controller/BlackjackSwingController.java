@@ -9,6 +9,7 @@ import it.uniurb.blackjack.model.game.HandFields;
 import it.uniurb.blackjack.model.game.HandOutcome;
 import it.uniurb.blackjack.model.game.MoveType;
 import it.uniurb.blackjack.model.game.OutcomeType;
+import it.uniurb.blackjack.view.AudioManager;
 import it.uniurb.blackjack.view.BlackjackFrameImpl;
 import it.uniurb.blackjack.view.BlackjackSwingBetView;
 import it.uniurb.blackjack.view.BlackjackSwingInitViewImpl;
@@ -17,8 +18,8 @@ import it.uniurb.blackjack.view.BlackjackSwingTableViewImpl;
 public class BlackjackSwingController {
 
 	// declaration of class' fields
-	Blackjack blackjack;       // model of the application
-	BlackjackFrameImpl mainFrame;  // view of the application
+	Blackjack          blackjack;    // model of the application
+	BlackjackFrameImpl mainFrame;    // view of the application
 	
 	private int activeHand;    // field that records the actual active hand
 	
@@ -27,6 +28,7 @@ public class BlackjackSwingController {
 		this.blackjack = blackjack;
 		this.mainFrame = view;
 		this.activeHand = 0;
+		AudioManager.startMenuMusic("menu_music.wav"); // add menu music file
 		
 		this.mainFrame.getInitScreen().setConfirmButtonListener(e -> onConfirmSetup());
         this.mainFrame.getBetScreen().setPlaceBetsListener(e -> onConfirmBet());
@@ -52,14 +54,11 @@ public class BlackjackSwingController {
 	// method that permits to ask for a new round
 	private void askForNewRound() {
 	    // shows the dialog for a new round and then on yes shows the bet screen again
-		this.mainFrame.getTableScreen().showNewRoundDialog(
-		        () -> {
-		            this.mainFrame.getBetScreen().updateBalanceDisplay(
-		                this.blackjack.getPlayerBalance()
-		            );
-		            this.mainFrame.showBetScreen();
-		        }
-		    );
+		this.mainFrame.getTableScreen().showNewRoundDialog(() -> {
+		            	this.mainFrame.getBetScreen().updateBalanceDisplay(this.blackjack.getPlayerBalance());
+		            	this.mainFrame.showBetScreen();
+		            	AudioManager.startMenuMusic("menu_music.wav");
+		        });
 	}
 	
 	// method that permits to force a stand when the player's timer ends
@@ -157,14 +156,20 @@ public class BlackjackSwingController {
         try {
             double mainBet = Double.parseDouble(betView.getMainBetText());
             double sideBet = Double.parseDouble(betView.getSideBetText());
-                        
+            
+            // stopping the menu music
+            AudioManager.stopMenuMusic();;
+            
             this.blackjack.startRound(mainBet, sideBet);
             
             // resetting the active hand to zero
             this.activeHand = 0;
             
             this.mainFrame.showTableScreen();
-                        
+            
+            // playing sound that simulates the pushing of chips
+            AudioManager.playSound("push_chips.wav");
+            
             updateTable();
             
             // starting the player timer
@@ -245,6 +250,15 @@ public class BlackjackSwingController {
 	        double wonMoney = this.blackjack.verifyFinalOutcome(i);
 	        OutcomeType outcome = this.blackjack.getOutcome();
 	        results.add(new HandOutcome(hands.get(i).bet(), wonMoney, outcome));
+	        
+	        // playing the winning or losing sound
+		    if (outcome == OutcomeType.PLAY_WIN || outcome == OutcomeType.PLAY_BJ) {
+		        AudioManager.playSound("win_sound.wav");
+		    } else if (outcome == OutcomeType.PLAY_LOSE) {
+		        AudioManager.playSound("lose_sound.wav");
+		    } else {
+		    	AudioManager.playSound("draw_sound.wav");
+		    }
 	    }
 
 	    this.mainFrame.getTableScreen().showMainBetOutcome(results, this::askForNewRound);
