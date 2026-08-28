@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.Timer;
+
+import it.uniurb.blackjack.model.cards.Card;
 import it.uniurb.blackjack.model.game.Blackjack;
 import it.uniurb.blackjack.model.game.HandFields;
 import it.uniurb.blackjack.model.game.HandOutcome;
@@ -18,10 +21,10 @@ import it.uniurb.blackjack.view.BlackjackSwingTableViewImpl;
 public class BlackjackSwingController {
 
 	// declaration of class' fields
-	Blackjack          blackjack;    // model of the application
-	BlackjackFrameImpl mainFrame;    // view of the application
+	Blackjack          blackjack;  // model of the application
+	BlackjackFrameImpl mainFrame;  // view of the application
 	
-	private int activeHand;    // field that records the actual active hand
+	private int        activeHand; // field that records the actual active hand
 	
 	// class' constructor
 	public BlackjackSwingController(final Blackjack blackjack, final BlackjackFrameImpl view) {
@@ -55,6 +58,7 @@ public class BlackjackSwingController {
 	private void askForNewRound() {
 	    // shows the dialog for a new round and then on yes shows the bet screen again
 		this.mainFrame.getTableScreen().showNewRoundDialog(() -> {
+						this.mainFrame.getTableScreen().stopMoveTimer();
 		            	this.mainFrame.getBetScreen().updateBalanceDisplay(this.blackjack.getPlayerBalance());
 		            	this.mainFrame.showBetScreen();
 		            	AudioManager.startMenuMusic("menu_music.wav");
@@ -79,19 +83,32 @@ public class BlackjackSwingController {
 				this.blackjack.makeMove(move, activeHand);
 				// timer stops because the player pressed a button or because ended his run
 				this.mainFrame.getTableScreen().stopMoveTimer();
-			}
-			updateTable();
-			// if the hand is not more in game after the move, change the hand
-			if (!this.blackjack.getPlayerHands().get(activeHand).isInGame()) {
-				moveToNextHand();
+				
+				// if the player takes a card, make sounds
+				if (move == MoveType.HIT ||
+					move == MoveType.DOUBLE_DOWN ||
+					move == MoveType.SPLIT) {
+	                Card newCard = this.blackjack.getPlayerCards(activeHand).getLast();
+	                this.mainFrame.getTableScreen().revealSinglePlayerCard(newCard, this::afterMoveCompleted);
+	            } else {
+	                afterMoveCompleted();
+	            }
 			} else {
-	            startPlayerMoveTimer();
-	        }
+				afterMoveCompleted();
+			}
 		} catch (IllegalStateException e) {
 			this.mainFrame.getTableScreen().showErrorMessage("Error: " + e.getMessage());
 		}			
-		
-		
+	}
+	
+	// method that choose what to do after the player stands or bust
+	private void afterMoveCompleted() {
+	    updateTable();
+	    if (!this.blackjack.getPlayerHands().get(activeHand).isInGame()) {
+	        moveToNextHand();
+	    } else {
+	        startPlayerMoveTimer();
+	    }
 	}
 
 	// method that permits to move to the next hand
@@ -109,17 +126,64 @@ public class BlackjackSwingController {
 	    	if (!this.blackjack.getPlayerHands().get(activeHand).isInGame()) {
 				if (!this.blackjack.getPlayerHands().get(activeHand).isBust()) {
 					this.blackjack.playDealerHand();
-				}
-				updateTable();
-				if (this.blackjack.getPlayer().isInsured()) {
-					this.mainFrame.getTableScreen().showInsuranceOutcome(
-							this.blackjack.verifyInsurance(),
-							this::showFinalOutcome);
+					playDealerHandDelay();
 				} else {
-					showFinalOutcome();
+					checkInsuranceAndShowOutcome();
 				}
 	    	}
 	    }
+	}
+	
+	// method that plays dealer hand with delay
+	private void playDealerHandDelay() {
+		// declaration and initialization of local variables
+		List<Card> allDealerCards = this.blackjack.getDealerHand().cards(); // list of dealer cards
+	    Card dealerUncovered = this.blackjack.getDealerUncovCard();         // dealer's uncovered card
+	    Card dealerCovered = this.blackjack.getDealerCovCard();             // dealer's covered card
+	    int delayMs = 1600;											        // delay in ms for drawing cards
+	    final int[] currentCardIndex = {2};									// current card index: array for moving inside the lambda expression
+	    Timer dealerTimer = new Timer(delayMs, null);				  	    // timer for drawing cards with delay
+	    
+	    // showing the covered card with sound
+	    this.mainFrame.getTableScreen().updateDealerCards(dealerUncovered, true, dealerCovered,List.of(dealerUncovered, dealerCovered));
+	    this.mainFrame.getTableScreen().updateDealerScore(this.blackjack.getDealerCovCard().getBlackjackValue() + this.blackjack.getDealerUncovCard().getBlackjackValue());
+	    AudioManager.playSound("deal_card.wav");
+	    
+	    // check outcome if dealer has only two cards
+	    if (allDealerCards.size() <= 2) {
+	        updateTable();
+	        checkInsuranceAndShowOutcome();
+	        return;
+	    }
+	    
+	    dealerTimer.addActionListener(e -> {
+	        int index = currentCardIndex[0]; 										    // current index: starting from the third card
+	        int actualScore = this.blackjack.getDealerCovCard().getBlackjackValue() +
+	        		          this.blackjack.getDealerUncovCard().getBlackjackValue();	// actual score of dealer hand (cov + uncov)
+	        
+	        if (index < allDealerCards.size()) {
+	        	
+	        	// taking the sub list of cards, the last one is the one of the index
+	            List<Card> visibleCards = allDealerCards.subList(0, index + 1);
+	          
+	            actualScore += visibleCards.getLast().getBlackjackValue();
+	            
+	            // showing the new card and playing the sound
+	            this.mainFrame.getTableScreen().updateDealerCards(dealerUncovered, true, dealerCovered, visibleCards);
+	            this.mainFrame.getTableScreen().updateDealerScore(actualScore);
+	            AudioManager.playSound("deal_card.wav");
+	            
+	            currentCardIndex[0]++;
+	        } else {
+	            dealerTimer.stop();
+	            updateTable();
+	            checkInsuranceAndShowOutcome();
+	        }
+	    });
+	    
+	    dealerTimer.setRepeats(true);
+	    dealerTimer.setInitialDelay(delayMs);
+	    dealerTimer.start();
 	}
 	
 	// method that updates the table after moves
@@ -154,43 +218,49 @@ public class BlackjackSwingController {
 		BlackjackSwingBetView betView = this.mainFrame.getBetScreen(); // bets screen
 		
         try {
-            double mainBet = Double.parseDouble(betView.getMainBetText());
-            double sideBet = Double.parseDouble(betView.getSideBetText());
-            
+        	// declaration and initialization of local variables
+            double mainBet = Double.parseDouble(betView.getMainBetText()); // main bet of the player
+            double sideBet = Double.parseDouble(betView.getSideBetText()); // side bet of the player
+                        
             // stopping the menu music
             AudioManager.stopMenuMusic();;
             
             this.blackjack.startRound(mainBet, sideBet);
             
+            List<Card> playerCards = this.blackjack.getPlayerCards(0);     // list of player cards
+            Card dealerUncovered = this.blackjack.getDealerUncovCard();    // dealer uncovered card
+            
             // resetting the active hand to zero
             this.activeHand = 0;
             
-            this.mainFrame.showTableScreen();
+            // resetting the dealer score showed
+            this.mainFrame.getTableScreen().updateDealerScore(0);
             
             // playing sound that simulates the pushing of chips
             AudioManager.playSound("push_chips.wav");
             
-            updateTable();
+            this.mainFrame.showTableScreen();
             
-            // starting the player timer
-            startPlayerMoveTimer();
-            
-            // showing the screen for the result of side bets
-            if (this.blackjack.getPlayerSideBet() != 0) {
-            	this.mainFrame.getTableScreen().showSideBetOutcome(this.blackjack.verifySideBet(), this.blackjack.getPerfPairLevel());
-            }
-            // showing the screen that asks for insurance if the uncovered card is an ace
-            if (this.blackjack.getDealerUncovCard().isAnAce()) {
-            	askForInsurance();
-            }
-            
-            // if the hand is a blackjack finish instantly the player's turn
-            if (this.blackjack.getPlayerHands().get(0).isBlackjack()) {
-            	this.blackjack.playDealerHand();
-            	updateTable();
-            	showFinalOutcome();
-            }
-            
+            this.mainFrame.getTableScreen().revealStartingCards(playerCards, dealerUncovered, () -> {
+                updateTable();
+                startPlayerMoveTimer();
+                
+                // showing the screen for the result of side bets
+                if (this.blackjack.getPlayerSideBet() != 0) {
+                	this.mainFrame.getTableScreen().showSideBetOutcome(this.blackjack.verifySideBet(), this.blackjack.getPerfPairLevel());
+                }
+                // showing the screen that asks for insurance if the uncovered card is an ace
+                if (this.blackjack.getDealerUncovCard().isAnAce()) {
+                	askForInsurance();
+                }
+                
+                // if the hand is a blackjack finish instantly the player's turn
+                if (this.blackjack.getPlayerHands().get(0).isBlackjack()) {
+                	this.blackjack.playDealerHand();
+                	updateTable();
+                	showFinalOutcome();
+                }
+            });
         } catch (NumberFormatException e) {
             betView.showErrorMessage("You have to insert a number for the bets!");
         } catch (IllegalArgumentException e) {
@@ -238,6 +308,16 @@ public class BlackjackSwingController {
         } catch (IllegalArgumentException e) {
             init.showErrorMessage("Error: " + e.getMessage());
         }
+	}
+	
+	private void checkInsuranceAndShowOutcome() {
+	    if (this.blackjack.getPlayer().isInsured()) {
+	        this.mainFrame.getTableScreen().showInsuranceOutcome(
+	                this.blackjack.verifyInsurance(),
+	                this::showFinalOutcome);
+	    } else {
+	        showFinalOutcome();
+	    }
 	}
 	
 	// method that shows the final outcome

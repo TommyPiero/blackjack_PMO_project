@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+import javax.swing.JPanel;
+
 import it.uniurb.blackjack.model.cards.Card;
 import it.uniurb.blackjack.model.cards.PerfectPairs;
 import it.uniurb.blackjack.model.game.HandFields;
@@ -37,6 +39,18 @@ public interface BlackjackSwingTableView {
 	// method that updates bets
 	public void updateBet(final double bet, final double sideBet);
 		
+	// method that reveals cards with delay
+	public void revealCardsWithDelay(final JPanel cardPanel, final List<Card> cards, final int delayMillis, final Runnable onComplete);
+	
+	// method that reveals starting cards
+	public void revealStartingCards(final List<Card> playerCards, final Card dealerUncovered, final Runnable onComplete);
+	
+	// method that reveals a single player card
+	public void revealSinglePlayerCard(final Card card, final Runnable onComplete);
+	
+	// method that reveals a single dealer card
+	public void revealSingleDealerCard(final Card card, final Runnable onComplete);
+	
 	// method that shows a screen for the outcome of the side bet
 	public void showSideBetOutcome(final double winMoney, final PerfectPairs sideBetLevel);
 	

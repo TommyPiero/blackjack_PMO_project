@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.awt.Dialog;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -151,6 +152,9 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
         this.dealerCardSpace = cardSpace;
         cardSpace.setBackground(this.currentTableColor);
          
+        cardSpace.setPreferredSize(new Dimension(500, 140));
+        cardSpace.setMinimumSize(new Dimension(500, 140));
+        
         // setting a label for the score
         JLabel score = new JLabel("Score: -");
         this.dealerScore = score;
@@ -162,11 +166,8 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
         zone.add(cardSpace);
         zone.add(score);
          
-         
  		return(zone);
  	}
- 	
- 	
  	
     // method that creates a button zone
 	private JPanel createButtonZone() {
@@ -336,6 +337,72 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
         this.betLabel.setText(String.format("Bet: %.2f \u20ac | Side bet: %.2f \u20ac", bet, sideBet));
     }
 	
+	public void revealCardsWithDelay(final JPanel cardPanel, final List<Card> cards, final int delayMillis, final Runnable onComplete) {
+	    // declaration and initialization of local variables
+		List<Card> cardsToShow = new ArrayList<>(cards); // list of cards to show
+		
+		// timer for revealing carsd
+		Timer revealTimer = new Timer(delayMillis, null);
+	    revealTimer.addActionListener(e -> {
+	        if (!cardsToShow.isEmpty()) {
+	            Card next = cardsToShow.remove(0);
+	            cardPanel.add(this.cardManager.createCardComponent(next, this.currentTableColor, this.currentSetType));
+	            cardPanel.revalidate();
+	            cardPanel.repaint();
+	            AudioManager.playSound("deal_card.wav");
+	        }
+	        
+	        // if the cards to show are empty, stop
+	        if (cardsToShow.isEmpty()) {
+	            ((Timer) e.getSource()).stop();
+	            if (onComplete != null) {
+	                onComplete.run();
+	            }
+	        }
+	    });
+	    
+	    revealTimer.start();
+	}
+	
+	public void revealStartingCards(final List<Card> playerCards, final Card dealerUncovered, final Runnable onComplete) {
+	    // removing all cards from the previous round
+		this.playerHandsSpace.removeAll();
+	    this.dealerCardSpace.removeAll();
+	    
+	    this.playerHandsSpace.revalidate();
+	    this.playerHandsSpace.repaint();
+	    this.dealerCardSpace.revalidate();
+	    this.dealerCardSpace.repaint();
+	    
+	    // revealing starting cards
+	    revealCardsWithDelay(this.playerHandsSpace, playerCards, 1200, () -> {
+	        revealCardsWithDelay(this.dealerCardSpace, List.of(dealerUncovered), 1200, () -> {
+	        	int delay = 1200; 
+	            Timer timerCoveredCard = new 
+	            Timer(delay, e -> {
+	            	this.dealerCardSpace.add(this.cardManager.createFaceDownCard(this.currentTableColor, this.currentSetType));            
+	            	this.dealerCardSpace.revalidate();
+	            	this.dealerCardSpace.repaint();
+	            	AudioManager.playSound("deal_card.wav");
+	            	if (onComplete != null) {
+	            		onComplete.run();
+	            	}
+	            });
+	            
+	            timerCoveredCard.setRepeats(false);
+	            timerCoveredCard.start();
+	        });
+	    });
+	}
+	
+	public void revealSinglePlayerCard(final Card card, final Runnable onComplete) {
+	    revealCardsWithDelay(this.playerHandsSpace, List.of(card), 400, onComplete);
+	}
+	
+	public void revealSingleDealerCard(final Card card, final Runnable onComplete) {
+	    revealCardsWithDelay(this.dealerCardSpace, List.of(card), 400, onComplete);
+	}
+	
 	public void showSideBetOutcome(final double winMoney, final PerfectPairs sideBetLevel) {
 		// declaration and initialization of local variables
 		Window parent = SwingUtilities.getWindowAncestor(this); // window for showing side bet outcome
@@ -496,8 +563,8 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 	    // setting the continue button that will show the pop up for playing again
 	    JButton continueButton = createButton("CONTINUE");
 	    continueButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-	    continueButton.addActionListener(
-	            e -> {dialog.dispose();
+	    continueButton.addActionListener(e -> {
+	    	    dialog.dispose();
 	            onContinue.run();
 	        });
 	    
