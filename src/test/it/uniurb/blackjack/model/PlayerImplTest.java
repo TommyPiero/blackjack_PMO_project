@@ -9,7 +9,7 @@ import it.uniurb.blackjack.model.cards.Suit;
 import it.uniurb.blackjack.model.participants.PlayerImpl;
 
 //implementation of a class for testing the correct behavior of Player class 
-public class PlayerTest {
+public class PlayerImplTest {
 	// 1. Testing the edge cases and exception starting a new round for the player
 	@Test
 	public void testEdgeNewPlayRound() {

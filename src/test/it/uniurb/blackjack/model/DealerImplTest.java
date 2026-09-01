@@ -13,7 +13,7 @@ import it.uniurb.blackjack.model.participants.DealerImpl;
 import it.uniurb.blackjack.model.participants.Dealer;
 
 //implementation of a class for testing the correct behavior of Dealer class 
-public class DealerTest {
+public class DealerImplTest {
 	
 	// 1. Testing if a dealer is still in game or not
 	@Test

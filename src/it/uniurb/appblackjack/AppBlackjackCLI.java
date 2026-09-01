@@ -1,6 +1,7 @@
 package it.uniurb.appblackjack;
 
 import it.uniurb.blackjack.controller.BlackjackTextController;
+import it.uniurb.blackjack.controller.BlackjackTextControllerImpl;
 import it.uniurb.blackjack.model.game.Blackjack;
 import it.uniurb.blackjack.view.BlackjackTextViewImpl;
 import it.uniurb.blackjack.view.BlackjackTextView;
@@ -18,7 +19,7 @@ public class AppBlackjackCLI {
 		BlackjackTextView view = new BlackjackTextViewImpl();
 		
 		// creating the controller
-		BlackjackTextController controller = new BlackjackTextController(model, view);
+		BlackjackTextController controller = new BlackjackTextControllerImpl(model, view);
 		
 		System.out.println("STARTING A NEW GAME LOOP");
 		
