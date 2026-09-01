@@ -3,7 +3,7 @@ package it.uniurb.blackjack.model.cards;
 import java.util.LinkedList;
 import java.util.List;
 
-//implementation of the interface Hand
+// class that models the concept of hand. Implementation of the interface Hand
 public class HandImpl implements Hand {
 	
 	// class' fields declaration

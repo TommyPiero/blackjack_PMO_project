@@ -40,8 +40,7 @@ public class BlackjackSwingController {
         this.mainFrame.getTableScreen().setStandListener(e -> onMove(MoveType.STAND));
         this.mainFrame.getTableScreen().setDoubleListener(e -> onMove(MoveType.DOUBLE_DOWN));
         this.mainFrame.getTableScreen().setSplitListener(e -> onMove(MoveType.SPLIT));
-        this.mainFrame.getBetScreen()
-        .setBackButtonListener(e -> onBackToInit());
+        this.mainFrame.getBetScreen().setBackButtonListener(e -> onBackToInit());
 	}
 	
 	// method that asks the player for insurance
@@ -279,17 +278,21 @@ public class BlackjackSwingController {
 		BlackjackSwingInitViewImpl init = this.mainFrame.getInitScreen(); // player initialization screen
 		
         try {
-            int numDecks = init.askNumDecks();
-            boolean isSoftDealer = init.askDealerType();
-            String playerName = init.askName();
-            double playerBalance = init.askBalance();
-            String cardSetType = this.mainFrame.getInitScreen().askCardSetType();
-            Color  tableColor = this.mainFrame.getInitScreen().askTableColor();
+        	// declaration and initialization of local variables
+            int numDecks = init.askNumDecks();									  // number of decks for the game
+            boolean isSoftDealer = init.askDealerType();						  // boolean for the type of the dealer
+            String playerName = init.askName();									  // player's name
+            double playerBalance = init.askBalance();							  // player's balance
+            String cardSetType = this.mainFrame.getInitScreen().askCardSetType(); // type of card set
+            Color  tableColor = this.mainFrame.getInitScreen().askTableColor();   // color of the game table
             
+            // throwing an exception if the playerName's field is empty
             if (playerName.isEmpty())
                 throw new IllegalArgumentException("Compile all the fields");
+            // throwing an exception if the playerBalance's field is filled with a number equal or less to zero
             if (playerBalance <= 0)
                 throw new IllegalArgumentException("Starting balance can't be zero!");
+            // throwing an exception if the number of decks is a not valid number
             if (numDecks < 2 || numDecks > 8)
                 throw new IllegalArgumentException("The number of decks must be between 2 and 8!");
             
@@ -310,6 +313,7 @@ public class BlackjackSwingController {
         }
 	}
 	
+	// method that checks insurance an shows the final outcome
 	private void checkInsuranceAndShowOutcome() {
 	    if (this.blackjack.getPlayer().isInsured()) {
 	        this.mainFrame.getTableScreen().showInsuranceOutcome(

@@ -188,7 +188,7 @@ public class BlackjackTextControllerImpl implements BlackjackTextController{
 				 this.view.showOutcome(finalTableState, this.blackjack.verifyFinalOutcome(i), this.blackjack.getOutcome(), i);               
 			
 			// asking the player for a new game
-			playAgain = this.view.askForNewRound(this.blackjack.getPlayer());
+			playAgain = this.view.askForNewRound(this.blackjack.getPlayerBalance());
 		} while (playAgain  &&
 				 this.blackjack.getPlayerBalance() > 0);
 	}

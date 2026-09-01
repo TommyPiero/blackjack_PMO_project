@@ -52,7 +52,7 @@ public interface BlackjackTextView {
 	public void showOutcome(final TableState tableState, final double winBet, final OutcomeType outcome, final int i);
 	
 	// method that asks the player if he wants to play another round
-	public boolean askForNewRound(final Player player);
+	public boolean askForNewRound(final double playerBalance);
 
 	// method used for showing error messages to the user
 	public void showErrorMessage(final String string);

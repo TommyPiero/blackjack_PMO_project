@@ -396,14 +396,14 @@ public class BlackjackTextViewImpl implements BlackjackTextView {
 		}
 	}
 
-	public boolean askForNewRound(final Player player) {
+	public boolean askForNewRound(final double playerBalance) {
 		// declaration of local variables
 		String  input;             // starting input in string format
 		boolean isCorrect = false; // bool for the check of a correct value
 		boolean wannaPlay = false; // flag for the player decision
 		
 		do {
-			System.out.println("Do you want to play another round(y/n)? The remaininig balance is: " + player.getBalance());
+			System.out.println("Do you want to play another round(y/n)? The remaininig balance is: " + playerBalance);
 			input = scanner.nextLine().trim();
 			
 			// checking if it's a correct input

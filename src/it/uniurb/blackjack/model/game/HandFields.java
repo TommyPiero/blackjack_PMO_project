@@ -4,6 +4,7 @@ import java.util.List;
 
 import it.uniurb.blackjack.model.cards.Card;
 
+// fields of a general blackjack hand
 public record HandFields(
 		List<Card> cards,
 		int score,

@@ -6,7 +6,7 @@ import it.uniurb.blackjack.model.cards.Card;
 import it.uniurb.blackjack.model.cards.PerfectPairs;
 import it.uniurb.blackjack.model.game.HandFields;
 
-// state of a table
+// state of a game table
 public record TableState(
 		double playerBalance,           
 	    double playerSideBet,          

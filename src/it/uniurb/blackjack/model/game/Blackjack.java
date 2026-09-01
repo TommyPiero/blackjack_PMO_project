@@ -125,9 +125,9 @@ public class Blackjack implements SideBettedGameType {
 	
 	public double verifyFinalOutcome(final int n) {
 		// declaration of local variables
-		double wonMoney = 0.0;							     // money won from a round
-		int playerScore = this.player.getHand(n).getScore(); // score of the player
-		int dealerScore = this.dealer.getHand().getScore(); // score of the dealer
+		double wonMoney = 0.0;							        // money won from a round
+		int    playerScore = this.player.getHand(n).getScore(); // score of the player
+		int    dealerScore = this.dealer.getHand().getScore();  // score of the dealer
 		
 		// in this case the player lose the bet and he doesn't win money
 		if (this.player.getHand(n).isBust()) 
@@ -158,7 +158,7 @@ public class Blackjack implements SideBettedGameType {
 	
 	// method that verifies the insurance of the player
 	public double verifyInsurance() {
-		// declaration of local variables
+		// declaration and initialization of local variables
 		double winInsurance = 0; // money won from the insurance
 		
 		if (this.player.isInsured()) {
@@ -172,7 +172,7 @@ public class Blackjack implements SideBettedGameType {
 	
 	// getter for the player hands
 	public List<HandFields> getPlayerHands() {
-		// declaration of local variables
+		// declaration and initialization of local variables
 		List<HandFields> hands = new LinkedList<HandFields>(); // fields of player's hands
 		
 		// adding the fields of the correct hand for each player's hand
@@ -195,7 +195,7 @@ public class Blackjack implements SideBettedGameType {
 	
 	// getter for the dealer hand
 	public HandFields getDealerHand() {
-		// declaration of local variables
+		// declaration and initialization of local variables
 		HandFields hand = new HandFields(this.dealer.getHand().getCards(), // hand to return
 				 						 this.dealer.getHand().getScore(),
 				 						 this.dealer.getHand().getBet(),

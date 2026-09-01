@@ -28,7 +28,6 @@ public class BlackjackSwingBetViewImpl extends JPanel implements BlackjackSwingB
     private JButton    placeBetsButton;  // button to confirm and place the bets
     private JLabel     titleLabel;       // label for the panel's title
     private JPanel     betsPanel;        // panel for inserting bets
-    private JPanel     buttonWrapper;    // wrapper for the button
     private JButton    backButton;       // back button for the bet screen
     
     // initialization of constants for panel's colors
@@ -61,7 +60,7 @@ public class BlackjackSwingBetViewImpl extends JPanel implements BlackjackSwingB
         betsPanel.setBorder(BorderFactory.createCompoundBorder(border, new EmptyBorder(20, 20, 20, 20)));
     
         // initializing fields
-        this.walletLabel = new JLabel("Caricamento saldo...", JLabel.LEFT);
+        this.walletLabel = new JLabel("Loading balance...", JLabel.LEFT);
         this.walletLabel.setFont(new Font("Arial", Font.BOLD, 14));
         this.walletLabel.setForeground(DARK_GOLD);
 
@@ -70,13 +69,13 @@ public class BlackjackSwingBetViewImpl extends JPanel implements BlackjackSwingB
         this.sideBetField.setText("0");
         
         // adding to layout
-        betsPanel.add(createStyledLabel("Il tuo Saldo Attuale:"));
+        betsPanel.add(createStyledLabel("Your actual balance:"));
         betsPanel.add(this.walletLabel);
         
-        betsPanel.add(createStyledLabel("Puntata Principale (Main Bet):"));
+        betsPanel.add(createStyledLabel("Main Bet:"));
         betsPanel.add(this.mainBetField);
         
-        betsPanel.add(createStyledLabel("Scommessa Laterale (Side Bet):"));
+        betsPanel.add(createStyledLabel("Side Bet:"));
         betsPanel.add(this.sideBetField);
         
         this.add(betsPanel, BorderLayout.CENTER);
@@ -88,8 +87,8 @@ public class BlackjackSwingBetViewImpl extends JPanel implements BlackjackSwingB
         this.placeBetsButton.setForeground(new Color(30, 30, 30));
         this.placeBetsButton.setFocusPainted(false);
         this.placeBetsButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        this.placeBetsButton.setBorder(BorderFactory.createCompoundBorder(
-        	BorderFactory.createLineBorder(Color.WHITE, 1), new EmptyBorder(12, 0, 12, 0)));
+        this.placeBetsButton.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.WHITE, 1),
+        																  new EmptyBorder(12, 0, 12, 0)));
         
         JPanel buttonWrapper = new JPanel(new BorderLayout());
         buttonWrapper.setBackground(CASINO_GREEN);

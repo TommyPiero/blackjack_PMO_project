@@ -46,28 +46,28 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
     private static final Color LIGHT_TEXT   = Color.WHITE;             // color for the labels
     
     // declaration of local fields
-    private JPanel  mainPanel;         // main panel of the table
-    private JPanel  dealerZone;        // zone for the dealer
-    private JPanel  playerZone;        // zone for the player
-    private JPanel  buttonsZone;       // zone for the buttons 
-    private JPanel  dealerCardSpace;   // panel for the dealer's cards space
-    private JLabel  dealerScore;       // label that will contain the dealer's score
-    private JPanel  playerHandsSpace;  // panel for the player's hands space
-    private JLabel  balanceLabel;      // label that will contain the player's balance
-    private JLabel  betLabel;		   // label that will contain the hand bets
-    private JPanel  infoPanel;         // panel for player info
-    private JLabel  settingsLabel;     // label that will contain informations about game settings
-    private JButton hitButton;         // button for the hit move
-    private JButton standButton;       // button for the stand move
-    private JButton doubleButton;      // button for the double down move
-    private JButton splitButton;       // button for the split move
-    private JPanel  buttonsPanel;      // panel for the move buttons
-    private Timer   countdownTimer;    // timer for the count down
-    private JLabel  timerLabel;        // label that will show the timer with the remaining time
-	private int     secondsRemaining;  // seconds of timer remaining
-	private String  currentSetType;    // current set type name
-	private Color   currentTableColor; // current table color
-	private CardManager cardManager;   // class manager for cards
+    private JPanel      mainPanel;         // main panel of the table
+    private JPanel      dealerZone;        // zone for the dealer
+    private JPanel      playerZone;        // zone for the player
+    private JPanel      buttonsZone;       // zone for the buttons 
+    private JPanel      dealerCardSpace;   // panel for the dealer's cards space
+    private JLabel      dealerScore;       // label that will contain the dealer's score
+    private JPanel      playerHandsSpace;  // panel for the player's hands space
+    private JLabel      balanceLabel;      // label that will contain the player's balance
+    private JLabel      betLabel;		   // label that will contain the hand bets
+    private JPanel      infoPanel;         // panel for player info
+    private JLabel      settingsLabel;     // label that will contain informations about game settings
+    private JButton     hitButton;         // button for the hit move
+    private JButton     standButton;       // button for the stand move
+    private JButton     doubleButton;      // button for the double down move
+    private JButton     splitButton;       // button for the split move
+    private JPanel      buttonsPanel;      // panel for the move buttons
+    private Timer       countdownTimer;    // timer for the count down
+    private JLabel      timerLabel;        // label that will show the timer with the remaining time
+	private int         secondsRemaining;  // seconds of timer remaining
+	private String      currentSetType;    // current set type name
+	private Color       currentTableColor; // current table color
+	private CardManager cardManager;       // class manager for cards
 	
     // class' constructor
     public BlackjackSwingTableViewImpl() {

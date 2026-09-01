@@ -1,6 +1,6 @@
 package it.uniurb.blackjack.model.cards;
 
-// implementation of the interface Card
+// class that models the concept of card. Implementation of the interface Card
 public class CardImpl implements Card {
 
 	// declaration of class' fields

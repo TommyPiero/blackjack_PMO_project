@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-// class that implements the interface Shoe
+// class that models the concept of shoe. Implements the interface Shoe
 public class ShoeImpl implements Shoe {
 	
 	// declaration of class' fields

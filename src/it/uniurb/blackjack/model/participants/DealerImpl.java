@@ -4,7 +4,7 @@ import it.uniurb.blackjack.model.cards.Card;
 import it.uniurb.blackjack.model.cards.Hand;
 import it.uniurb.blackjack.model.cards.HandImpl;
 
-// implementation of the interface Dealer
+// class that models the concept of dealer. Implementation of the interface Dealer
 public class DealerImpl implements Dealer {
 	
 	// declaration of class' fields
