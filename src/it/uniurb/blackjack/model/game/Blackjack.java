@@ -32,6 +32,12 @@ public class Blackjack implements SideBettedGameType {
 
 	// setter method that configure the game
 	public void configureGame(final int numDecks, final boolean hitOnSoft) {
+		// throwing an exception if the number of decks is not legal
+		if (numDecks < 2 ||
+		    numDecks > 8) {
+			throw new IllegalArgumentException("Decks can only be between 2 and 8!");
+		}
+		
 		this.configurations = new ConfigurationImpl(numDecks, hitOnSoft);
 		this.dealer = new DealerImpl(hitOnSoft);
 		this.shoe = new ShoeImpl(numDecks);
@@ -40,6 +46,15 @@ public class Blackjack implements SideBettedGameType {
 	
 	public void startGame(final String playerName, final double balance) {
 		// initializing the player
+		// throwing an exception if the player name has more than 30 chars
+		if (playerName.length() > 30) {
+			throw new IllegalArgumentException("Name can have a maximum of 30 characters!");
+		}
+		// throwing an exception if the balance is higher than 1000
+		if (balance > 1000) {
+			throw new IllegalArgumentException("Balance can be maximum 1000€!");
+		}
+		
 		this.player.initPlayer(playerName, balance);
 	}
 	
