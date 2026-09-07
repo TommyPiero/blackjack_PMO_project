@@ -40,19 +40,19 @@ public class BlackjackSwingInitViewImpl extends JPanel implements BlackjackSwing
     private static final Color TABLE_BLUE = new Color(20, 50, 90);     // third color choice for the table background
 	
 	// declaration of class' fields
-	private JTextField   nameField;       // field for the player's name
-    private JTextField   balanceField;    // field for the player's balance
-    private JTextField   numDecksField;   // field for the number of decks
-    private JCheckBox    typeDealerField; // field for the dealer type
-	private JButton      confirmButton;   // button for starting the game
-	private JRadioButton pixelRadio;      // radio for the pixel set
-	private JRadioButton modernRadio;     // radio for the modern set
-	private JRadioButton classicRadio;    // radio for the classic set
-	private ButtonGroup  cardSetGroup;    // button group for the choice of the set
-	private JRadioButton greenTableRadio; // radio for the green table
-	private JRadioButton redTableRadio;   // radio for the red table
-	private JRadioButton blueTableRadio;  // radio for the blue table
-	private ButtonGroup  tableColorGroup; // button group for the choice of the table color
+	private final JTextField   nameField;       // field for the player's name
+    private final JTextField   balanceField;    // field for the player's balance
+    private final JTextField   numDecksField;   // field for the number of decks
+    private final JCheckBox    typeDealerField; // field for the dealer type
+	private final JButton      confirmButton;   // button for starting the game
+	private JRadioButton       pixelRadio;      // radio for the pixel set
+	private JRadioButton       modernRadio;     // radio for the modern set
+	private JRadioButton       classicRadio;    // radio for the classic set
+	private ButtonGroup        cardSetGroup;    // button group for the choice of the set
+	private JRadioButton       greenTableRadio; // radio for the green table
+	private JRadioButton       redTableRadio;   // radio for the red table
+	private JRadioButton       blueTableRadio;  // radio for the blue table
+	private ButtonGroup        tableColorGroup; // button group for the choice of the table color
 	
     // class' constructor
     public BlackjackSwingInitViewImpl() {    	

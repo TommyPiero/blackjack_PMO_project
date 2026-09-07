@@ -6,13 +6,8 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.RenderingHints;
 import java.awt.Window;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.net.URL;
 import java.awt.Dialog;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +15,6 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -46,28 +40,28 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
     private static final Color LIGHT_TEXT   = Color.WHITE;             // color for the labels
     
     // declaration of local fields
-    private JPanel      mainPanel;         // main panel of the table
-    private JPanel      dealerZone;        // zone for the dealer
-    private JPanel      playerZone;        // zone for the player
-    private JPanel      buttonsZone;       // zone for the buttons 
-    private JPanel      dealerCardSpace;   // panel for the dealer's cards space
-    private JLabel      dealerScore;       // label that will contain the dealer's score
-    private JPanel      playerHandsSpace;  // panel for the player's hands space
-    private JLabel      balanceLabel;      // label that will contain the player's balance
-    private JLabel      betLabel;		   // label that will contain the hand bets
-    private JPanel      infoPanel;         // panel for player info
-    private JLabel      settingsLabel;     // label that will contain informations about game settings
-    private JButton     hitButton;         // button for the hit move
-    private JButton     standButton;       // button for the stand move
-    private JButton     doubleButton;      // button for the double down move
-    private JButton     splitButton;       // button for the split move
-    private JPanel      buttonsPanel;      // panel for the move buttons
-    private Timer       countdownTimer;    // timer for the count down
-    private JLabel      timerLabel;        // label that will show the timer with the remaining time
-	private int         secondsRemaining;  // seconds of timer remaining
-	private String      currentSetType;    // current set type name
-	private Color       currentTableColor; // current table color
-	private CardManager cardManager;       // class manager for cards
+    private final JPanel      mainPanel;         // main panel of the table
+    private final JPanel      dealerZone;        // zone for the dealer
+    private final JPanel      playerZone;        // zone for the player
+    private final JPanel      buttonsZone;       // zone for the buttons 
+    private       JPanel      dealerCardSpace;   // panel for the dealer's cards space
+    private       JLabel      dealerScore;       // label that will contain the dealer's score
+    private       JPanel      playerHandsSpace;  // panel for the player's hands space
+    private       JLabel      balanceLabel;      // label that will contain the player's balance
+    private       JLabel      betLabel;		     // label that will contain the hand bets
+    private       JPanel      infoPanel;         // panel for player info
+    private       JLabel      settingsLabel;     // label that will contain informations about game settings
+    private       JButton     hitButton;         // button for the hit move
+    private       JButton     standButton;       // button for the stand move
+    private       JButton     doubleButton;      // button for the double down move
+    private       JButton     splitButton;       // button for the split move
+    private       JPanel      buttonsPanel;      // panel for the move buttons
+    private       Timer       countdownTimer;    // timer for the count down
+    private       JLabel      timerLabel;        // label that will show the timer with the remaining time
+	private       int         secondsRemaining;  // seconds of timer remaining
+	private       String      currentSetType;    // current set type name
+	private       Color       currentTableColor; // current table color
+	private final CardManager cardManager;       // class manager for cards
 	
     // class' constructor
     public BlackjackSwingTableViewImpl() {
@@ -802,7 +796,7 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
         this.splitButton.addActionListener(listener);
     }
 
-	public void showErrorMessage(String string) {
+	public void showErrorMessage(final String string) {
 		JOptionPane.showMessageDialog(this, string, "Errore", JOptionPane.ERROR_MESSAGE);
 	}
 }

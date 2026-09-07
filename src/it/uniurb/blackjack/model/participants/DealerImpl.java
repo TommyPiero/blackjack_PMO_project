@@ -8,9 +8,9 @@ import it.uniurb.blackjack.model.cards.HandImpl;
 public class DealerImpl implements Dealer {
 	
 	// declaration of class' fields
-	private String  name;      // the name of the dealer
+	private final String  name;      // the name of the dealer
 	private Hand    hand;      // hand of the dealer
-	private boolean hitOnSoft; // true if the dealer hits on soft 17, false otherwise
+	private final boolean hitOnSoft; // true if the dealer hits on soft 17, false otherwise
 	
 	// class' constructor
 	public DealerImpl(final boolean hitOnSoft) {

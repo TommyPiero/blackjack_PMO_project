@@ -7,12 +7,11 @@ import it.uniurb.blackjack.controller.TableState;
 import it.uniurb.blackjack.model.cards.Card;
 import it.uniurb.blackjack.model.cards.PerfectPairs;
 import it.uniurb.blackjack.model.game.OutcomeType;
-import it.uniurb.blackjack.model.participants.Player;
 
 // class that implements the view of the model in a command line version
 public class BlackjackTextViewImpl implements BlackjackTextView {
 	// declaration of the fields of the class
-	private Scanner scanner; // scanner for the inputs from the player
+	private final Scanner scanner; // scanner for the inputs from the player
 
 	public BlackjackTextViewImpl() {
 		this.scanner = new Scanner(System.in);
@@ -41,7 +40,7 @@ public class BlackjackTextViewImpl implements BlackjackTextView {
 	public double askBalance() {
 		// declaration of local variables
 		String  input;             // starting input in string format
-		double  balance = -1.0;           // starting balance of the player
+		double  balance = -1.0;    // starting balance of the player
 		boolean isCorrect = false; // bool for the check of a correct balance value
 
 		do {

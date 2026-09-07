@@ -9,7 +9,7 @@ public class HandImpl implements Hand {
 	// class' fields declaration
 	private List<Card>   cards;         // cards of the hand
 	private double       mainBet;       // main bet linked to the hand
-	private double       sideBet;       // bet linked to the side bet, it can be 0
+	private final double sideBet;       // bet linked to the side bet, it can be 0
 	private boolean      hasSoftAce;    // number of soft aces in the hand (aces that has value of 11)
 	private HandState    handState;     // state of the hand (stand, blackjack, active, bust)
 	private boolean      isFromSplit;   // bool value that record if a hand is from a split

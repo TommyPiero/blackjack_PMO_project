@@ -13,16 +13,17 @@ import it.uniurb.blackjack.model.game.HandOutcome;
 import it.uniurb.blackjack.model.game.MoveType;
 import it.uniurb.blackjack.model.game.OutcomeType;
 import it.uniurb.blackjack.view.AudioManager;
+import it.uniurb.blackjack.view.BlackjackFrame;
 import it.uniurb.blackjack.view.BlackjackFrameImpl;
 import it.uniurb.blackjack.view.BlackjackSwingBetView;
-import it.uniurb.blackjack.view.BlackjackSwingInitViewImpl;
-import it.uniurb.blackjack.view.BlackjackSwingTableViewImpl;
+import it.uniurb.blackjack.view.BlackjackSwingInitView;
+import it.uniurb.blackjack.view.BlackjackSwingTableView;
 
 public class BlackjackSwingController {
 
 	// declaration of class' fields
 	Blackjack          blackjack;  // model of the application
-	BlackjackFrameImpl mainFrame;  // view of the application
+	BlackjackFrame     mainFrame;  // view of the application
 	
 	private int        activeHand; // field that records the actual active hand
 	
@@ -75,7 +76,7 @@ public class BlackjackSwingController {
 	}
 	
 	// method that permits to make a move and save the changes
-	private void onMove(MoveType move) {
+	private void onMove(final MoveType move) {
 		try {
 			// if the hand is in game, play the move
 			if (this.blackjack.getPlayerHands().get(activeHand).isInGame()) {
@@ -188,7 +189,7 @@ public class BlackjackSwingController {
 	// method that updates the table after moves
 	private void updateTable() {
 		// declaration and initialization of local variables
-		BlackjackSwingTableViewImpl table = this.mainFrame.getTableScreen(); // table screen
+		BlackjackSwingTableView table = this.mainFrame.getTableScreen(); // table screen
 		
 		// updating values for balance and bets
 		table.updateBalance(this.blackjack.getPlayerBalance());
@@ -275,7 +276,7 @@ public class BlackjackSwingController {
 	// method for initializing player and game
 	private void onConfirmSetup() {
 		// declaration and initialization of local variables
-		BlackjackSwingInitViewImpl init = this.mainFrame.getInitScreen(); // player initialization screen
+		BlackjackSwingInitView init = this.mainFrame.getInitScreen(); // player initialization screen
 		
         try {
         	// declaration and initialization of local variables

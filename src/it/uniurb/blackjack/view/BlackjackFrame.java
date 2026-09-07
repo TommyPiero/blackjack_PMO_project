@@ -14,11 +14,11 @@ public interface BlackjackFrame {
     public void showTableScreen();
     
     // getter method for the initialization screen
-    public BlackjackSwingInitViewImpl getInitScreen();
+    public BlackjackSwingInitView getInitScreen();
 
     // getter method for the bets screen
-    public BlackjackSwingBetViewImpl getBetScreen();
+    public BlackjackSwingBetView getBetScreen();
     
     // getter method for the table screen
-    public BlackjackSwingTableViewImpl getTableScreen();
+    public BlackjackSwingTableView getTableScreen();
 }

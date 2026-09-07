@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -22,13 +21,13 @@ import javax.swing.border.TitledBorder;
 // class that extends JPanel and that will manage the panel for asking bet and side bet
 public class BlackjackSwingBetViewImpl extends JPanel implements BlackjackSwingBetView{
 	// declaration of class' fields
-	private JLabel     walletLabel;      // label that shows the current balance in real time
-    private JTextField mainBetField;     // field for the main bet
-    private JTextField sideBetField;     // field for the side bet
-    private JButton    placeBetsButton;  // button to confirm and place the bets
-    private JLabel     titleLabel;       // label for the panel's title
-    private JPanel     betsPanel;        // panel for inserting bets
-    private JButton    backButton;       // back button for the bet screen
+	private final JLabel     walletLabel;      // label that shows the current balance in real time
+    private final JTextField mainBetField;     // field for the main bet
+    private final JTextField sideBetField;     // field for the side bet
+    private final JButton    placeBetsButton;  // button to confirm and place the bets
+    private final JLabel     titleLabel;       // label for the panel's title
+    private final JPanel     betsPanel;        // panel for inserting bets
+    private final JButton    backButton;       // back button for the bet screen
     
     // initialization of constants for panel's colors
     private final Color CASINO_GREEN = new Color(7, 94, 46);

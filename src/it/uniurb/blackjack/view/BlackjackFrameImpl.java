@@ -8,16 +8,16 @@ import javax.swing.JPanel;
 // class that implements the main frame of the Blackjack application
 public class BlackjackFrameImpl extends JFrame implements BlackjackFrame {
 	// declaration of class' fields
-	private CardLayout cardLayout; // layout of cards
-    private JPanel panelContainer; // panel container
+	private final CardLayout cardLayout;     // layout of cards
+    private final JPanel     panelContainer; // panel container
 
     private static final String INIT_SCREEN = "init";
     private static final String BET_SCREEN = "bet";
     private static final String TABLE_SCREEN = "table";
     
-    private BlackjackSwingInitViewImpl initScreen;
-    private BlackjackSwingBetViewImpl betScreen;
-    private BlackjackSwingTableViewImpl tableView;
+    private BlackjackSwingInitViewImpl initScreen; // initialization menu
+    private BlackjackSwingBetViewImpl betScreen;   // bet menu
+    private BlackjackSwingTableViewImpl tableView; // table view
     
     // class' constructor
     public BlackjackFrameImpl() {
@@ -55,15 +55,15 @@ public class BlackjackFrameImpl extends JFrame implements BlackjackFrame {
         cardLayout.show(this.panelContainer, TABLE_SCREEN);
     }
     
-    public BlackjackSwingInitViewImpl getInitScreen() {
+    public BlackjackSwingInitView getInitScreen() {
         return(this.initScreen);
     }
 
-    public BlackjackSwingBetViewImpl getBetScreen() {
+    public BlackjackSwingBetView getBetScreen() {
         return(this.betScreen);
     }
     
-    public BlackjackSwingTableViewImpl getTableScreen() {
+    public BlackjackSwingTableView getTableScreen() {
     	return(this.tableView);
     }
 }
