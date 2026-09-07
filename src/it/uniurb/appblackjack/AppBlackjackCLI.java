@@ -11,20 +11,23 @@ import it.uniurb.blackjack.view.BlackjackTextView;
 // components and starting the game loop.
 public class AppBlackjackCLI {
 
-	public static void main(String[] args) {
+	public void start() {
 		// allocating the model
 		Blackjack model = new Blackjack();
-		
+				
 		// allocating the view
 		BlackjackTextView view = new BlackjackTextViewImpl();
-		
+				
 		// creating the controller
 		BlackjackTextController controller = new BlackjackTextControllerImpl(model, view);
-		
+				
 		System.out.println("STARTING A NEW GAME LOOP");
-		
+				
 		// starting the game
 		controller.playGame();
 	}
-
+	
+	public static void main(String[] args) {
+		new AppBlackjackCLI().start();
+	}
 }

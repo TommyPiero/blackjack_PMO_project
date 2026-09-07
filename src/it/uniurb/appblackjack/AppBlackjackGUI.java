@@ -11,7 +11,7 @@ import it.uniurb.blackjack.view.BlackjackFrameImpl;
 //components and starting the game loop.
 public class AppBlackjackGUI {
 
-	public static void main(String[] args) {
+	public void start() {
 		SwingUtilities.invokeLater(() -> {
 			
 	        Blackjack blackjack = new Blackjack();
@@ -22,6 +22,10 @@ public class AppBlackjackGUI {
 	        
 	        frame.setVisible(true);
 	    });
+	}
+	
+	public static void main(String[] args) {
+		new AppBlackjackGUI().start();
 	}
 
 }
