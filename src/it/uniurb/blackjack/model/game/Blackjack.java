@@ -72,6 +72,7 @@ public class Blackjack implements SideBettedGameType {
 		this.gameState = GameState.WAITING_PLAY;
 	}
 
+	// method that permits to make a move
 	public void makeMove(final MoveType move, final int numHand) {
 		// throwing an exception if the state is not waiting_play
 		if (!this.gameState.equals(GameState.WAITING_PLAY)) 
@@ -105,6 +106,7 @@ public class Blackjack implements SideBettedGameType {
 		this.gameState = GameState.DEALER_TURN;
 	}
 	
+	// method that permit to play the dealer's hand
 	public void playDealerHand() {
 		while (this.dealer.isInGame(configurations.isDealerHitSoft())) {
 			this.dealer.hit(this.shoe.drawCard());
