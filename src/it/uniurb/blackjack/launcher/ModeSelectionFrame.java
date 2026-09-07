@@ -1,4 +1,4 @@
-package it.uniurb.appblackjack;
+package it.uniurb.blackjack.launcher;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;

@@ -1,4 +1,4 @@
-package it.uniurb.blackjack.view;
+package it.uniurb.blackjack.view.swingview;
 
 // interface that declares method for the main frame of the Blackjack application
 public interface BlackjackFrame {

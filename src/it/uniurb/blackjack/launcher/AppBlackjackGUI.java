@@ -1,10 +1,10 @@
-package it.uniurb.appblackjack;
+package it.uniurb.blackjack.launcher;
 
 import javax.swing.SwingUtilities;
 
-import it.uniurb.blackjack.controller.BlackjackSwingController;
+import it.uniurb.blackjack.controller.swingcontroller.BlackjackSwingController;
 import it.uniurb.blackjack.model.game.Blackjack;
-import it.uniurb.blackjack.view.BlackjackFrameImpl;
+import it.uniurb.blackjack.view.swingview.BlackjackFrameImpl;
 
 //Entry point of the Blackjack application in his GUI version.
 //This class is responsible for assembling the Model, View, and Controller
