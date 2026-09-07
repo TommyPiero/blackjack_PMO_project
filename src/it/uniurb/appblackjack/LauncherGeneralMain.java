@@ -1,4 +1,4 @@
-package it.uniurb.blackjack.launcher;
+package it.uniurb.appblackjack;
 
 import javax.swing.SwingUtilities;
 

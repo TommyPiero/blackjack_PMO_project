@@ -1,9 +1,9 @@
-package it.uniurb.blackjack.view.textview;
+package it.uniurb.blackjack.view;
 
 import java.io.IOException;
 import java.util.Scanner;
 
-import it.uniurb.blackjack.controller.textcontroller.TableState;
+import it.uniurb.blackjack.controller.TableState;
 import it.uniurb.blackjack.model.cards.Card;
 import it.uniurb.blackjack.model.cards.PerfectPairs;
 import it.uniurb.blackjack.model.game.OutcomeType;

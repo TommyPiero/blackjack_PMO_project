@@ -1,4 +1,4 @@
-package it.uniurb.blackjack.controller.textcontroller;
+package it.uniurb.blackjack.controller;
 
 // interface for the controller for CLI version
 public interface BlackjackTextController {

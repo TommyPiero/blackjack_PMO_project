@@ -1,7 +1,7 @@
-package it.uniurb.blackjack.view.textview;
+package it.uniurb.blackjack.view;
 
 
-import it.uniurb.blackjack.controller.textcontroller.TableState;
+import it.uniurb.blackjack.controller.TableState;
 import it.uniurb.blackjack.model.game.OutcomeType;
 
 // interface for the view of the game, it contains the principal methods that shows parts of the game

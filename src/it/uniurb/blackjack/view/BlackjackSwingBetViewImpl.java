@@ -1,4 +1,4 @@
-package it.uniurb.blackjack.view.swingview;
+package it.uniurb.blackjack.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
