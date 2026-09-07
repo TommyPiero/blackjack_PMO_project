@@ -259,6 +259,14 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 		return(handPanel);
 	}
 	
+	// utility method used to set able or unable the game buttons
+	private void setMoveButtonsEnabled(final boolean enabled) {
+	    this.hitButton.setEnabled(enabled);
+	    this.standButton.setEnabled(enabled);
+	    this.doubleButton.setEnabled(enabled);
+	    this.splitButton.setEnabled(enabled);
+	}
+	
 	public void setCardSetType(final String cardSetType) {
 	    this.currentSetType = cardSetType;
 	}
@@ -359,7 +367,10 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 	}
 	
 	public void revealStartingCards(final List<Card> playerCards, final Card dealerUncovered, final Runnable onComplete) {
-	    // removing all cards from the previous round
+		// unable the buttons
+		setMoveButtonsEnabled(false);
+		
+		// removing all cards from the previous round
 		this.playerHandsSpace.removeAll();
 	    this.dealerCardSpace.removeAll();
 	    
@@ -378,6 +389,9 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 	            	this.dealerCardSpace.revalidate();
 	            	this.dealerCardSpace.repaint();
 	            	AudioManager.playSound("deal_card.wav");
+	            	// buttons can now be used again
+	            	setMoveButtonsEnabled(true);
+	            	
 	            	if (onComplete != null) {
 	            		onComplete.run();
 	            	}
@@ -619,6 +633,9 @@ public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwin
 	    // on no, the application gets closed
 	    noButton.addActionListener(e -> {
 	        dialog.dispose();
+	        stopMoveTimer();
+	        setMoveButtonsEnabled(false);
+	        this.timerLabel.setText("Ended game!");
 	    });
 
 	    buttonsPanel.add(yesButton);
