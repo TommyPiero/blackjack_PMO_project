@@ -18,7 +18,8 @@ public class AppBlackjackGUI {
 	        
 	        BlackjackFrameImpl frame = new BlackjackFrameImpl();
 	        
-	        BlackjackSwingController controller = new BlackjackSwingController(blackjack, frame);
+	        // controller instance without assignment 
+	        new BlackjackSwingController(blackjack, frame);
 	        
 	        frame.setVisible(true);
 	    });

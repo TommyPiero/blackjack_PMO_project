@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 
 // class that implements the main frame of the Blackjack application
 public class BlackjackFrameImpl extends JFrame implements BlackjackFrame {
+	private static final long serialVersionUID = 1L;
 	// declaration of class' fields
 	private final CardLayout cardLayout;     // layout of cards
     private final JPanel     panelContainer; // panel container

@@ -31,6 +31,7 @@ import javax.swing.border.TitledBorder;
 
 //class that extends JPanel and that will manage the panel for game initialization
 public class BlackjackSwingInitViewImpl extends JPanel implements BlackjackSwingInitView{
+	private static final long serialVersionUID = 1L;
 	// definition of colors for the menu
 	private static final Color CASINO_GREEN = new Color(7, 94, 46);    // color for the menus background
 	private static final Color DARK_GOLD    = new Color(212, 175, 55); // color for the borders
@@ -312,13 +313,13 @@ public class BlackjackSwingInitViewImpl extends JPanel implements BlackjackSwing
 
 	public String askCardSetType() {
 		// declaration of local variables
-		String setName; // name of the choose set
+		String setName = "PixelCards"; // name of the choose set
 		
 		if (this.pixelRadio.isSelected()) {
 		    setName = "PixelCards";
 		} else if (this.modernRadio.isSelected()) {
 		    setName = "ModernCards";
-		} else {
+		} else if (this.classicRadio.isSelected()){
 		    setName = "ClassicCards";
 		}
 		    
@@ -327,13 +328,13 @@ public class BlackjackSwingInitViewImpl extends JPanel implements BlackjackSwing
 	
 	public Color askTableColor() {
 		// declaration of local variables
-		Color tableColor; // color of the game table
+		Color tableColor = TABLE_GREEN; // color of the game table
 		
 		if (this.greenTableRadio.isSelected()) {
 			tableColor = TABLE_GREEN;
 		} else if (this.redTableRadio.isSelected()) {
 		    tableColor = TABLE_RED;
-		} else {
+		} else if (this.blueTableRadio.isSelected()){
 		    tableColor = TABLE_BLUE;
 		}
 		

@@ -34,6 +34,7 @@ import it.uniurb.blackjack.model.game.OutcomeType;
 import java.awt.BorderLayout;
 
 public class BlackjackSwingTableViewImpl extends JPanel implements BlackjackSwingTableView{
+	private static final long serialVersionUID = 1L;
 	// declaration of color constants
 	private static final Color CASINO_GREEN = new Color(7, 94, 46);    // color for the menus background
     private static final Color DARK_GOLD    = new Color(212, 175, 55); // color for the borders

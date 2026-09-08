@@ -16,6 +16,8 @@ import java.awt.GridLayout;
 // class that creates a dialog for the first choice of the game mode
 public class ModeSelectionFrame extends JDialog {
 
+	private static final long serialVersionUID = 1L;
+	
 	private static final Color CASINO_GREEN = new Color(7, 94, 46);    // color for the background
     private static final Color LIGHT_TEXT   = Color.WHITE;             // color for the label
 	

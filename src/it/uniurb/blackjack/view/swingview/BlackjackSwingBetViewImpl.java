@@ -20,6 +20,7 @@ import javax.swing.border.TitledBorder;
 
 // class that extends JPanel and that will manage the panel for asking bet and side bet
 public class BlackjackSwingBetViewImpl extends JPanel implements BlackjackSwingBetView{
+	private static final long serialVersionUID = 1L;
 	// declaration of class' fields
 	private final JLabel     walletLabel;      // label that shows the current balance in real time
     private final JTextField mainBetField;     // field for the main bet
