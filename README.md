@@ -13,3 +13,6 @@ At the start, the program shows a panel with a choice between two modes:
 ## How to start the game
 1. Import the project into the IDE.
 2. Open and run the main file containing the `main` method (`LauncherGeneralMain.java`).
+
+**Name:** Tommaso Pierelli
+**Student ID number:** 327883
