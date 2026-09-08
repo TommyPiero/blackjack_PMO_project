@@ -1,11 +1,11 @@
-package it.uniurb.blackjack.controller;
+package it.uniurb.blackjack.controller.textcontroller;
 
 
 import it.uniurb.blackjack.model.cards.Card;
 import it.uniurb.blackjack.model.cards.PerfectPairs;
 import it.uniurb.blackjack.model.game.Blackjack;
 import it.uniurb.blackjack.model.game.MoveType;
-import it.uniurb.blackjack.view.BlackjackTextView;
+import it.uniurb.blackjack.view.textview.BlackjackTextView;
 
 // class that implements a controller for a command line version of the game
 public class BlackjackTextControllerImpl implements BlackjackTextController {

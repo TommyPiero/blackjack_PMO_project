@@ -1,4 +1,4 @@
-package it.uniurb.blackjack.view;
+package it.uniurb.blackjack.view.swingview;
 
 import java.awt.event.ActionListener;
 

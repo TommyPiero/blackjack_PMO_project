@@ -1,4 +1,4 @@
-package it.uniurb.blackjack.controller;
+package it.uniurb.blackjack.controller.textcontroller;
 
 import java.util.List;
 

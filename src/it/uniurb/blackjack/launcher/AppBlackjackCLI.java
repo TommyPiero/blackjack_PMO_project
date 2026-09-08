@@ -1,10 +1,10 @@
-package it.uniurb.appblackjack;
+package it.uniurb.blackjack.launcher;
 
-import it.uniurb.blackjack.controller.BlackjackTextController;
-import it.uniurb.blackjack.controller.BlackjackTextControllerImpl;
+import it.uniurb.blackjack.controller.textcontroller.BlackjackTextController;
+import it.uniurb.blackjack.controller.textcontroller.BlackjackTextControllerImpl;
 import it.uniurb.blackjack.model.game.Blackjack;
-import it.uniurb.blackjack.view.BlackjackTextViewImpl;
-import it.uniurb.blackjack.view.BlackjackTextView;
+import it.uniurb.blackjack.view.textview.BlackjackTextView;
+import it.uniurb.blackjack.view.textview.BlackjackTextViewImpl;
 
 // Entry point of the Blackjack application in his CLI version.
 // This class is responsible for assembling the Model, View, and Controller

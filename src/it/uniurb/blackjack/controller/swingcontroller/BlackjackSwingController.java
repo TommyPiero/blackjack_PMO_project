@@ -1,4 +1,4 @@
-package it.uniurb.blackjack.controller;
+package it.uniurb.blackjack.controller.swingcontroller;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -12,12 +12,12 @@ import it.uniurb.blackjack.model.game.HandFields;
 import it.uniurb.blackjack.model.game.HandOutcome;
 import it.uniurb.blackjack.model.game.MoveType;
 import it.uniurb.blackjack.model.game.OutcomeType;
-import it.uniurb.blackjack.view.AudioManager;
-import it.uniurb.blackjack.view.BlackjackFrame;
-import it.uniurb.blackjack.view.BlackjackFrameImpl;
-import it.uniurb.blackjack.view.BlackjackSwingBetView;
-import it.uniurb.blackjack.view.BlackjackSwingInitView;
-import it.uniurb.blackjack.view.BlackjackSwingTableView;
+import it.uniurb.blackjack.view.swingview.AudioManager;
+import it.uniurb.blackjack.view.swingview.BlackjackFrame;
+import it.uniurb.blackjack.view.swingview.BlackjackFrameImpl;
+import it.uniurb.blackjack.view.swingview.BlackjackSwingBetView;
+import it.uniurb.blackjack.view.swingview.BlackjackSwingInitView;
+import it.uniurb.blackjack.view.swingview.BlackjackSwingTableView;
 
 public class BlackjackSwingController {
 
